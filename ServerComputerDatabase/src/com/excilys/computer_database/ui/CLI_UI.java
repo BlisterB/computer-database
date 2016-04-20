@@ -103,7 +103,7 @@ public class CLI_UI {
 
 		System.out.println("Date discontinued (yyyy MM dd) :");
 		String stringDiscontinued = sc.nextLine().trim();
-		
+
 		Timestamp discontinued = null;
 		if (!stringDiscontinued.isEmpty()) {
 			try {
@@ -122,6 +122,17 @@ public class CLI_UI {
 		return new Computer(name, introduced, discontinued, company_id);
 	}
 
+	public void deleteComputer(){
+		System.out.println("Quel computer effacer ?");
+		long id = sc.nextLong();
+
+		try {
+			computerServ.delete(id);
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void runCLI() {
 		while (true) {
 			displayPrompt();
@@ -137,6 +148,10 @@ public class CLI_UI {
 				showComputerDetail();
 				break;
 			case 4:
+				createAComputer();
+			case 5:
+
+			case 6:
 				createAComputer();
 			default:
 				break;

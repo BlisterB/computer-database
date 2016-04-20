@@ -28,10 +28,11 @@ public class ComputerService {
 		// TODO : Vérifier que la date de fin est apres la date de début
 		return dao.create(computer);
 	}
-	
+
 	public Computer createComputer(String name, Date introduced, Date discontinued, Long company_id)
 			throws SQLException {
 		Computer computer = new Computer(name, new Timestamp(introduced.getTime()), new Timestamp(discontinued.getTime()), company_id);
 		return createComputer(computer);
 	}
+	
 }

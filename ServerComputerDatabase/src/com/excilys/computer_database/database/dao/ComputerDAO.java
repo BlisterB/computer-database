@@ -122,7 +122,15 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public void delete(Computer obj) throws SQLException {
-		// TODO
+		// TODO : Vérifier que l'id existe
+		
+		try (Connection con = ConnectionDB.getConnection()) {
+			try (PreparedStatement stmt = con.prepareStatement(DELETE_REQUEST)) {
+				stmt.setLong(1, obj.getId());
+
+				stmt.executeUpdate();
+			}
+		}
 	}
 
 }
