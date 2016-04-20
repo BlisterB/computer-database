@@ -23,11 +23,4 @@ public class ConnectionDB {
 		
 		return null;
 	}
-	
-	/** Configure un rowset pour une connexion à la base de donnée */
-	public static void configureRowSet(RowSet r) throws SQLException{
-		r.setUrl(url);
-		r.setUsername(user);
-		r.setPassword(passwd);
-	}
 }
