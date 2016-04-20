@@ -14,6 +14,6 @@ public abstract class DAO<T> {
 	public abstract T update(T obj)		throws SQLException;
 	public abstract void delete(T obj)	throws SQLException;
 	
-	public abstract T unmap(ResultSet rs)		throws SQLException;
+	public abstract T unmap(ResultSet rs)	throws SQLException;
 	public abstract ResultSet map(T obj)	throws SQLException;
 }

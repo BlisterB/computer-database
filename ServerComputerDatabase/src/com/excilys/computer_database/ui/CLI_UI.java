@@ -17,20 +17,21 @@ import com.excilys.computer_database.model.Company;
 import com.excilys.computer_database.model.Computer;
 
 public class CLI_UI {
-	private static Scanner sc = new Scanner(System.in);
+	private Scanner sc = new Scanner(System.in);
+	private ComputerService computerServ = new ComputerService();
+	private CompaniesService companiesService = new CompaniesService();
 
-	public static void displayPrompt() {
+	public void displayPrompt() {
 		String prompt = "Please select a choice:\n" + "\t1) List all companies\n" + "\t2) List all computers\n"
 				+ "\t3) Show computer details\n" + "\t4) Create a computer\n" + "\t5) Modify a computer\n"
 				+ "\t6) Delete a computer\n";
 		System.out.println(prompt);
 	}
 
-	public static void listAllCompanies() {
+	public void listAllCompanies() {
 		try {
-			CompaniesService serv = new CompaniesService();
-			List<Company> l = serv.listAllCompanies();
-			
+			List<Company> l = companiesService.listAllCompanies();
+
 			StringBuilder sb = new StringBuilder();
 			for (Company company : l) {
 				sb.append(company.toString()).append("\n");
@@ -41,11 +42,10 @@ public class CLI_UI {
 		}
 	}
 
-	public static void listAllComputers() {
+	public void listAllComputers() {
 		try {
-			ComputerService serv = new ComputerService();
-			List<Computer> l = serv.listAllComputers();
-			
+			List<Computer> l = computerServ.listAllComputers();
+
 			StringBuilder sb = new StringBuilder();
 			for (Computer computer : l) {
 				sb.append(computer.toString()).append("\n");
@@ -56,67 +56,73 @@ public class CLI_UI {
 		}
 	}
 
-	public static void showComputerDetail() {
+	public void showComputerDetail() {
 		System.out.println("Entrez un id : ");
 		long id = sc.nextLong();
 
 		try {
-			ComputerService serv = new ComputerService();
-			Computer computer = serv.getComputerById(id);
+			Computer computer = computerServ.getComputerById(id);
 			System.out.println(computer);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void createAComputer() {
+	public void createAComputer() {
 		Computer computer = askComputerInformation();
-		
-		
+		try {
+			computerServ.createComputer(computer);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
-	public static Computer askComputerInformation(){
-		if(sc.hasNextLine())
+	public Computer askComputerInformation() {
+		if (sc.hasNextLine())
 			sc.nextLine();
-		
+
 		// Name
 		System.out.println("Nom :");
 		String name = sc.nextLine();
-		
+
 		// Dates
-		// TODO : Vérifier que la date de fin est apres la date de début
 		DateFormat formatter = new SimpleDateFormat("yyyy MM dd");
-		System.out.println("Date introduced (dd MMM yyyy) :");
-		String stringIntroduced = sc.nextLine();
-		
+		System.out.println("Date introduced (yyyy MM dd) :");
+		String stringIntroduced = sc.nextLine().trim();
+
 		Timestamp introduced = null;
-		try {
-			Date dateIntroduced = formatter.parse(stringIntroduced);
-			introduced = new Timestamp(dateIntroduced.getTime());
-		} catch (ParseException e) {
-			e.printStackTrace();
+		if (!stringIntroduced.isEmpty()) {
+			try {
+				Date dateIntroduced = formatter.parse(stringIntroduced);
+				introduced = new Timestamp(dateIntroduced.getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
+
+		System.out.println("Date discontinued (yyyy MM dd) :");
+		String stringDiscontinued = sc.nextLine().trim();
 		
-		System.out.println("Date discontinued (dd MMM yyyy) :");
-		String stringDiscontinued = sc.nextLine();
-		
-	    Timestamp discontinued = null;
-		try {
-			Date dateDiscontinued = formatter.parse(stringDiscontinued);
-			discontinued = new Timestamp(dateDiscontinued.getTime());
-		} catch (ParseException e) {
-			e.printStackTrace();
+		Timestamp discontinued = null;
+		if (!stringDiscontinued.isEmpty()) {
+			try {
+				Date dateDiscontinued = formatter.parse(stringDiscontinued);
+				discontinued = new Timestamp(dateDiscontinued.getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
-		
+
 		// Company id
 		System.out.println("Company id : ");
 		Long company_id = sc.nextLong();
-		
-	    // Création de l'objet correspondant
+
+		// Création de l'objet correspondant
 		return new Computer(name, introduced, discontinued, company_id);
 	}
 
-	public static void runCLI() {
+	public void runCLI() {
 		while (true) {
 			displayPrompt();
 
@@ -139,6 +145,7 @@ public class CLI_UI {
 	}
 
 	public static void main(String[] arg) {
-		runCLI();
+		CLI_UI cli = new CLI_UI();
+		cli.runCLI();
 	}
 }
