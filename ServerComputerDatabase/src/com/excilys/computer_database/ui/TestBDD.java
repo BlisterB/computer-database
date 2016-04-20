@@ -25,7 +25,7 @@ public class TestBDD {
 			System.out.println("id : " + company.getId());
 			company.setName("The New Blister Corporation");
 			c.update(company);
-		
+			c.delete(company);
 			
 			List<Company> l = c.findAll();
 			for (Company company2 : l) {

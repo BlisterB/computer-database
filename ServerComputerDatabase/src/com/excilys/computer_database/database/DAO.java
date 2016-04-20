@@ -1,22 +1,20 @@
 package com.excilys.computer_database.database;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.RowSet;
-
-import com.sun.rowset.JdbcRowSetImpl;
-
 public abstract class DAO<T> implements AutoCloseable {
-	protected RowSet rowset;
+	protected Connection connect;
 	
 	public DAO() throws SQLException{
-		rowset = new JdbcRowSetImpl(ConnectionDB.getConnection());
+		connect = ConnectionDB.getConnection();
 	}
 	
 	@Override
 	public void close() throws SQLException {
-		rowset.close();
+		connect.close();
 	}
 	
 	public abstract T find(long id)		throws SQLException;
@@ -24,4 +22,7 @@ public abstract class DAO<T> implements AutoCloseable {
 	public abstract T create(T obj)		throws SQLException;
 	public abstract T update(T obj)		throws SQLException;
 	public abstract void delete(T obj)	throws SQLException;
+	
+	public abstract T unmap(ResultSet rs)		throws SQLException;
+	public abstract ResultSet map(T obj)	throws SQLException;
 }

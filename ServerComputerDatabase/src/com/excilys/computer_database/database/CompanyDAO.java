@@ -1,12 +1,11 @@
 package com.excilys.computer_database.database;
 
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.RowSet;
 
 import com.excilys.computer_database.model.Company;
 
@@ -14,65 +13,96 @@ public class CompanyDAO extends DAO<Company> {
 	public static final String TABLE_NAME = "company";
 	private static final String ID = "company.id", NAME = "company.name";
 
+	private static final String 
+		FIND_REQUEST = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " = ?",
+		FIND_ALL_REQUEST = "SELECT " + ID + "," + NAME + " FROM company",
+		INSERT_REQUEST = "INSERT INTO " + TABLE_NAME + " ( " + NAME + " ) VALUES (?) ",
+		UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?",
+		DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
+
 	public CompanyDAO() throws SQLException {
 		super();
 	}
 
 	@Override
-	public Company find(long id) throws SQLException {
-		rowset.setCommand("SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " = " + id);
-		rowset.execute();
-
-		if (rowset.first()) {
-			return new Company(id, rowset.getString(NAME));
-		}
-
+	public Company unmap(ResultSet rs)	throws SQLException {
+		return new Company(rs.getLong(ID), rs.getString(NAME));
+	}
+	
+	@Override
+	public ResultSet map(Company obj) throws SQLException{
+		// TODO
 		return null;
+	}
+	
+	@Override
+	public Company find(long id) throws SQLException {
+		try (PreparedStatement stmt = this.connect.prepareStatement(FIND_REQUEST)) {
+			stmt.setLong(1, id);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.first()) {
+				return unmap(rs);
+			}
+
+			return null;
+		}
 	}
 
 	@Override
 	public List<Company> findAll() throws SQLException {
 		List<Company> list = new ArrayList<Company>();
 
-		// Exécution de la requête
-		rowset.setCommand("SELECT " + ID + "," + NAME + " FROM company");
-		rowset.execute();
-
-		// Création de la liste
-		while (rowset.next()) {
-			list.add(new Company(rowset.getLong(ID), rowset.getString(NAME)));
+		try (PreparedStatement stmt = this.connect.prepareStatement(FIND_ALL_REQUEST)){
+			ResultSet rs = stmt.executeQuery();
+			
+			// Création de la liste
+			while (rs.next()) {
+				list.add(unmap(rs));
+			}
 		}
-
+		
 		return list;
 	}
 
 	@Override
 	public Company create(Company obj) throws SQLException {
 		// Exécution de la requête
-		// TODO : préciser quelle table au rowset
-		rowset.moveToInsertRow();
-		rowset.updateString(NAME, obj.getName());
-		rowset.insertRow();
-		
-		// Récupération de l'id et ajout à obj
-		obj.setId(new Long(rowset.getRow()));
-
-		return obj;
+		try (PreparedStatement stmt = this.connect.prepareStatement(INSERT_REQUEST, Statement.RETURN_GENERATED_KEYS)){
+			stmt.setString(1, obj.getName());
+			
+			stmt.executeUpdate();
+			
+			// Mise à jour de l'id de l'objet inséré
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.first()){
+				obj.setId(rs.getLong(1));
+			}
+			else {
+				throw new SQLException("L'insertion n'a pas aboutie");
+			}
+			
+			return obj;
+		}
 	}
 
 	@Override
 	public Company update(Company obj) throws SQLException {
-		rowset.setCommand("UPDATE langage SET " + NAME + " = " + obj.getName() +
-                    	" WHERE ID = " + obj.getId());
-		rowset.execute();
-		
-		return null;
+		try (PreparedStatement stmt = this.connect.prepareStatement(UPDATE_REQUEST)){
+			stmt.setString(1, obj.getName());
+			stmt.setLong(2, obj.getId());
+			
+			stmt.executeUpdate();
+			return obj;
+		}
 	}
 
 	@Override
 	public void delete(Company obj) throws SQLException {
-		// TODO Auto-generated method stub
-
+		try (PreparedStatement stmt = this.connect.prepareStatement(DELETE_REQUEST)){
+			stmt.setLong(1, obj.getId());
+			stmt.executeUpdate();
+		}
 	}
-
 }
