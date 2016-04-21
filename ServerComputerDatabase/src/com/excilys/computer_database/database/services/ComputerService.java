@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.excilys.computer_database.database.dao.ComputerDAO;
-import com.excilys.computer_database.model.Computer;
+import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
 public class ComputerService {

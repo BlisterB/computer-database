@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computer_database.database.ConnectionDB;
-import com.excilys.computer_database.model.Company;
+import com.excilys.computer_database.entity.Company;
 
 public class CompanyDAO extends DAO<Company> {
 	private static volatile CompanyDAO instance = null;
 
-	private static final String TABLE_NAME = "company";
-	private static final String ID = "company.id", NAME = "company.name";
+	public static final String TABLE_NAME = "company";
+	public static final String ID = "company.id", NAME = "company.name";
 
 	private static final String FIND_REQUEST = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " = ?",
 			FIND_ALL_REQUEST = "SELECT " + ID + "," + NAME + " FROM company",

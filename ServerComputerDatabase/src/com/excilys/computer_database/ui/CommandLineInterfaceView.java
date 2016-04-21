@@ -2,8 +2,8 @@ package com.excilys.computer_database.ui;
 
 import java.util.List;
 
-import com.excilys.computer_database.model.Company;
-import com.excilys.computer_database.model.Computer;
+import com.excilys.computer_database.entity.Company;
+import com.excilys.computer_database.entity.Computer;
 
 public class CommandLineInterfaceView {
 	private CommandLineInterfaceController controller;
@@ -15,7 +15,8 @@ public class CommandLineInterfaceView {
 	public void displayPrompt() {
 		String prompt = "Please select a choice:\n" + "\t1) List all companies\n" + "\t2) List all computers\n"
 				+ "\t3) Show computer details\n" + "\t4) Create a computer\n" + "\t5) Modify a computer\n"
-				+ "\t6) Delete a computer\n";
+				+ "\t6) Delete a computer\n"
+				+ "\t7) List companies (page version)";
 		System.out.println(prompt);
 	}
 	

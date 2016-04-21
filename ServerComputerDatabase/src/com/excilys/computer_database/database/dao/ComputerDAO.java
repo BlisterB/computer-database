@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computer_database.database.ConnectionDB;
-import com.excilys.computer_database.model.Computer;
+import com.excilys.computer_database.entity.Company;
+import com.excilys.computer_database.entity.Computer;
 
 public class ComputerDAO extends DAO<Computer> {
 	private static volatile ComputerDAO instance = null;
@@ -19,8 +20,10 @@ public class ComputerDAO extends DAO<Computer> {
 			COMPANY_ID = TABLE_NAME + ".company_id", INTRODUCED = TABLE_NAME + ".introduced",
 			DISCONTINUED = TABLE_NAME + ".discontinued";
 
-	private static final String FIND_REQUEST = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " = ?",
-			FIND_ALL_REQUEST = "SELECT * FROM " + TABLE_NAME,
+	private static final String FIND_REQUEST = "SELECT * FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME
+			+ " ON " + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + ID + " = ?",
+			FIND_ALL_REQUEST = "SELECT * FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON "
+					+ COMPANY_ID + " = " + CompanyDAO.ID,
 			INSERT_FULL_REQUEST = "INSERT INTO " + TABLE_NAME + " ( " + NAME + "," + INTRODUCED + "," + DISCONTINUED
 					+ "," + COMPANY_ID + " ) VALUES (?,?,?,?) ",
 			INSERT_REQUEST_WITH_NAME = "INSERT INTO " + TABLE_NAME + " ( " + NAME + " ) VALUES (?) ",
@@ -45,7 +48,10 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public Computer unmap(ResultSet rs) throws SQLException {
-		return new Computer(rs.getLong(ID), rs.getString(NAME), rs.getTimestamp(INTRODUCED),
+		// Extract the company
+		return new Computer.ComputerBuilder(rs.getString(NAME))
+		
+		return new Computer(rs.getLong(ID), , rs.getTimestamp(INTRODUCED),
 				rs.getTimestamp(DISCONTINUED), rs.getLong(COMPANY_ID));
 	}
 
@@ -87,13 +93,13 @@ public class ComputerDAO extends DAO<Computer> {
 				stmt.setString(1, comp.getName());
 				stmt.setTimestamp(2, comp.getIntroduced());
 				stmt.setTimestamp(3, comp.getDiscontinued());
-				stmt.setLong(4, comp.getCompany_id());
+				stmt.setLong(4, comp.getCompany().getId());
 				stmt.setLong(5, comp.getId());
 
 				stmt.executeUpdate();
 			}
 		}
-		
+
 		return comp;
 	}
 

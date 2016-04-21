@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
-import com.excilys.computer_database.model.Company;
-import com.excilys.computer_database.model.Computer;
+import com.excilys.computer_database.entity.Company;
+import com.excilys.computer_database.entity.Computer;
 
 /**
  * The Command Line Interface's controller, initialize an instance et use
@@ -54,12 +54,31 @@ public class CommandLineInterfaceController {
 			case 6:
 				deleteComputer();
 				break;
+			case 7:
+				//TODO
+				break;
 			default:
 				break;
 			}
 		}
 	}
 
+	private void listCompaniesByPage(){
+		try {
+			int begining = 0, nbPerPage = 20;
+			boolean continu = true;
+			
+			while(continu) {
+				companiesService.listSomeCompanies(0, 20);
+				
+				String choice = askString().trim();
+				// TODO
+			}
+		} catch (SQLException e) {
+			
+		}
+	}
+	
 	private void listAllCompanies() {
 		try {
 			List<Company> l = companiesService.listAllCompanies();

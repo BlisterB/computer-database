@@ -12,6 +12,8 @@ public class Page<T> {
 		this.last = last;
 	}
 
+	
+	
 	@Override
 	public String toString(){
 		StringBuffer sb = new StringBuffer();
