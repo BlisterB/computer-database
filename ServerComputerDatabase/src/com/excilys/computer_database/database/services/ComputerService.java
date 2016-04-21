@@ -14,18 +14,22 @@ public class ComputerService {
 	public ComputerService() {
 		dao = ComputerDAO.getInstance();
 	}
-
+	
+	public Computer getComputerById(Long id) throws SQLException {
+		return dao.find(id);
+	}
+	
 	public List<Computer> listAllComputers() throws SQLException {
 		return dao.findAll();
 	}
 
-	public Computer getComputerById(Long id) throws SQLException {
-		return dao.find(id);
+	public Computer update(Computer comp) throws SQLException {
+		return dao.update(comp);
 	}
 
 	public Computer createComputer(Computer computer)
 			throws SQLException {
-		// TODO : Vérifier que la date de fin est apres la date de début
+		// TODO : Vérifier que la date de fin est après la date de début
 		return dao.create(computer);
 	}
 
@@ -35,4 +39,11 @@ public class ComputerService {
 		return createComputer(computer);
 	}
 	
+	public void delete(Computer comp) throws SQLException{
+		dao.delete(comp.getId());
+	}
+	
+	public void delete(Long id) throws SQLException{
+		dao.delete(id);
+	}
 }

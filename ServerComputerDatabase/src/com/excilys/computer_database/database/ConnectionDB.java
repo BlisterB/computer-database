@@ -4,10 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.sql.RowSet;
-
-import com.sun.rowset.JdbcRowSetImpl;
-
 public class ConnectionDB {
 	private static final String
 		url = "jdbc:mysql://127.0.0.1:3306/computer-database-db?zeroDateTimeBehavior=convertToNull",

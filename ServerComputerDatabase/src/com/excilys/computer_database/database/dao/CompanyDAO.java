@@ -120,10 +120,10 @@ public class CompanyDAO extends DAO<Company> {
 	}
 
 	@Override
-	public void delete(Company obj) throws SQLException {
+	public void delete(Long id) throws SQLException {
 		try (Connection con = ConnectionDB.getConnection()) {
 			try (PreparedStatement stmt = con.prepareStatement(DELETE_REQUEST)) {
-				stmt.setLong(1, obj.getId());
+				stmt.setLong(1, id);
 				stmt.executeUpdate();
 			}
 		}
