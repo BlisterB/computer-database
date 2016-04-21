@@ -56,41 +56,6 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	@Override
-	public Computer find(long id) throws SQLException {
-		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(FIND_REQUEST)) {
-				stmt.setLong(1, id);
-
-				ResultSet rs = stmt.executeQuery();
-
-				if (rs.first()) {
-					return unmap(rs);
-				}
-
-				return null;
-			}
-		}
-	}
-
-	@Override
-	public List<Computer> findAll() throws SQLException {
-		List<Computer> list = new ArrayList<Computer>();
-
-		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(FIND_ALL_REQUEST)) {
-				ResultSet rs = stmt.executeQuery();
-
-				// Création de la liste
-				while (rs.next()) {
-					list.add(unmap(rs));
-				}
-			}
-		}
-
-		return list;
-	}
-
-	@Override
 	public Computer create(Computer comp) throws SQLException {
 		// Exécution de la requête
 		try (Connection con = ConnectionDB.getConnection()) {
@@ -142,5 +107,15 @@ public class ComputerDAO extends DAO<Computer> {
 				stmt.executeUpdate();
 			}
 		}
+	}
+
+	@Override
+	public String getFindRequest() {
+		return FIND_ALL_REQUEST;
+	}
+
+	@Override
+	public String getFindAllRequest() {
+		return FIND_REQUEST;
 	}
 }

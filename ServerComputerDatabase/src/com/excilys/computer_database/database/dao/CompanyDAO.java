@@ -48,42 +48,7 @@ public class CompanyDAO extends DAO<Company> {
 		// TODO
 		return null;
 	}
-
-	@Override
-	public Company find(long id) throws SQLException {
-		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(FIND_REQUEST)) {
-				stmt.setLong(1, id);
-
-				ResultSet rs = stmt.executeQuery();
-
-				if (rs.first()) {
-					return unmap(rs);
-				}
-
-				return null;
-			}
-		}
-	}
-
-	@Override
-	public List<Company> findAll() throws SQLException {
-		List<Company> list = new ArrayList<Company>();
-
-		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(FIND_ALL_REQUEST)) {
-				ResultSet rs = stmt.executeQuery();
-
-				// Création de la liste
-				while (rs.next()) {
-					list.add(unmap(rs));
-				}
-			}
-		}
-
-		return list;
-	}
-
+	
 	@Override
 	public Company create(Company obj) throws SQLException {
 		// Exécution de la requête
@@ -127,5 +92,15 @@ public class CompanyDAO extends DAO<Company> {
 				stmt.executeUpdate();
 			}
 		}
+	}
+	
+	@Override
+	public String getFindRequest() {
+		return FIND_ALL_REQUEST;
+	}
+
+	@Override
+	public String getFindAllRequest() {
+		return FIND_REQUEST;
 	}
 }

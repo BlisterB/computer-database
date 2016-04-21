@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.model.Computer;
+import com.excilys.computer_database.ui.Page;
 
 public class ComputerService {
 	private ComputerDAO dao;
@@ -19,6 +20,14 @@ public class ComputerService {
 		return dao.find(id);
 	}
 	
+	public Page<Computer> listSomeComputers(int begining, int nbPerPage) throws SQLException{
+		boolean first = (begining == 0);
+		List<Computer> list = dao.findSome(begining, nbPerPage);
+		boolean last = list.size() <= nbPerPage;
+		
+		return new Page<Computer>(list, first, last);
+	}
+	
 	public List<Computer> listAllComputers() throws SQLException {
 		return dao.findAll();
 	}
@@ -29,7 +38,11 @@ public class ComputerService {
 
 	public Computer createComputer(Computer computer)
 			throws SQLException {
-		// TODO : Vérifier que la date de fin est après la date de début
+		// Introduced date greater than discontinued date?
+		if(computer.getIntroduced().after(computer.getDiscontinued())){
+			throw new SQLException("The introduced date is greater than the discontinued date");
+		}
+		
 		return dao.create(computer);
 	}
 

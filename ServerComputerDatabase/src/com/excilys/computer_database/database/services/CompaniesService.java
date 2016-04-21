@@ -6,6 +6,7 @@ import java.util.List;
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.model.Company;
 import com.excilys.computer_database.model.Computer;
+import com.excilys.computer_database.ui.Page;
 
 public class CompaniesService {
 	private CompanyDAO dao;
@@ -14,6 +15,14 @@ public class CompaniesService {
 		dao = CompanyDAO.getInstance();
 	}
 
+	public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws SQLException{
+		boolean first = (begining == 0);
+		List<Company> list = dao.findSome(begining, nbPerPage);
+		boolean last = list.size() <= nbPerPage;
+		
+		return new Page<Company>(list, first, last);
+	}
+	
 	public List<Company> listAllCompanies() throws SQLException {
 		return dao.findAll();
 	}
