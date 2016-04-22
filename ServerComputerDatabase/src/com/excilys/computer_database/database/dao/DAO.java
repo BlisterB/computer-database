@@ -5,32 +5,41 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.excilys.computer_database.database.ConnectionDB;
+import com.excilys.computer_database.database.mappers.Mapper;
 
-public abstract class DAO<T> {
+public abstract class DAO<T> implements Mapper<T, ResultSet> {
 	public abstract String getFindRequest();
+
 	public abstract String getFindAllRequest();
-	public abstract T create(T obj)		throws SQLException;
-	public abstract T update(T obj)		throws SQLException;
-	public abstract void delete(Long id)	throws SQLException;
-	
-	public abstract T unmap(ResultSet rs)	throws SQLException;
-	public abstract ResultSet map(T obj)	throws SQLException;
-	
-	public List<T> fillList(ResultSet rs) throws SQLException {
-		List<T> list = new ArrayList<>();
-		
-		// Création de la liste
-		while (rs.next()) {
-			list.add(unmap(rs));
+
+	public abstract T create(T obj) throws DAOException;
+
+	public abstract T update(T obj) throws DAOException;
+
+	public abstract void delete(Long id) throws DAOException;
+
+	/** Return the list of <T> associated with the ResultSet rs */
+	public List<T> fillList(ResultSet rs) throws DAOException {
+		try {
+			// We use LinkedList because of the multiple insertions used
+			List<T> list = new LinkedList<>();
+
+			// Création de la liste
+			while (rs.next()) {
+				list.add(unmap(rs));
+			}
+
+			return list;
+		} catch (SQLException e) {
+			throw new DAOException(e);
 		}
-		
-		return list;
 	}
-	
-	public T find(long id) throws SQLException {
+
+	public T find(long id) throws DAOException {
 		try (Connection con = ConnectionDB.getConnection()) {
 			try (PreparedStatement stmt = con.prepareStatement(this.getFindRequest())) {
 				// Fill the id field
@@ -44,13 +53,15 @@ public abstract class DAO<T> {
 				}
 				throw new SQLException("No such element");
 			}
+		} catch (SQLException e) {
+			throw new DAOException(e);
 		}
 	}
-	
-	public List<T> findAll()	throws SQLException{
-		List<T> list = new ArrayList<>();
 
+	public List<T> findAll() throws DAOException {
 		try (Connection con = ConnectionDB.getConnection()) {
+			List<T> list = new ArrayList<>();
+			
 			try (PreparedStatement stmt = con.prepareStatement(this.getFindRequest())) {
 				ResultSet rs = stmt.executeQuery();
 
@@ -59,19 +70,24 @@ public abstract class DAO<T> {
 					list.add(unmap(rs));
 				}
 			}
-		}
 
-		return list;
+			return list;
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
 	}
-	
-	public List<T> findSome(int begining, int nbPerPage) throws SQLException {
+
+	public List<T> findSome(int begining, int nbPerPage) throws DAOException {
 		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(getFindAllRequest() + " LIMIT " + nbPerPage + " OFFSET " + begining)) {
+			try (PreparedStatement stmt = con
+					.prepareStatement(getFindAllRequest() + " LIMIT " + nbPerPage + " OFFSET " + begining)) {
 				ResultSet rs = stmt.executeQuery();
 
 				// Create, fill, and return a list
 				return fillList(rs);
 			}
+		}catch(SQLException e){
+			throw new DAOException(e);
 		}
 	}
 }

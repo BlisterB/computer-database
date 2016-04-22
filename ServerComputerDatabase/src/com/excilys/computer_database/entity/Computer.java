@@ -1,6 +1,9 @@
 package com.excilys.computer_database.entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import com.excilys.computer_database.database.dao.DAOException;
 
 public class Computer {
 	private Long id;
@@ -18,11 +21,17 @@ public class Computer {
 		public ComputerBuilder(String name){
 			this.name = name;
 		}
-		public Computer build(){
+		public Computer build() throws DAOException{
+			if (introduced != null && discontinued != null){
+				if (introduced.isAfter(discontinued)){
+					throw new DAOException("Introduced date cannot be greater than Discontinued date");
+				}
+			}
+			
 			return new Computer(this);
 		}
 		
-		public ComputerBuilder id(Long id){
+		public ComputerBuilder id(long id){
 			this.id = id;
 			return this;
 		}
@@ -34,8 +43,16 @@ public class Computer {
 			this.introduced = introduced;
 			return this;
 		}
+		public ComputerBuilder introduced(Timestamp introduced){
+			this.introduced = introduced.toLocalDateTime();
+			return this;
+		}
 		public ComputerBuilder discontinued(LocalDateTime discontinued){
 			this.discontinued = discontinued;
+			return this;
+		}
+		public ComputerBuilder discontinued(Timestamp discontinued){
+			this.discontinued = discontinued.toLocalDateTime();
 			return this;
 		}
 		public ComputerBuilder company(Company company){

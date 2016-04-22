@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.excilys.computer_database.database.ConnectionDB;
 import com.excilys.computer_database.entity.Company;
@@ -27,7 +25,27 @@ public class CompanyDAO extends DAO<Company> {
 		super();
 	}
 
+	@Override
+	public String getFindRequest() {
+		return FIND_ALL_REQUEST;
+	}
+
+	@Override
+	public String getFindAllRequest() {
+		return FIND_REQUEST;
+	}
+
+	public Company unmap(ResultSet rs) throws DAOException {
+		try {
+			return new Company(rs.getLong(ID), rs.getString(NAME));
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+	}
+
+	/** Return the unique instance of CompanyDAO (singleton pattern) */
 	public final static CompanyDAO getInstance() {
+		// TODO : implements a Backoff-lock ? (for the moment : Test&Test&Set)
 		if (CompanyDAO.instance == null) {
 			synchronized (CompanyDAO.class) {
 				if (CompanyDAO.instance == null) {
@@ -39,18 +57,7 @@ public class CompanyDAO extends DAO<Company> {
 	}
 
 	@Override
-	public Company unmap(ResultSet rs) throws SQLException {
-		return new Company(rs.getLong(ID), rs.getString(NAME));
-	}
-
-	@Override
-	public ResultSet map(Company obj) throws SQLException {
-		// TODO
-		return null;
-	}
-	
-	@Override
-	public Company create(Company obj) throws SQLException {
+	public Company create(Company obj) throws DAOException {
 		// Exécution de la requête
 		try (Connection con = ConnectionDB.getConnection()) {
 			try (PreparedStatement stmt = con.prepareStatement(INSERT_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
@@ -68,11 +75,13 @@ public class CompanyDAO extends DAO<Company> {
 
 				return obj;
 			}
+		}catch(SQLException e){
+			throw new DAOException(e);
 		}
 	}
 
 	@Override
-	public Company update(Company obj) throws SQLException {
+	public Company update(Company obj) throws DAOException {
 		try (Connection con = ConnectionDB.getConnection()) {
 			try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
 				stmt.setString(1, obj.getName());
@@ -81,26 +90,20 @@ public class CompanyDAO extends DAO<Company> {
 				stmt.executeUpdate();
 				return obj;
 			}
+		}catch(SQLException e){
+			throw new DAOException(e);
 		}
 	}
 
 	@Override
-	public void delete(Long id) throws SQLException {
+	public void delete(Long id) throws DAOException {
 		try (Connection con = ConnectionDB.getConnection()) {
 			try (PreparedStatement stmt = con.prepareStatement(DELETE_REQUEST)) {
 				stmt.setLong(1, id);
 				stmt.executeUpdate();
 			}
+		}catch(SQLException e){
+			throw new DAOException(e);
 		}
-	}
-	
-	@Override
-	public String getFindRequest() {
-		return FIND_ALL_REQUEST;
-	}
-
-	@Override
-	public String getFindAllRequest() {
-		return FIND_REQUEST;
 	}
 }

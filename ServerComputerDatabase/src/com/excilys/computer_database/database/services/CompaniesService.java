@@ -1,9 +1,9 @@
 package com.excilys.computer_database.database.services;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
+import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
@@ -15,7 +15,7 @@ public class CompaniesService {
 		dao = CompanyDAO.getInstance();
 	}
 
-	public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws SQLException{
+	public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException{
 		boolean first = (begining == 0);
 		List<Company> list = dao.findSome(begining, nbPerPage);
 		boolean last = list.size() <= nbPerPage;
@@ -23,15 +23,15 @@ public class CompaniesService {
 		return new Page<Company>(list, first, last);
 	}
 	
-	public List<Company> listAllCompanies() throws SQLException {
+	public List<Company> listAllCompanies() throws DAOException {
 		return dao.findAll();
 	}
 
-	public void delete(Computer comp) throws SQLException {
+	public void delete(Computer comp) throws DAOException {
 		dao.delete(comp.getId());
 	}
 	
-	public void delete(Long id) throws SQLException {
+	public void delete(Long id) throws DAOException {
 		dao.delete(id);
 	}
 }

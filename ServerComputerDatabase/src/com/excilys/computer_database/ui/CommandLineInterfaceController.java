@@ -1,14 +1,16 @@
 package com.excilys.computer_database.ui;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import com.excilys.computer_database.database.dao.CompanyDAO;
+import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Company;
@@ -55,7 +57,7 @@ public class CommandLineInterfaceController {
 				deleteComputer();
 				break;
 			case 7:
-				//TODO
+				// TODO
 				break;
 			default:
 				break;
@@ -63,27 +65,27 @@ public class CommandLineInterfaceController {
 		}
 	}
 
-	private void listCompaniesByPage(){
+	private void listCompaniesByPage() {
 		try {
 			int begining = 0, nbPerPage = 20;
 			boolean continu = true;
-			
-			while(continu) {
+
+			while (continu) {
 				companiesService.listSomeCompanies(0, 20);
-				
+
 				String choice = askString().trim();
 				// TODO
 			}
-		} catch (SQLException e) {
-			
+		} catch (DAOException e) {
+
 		}
 	}
-	
+
 	private void listAllCompanies() {
 		try {
 			List<Company> l = companiesService.listAllCompanies();
 			view.displayCompanies(l);
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -92,7 +94,7 @@ public class CommandLineInterfaceController {
 		try {
 			List<Computer> l = computerServ.listAllComputers();
 			view.displayComputers(l);
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -104,26 +106,26 @@ public class CommandLineInterfaceController {
 		try {
 			Computer computer = computerServ.getComputerById(id);
 			view.showComputerDetail(computer);
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void createAComputer() {
-		Computer computer = askComputerInformation();
-		
 		try {
+			Computer computer = askComputerInformation();
+
 			Computer comp = computerServ.createComputer(computer);
-			
+
 			// Show the computer information (to show the new id)
 			System.out.println("Computer : ");
 			view.showComputerDetail(comp);
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void updateComputer() {
 		System.out.println("Quel computer updater ?");
 		Long id = askLong();
@@ -135,15 +137,15 @@ public class CommandLineInterfaceController {
 			Computer newComp = askComputerInformation();
 			newComp.setId(comp.getId());
 			computerServ.update(newComp);
-			
+
 			System.out.println("Computer mis à jour : ");
 			view.showComputerDetail(comp);
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Computer askComputerInformation() {
+	public Computer askComputerInformation() throws DAOException {
 		// Name
 		System.out.println("Nom :");
 		String name = askString();
@@ -155,11 +157,11 @@ public class CommandLineInterfaceController {
 		System.out.println("Date introduced (yyyy MM dd) :");
 		String stringIntroduced = askString();
 
-		Timestamp introduced = null;
+		LocalDateTime introduced = null;
 		if (!stringIntroduced.isEmpty()) {
 			try {
 				Date dateIntroduced = formatter.parse(stringIntroduced);
-				introduced = new Timestamp(dateIntroduced.getTime());
+				introduced = LocalDateTime.ofInstant(dateIntroduced.toInstant(), ZoneId.systemDefault());
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -169,11 +171,11 @@ public class CommandLineInterfaceController {
 		System.out.println("Date discontinued (yyyy MM dd) :");
 		String stringDiscontinued = askString();
 
-		Timestamp discontinued = null;
+		LocalDateTime discontinued = null;
 		if (!stringDiscontinued.isEmpty()) {
 			try {
 				Date dateDiscontinued = formatter.parse(stringDiscontinued);
-				discontinued = new Timestamp(dateDiscontinued.getTime());
+				discontinued = LocalDateTime.ofInstant(dateDiscontinued.toInstant(), ZoneId.systemDefault());
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -184,7 +186,9 @@ public class CommandLineInterfaceController {
 		Long company_id = askLong();
 
 		// Création de l'objet correspondant
-		return new Computer(name, introduced, discontinued, company_id);
+		Company company = CompanyDAO.getInstance().find(company_id);
+		return new Computer.ComputerBuilder(name).introduced(introduced).discontinued(discontinued).company(company)
+				.build();
 	}
 
 	public void deleteComputer() {
@@ -193,7 +197,7 @@ public class CommandLineInterfaceController {
 
 		try {
 			computerServ.delete(id);
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			e.printStackTrace();
 		}
 	}

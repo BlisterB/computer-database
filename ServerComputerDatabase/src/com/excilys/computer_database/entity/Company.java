@@ -6,7 +6,7 @@ public class Company {
 	
 	public Company(){
 	}
-	public Company(Long id, String name){
+	public Company(long id, String name){
 		this.name = name;
 		this.id = id;
 	}
