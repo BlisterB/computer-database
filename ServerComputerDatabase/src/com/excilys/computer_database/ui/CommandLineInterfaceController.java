@@ -57,7 +57,7 @@ public class CommandLineInterfaceController {
 				deleteComputer();
 				break;
 			case 7:
-				// TODO
+				listCompaniesByPage();
 				break;
 			default:
 				break;
@@ -71,13 +71,26 @@ public class CommandLineInterfaceController {
 			boolean continu = true;
 
 			while (continu) {
-				companiesService.listSomeCompanies(0, 20);
+				System.out.println("Début continu");
+				Page<Company> page = companiesService.listSomeCompanies(begining, 20);
+				System.out.println("test");
+				System.out.println(page.toString());
+				view.showPage(page);
+				System.out.println("Page affichée");
 
 				String choice = askString().trim();
-				// TODO
+				if(choice.equals("n")){
+					begining += nbPerPage;
+				}
+				else if(choice.equals("p")){
+					begining -= nbPerPage;
+				}
+				else{
+					continu = false;
+				}
 			}
 		} catch (DAOException e) {
-
+			e.printStackTrace();
 		}
 	}
 

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import com.excilys.computer_database.database.dao.DAOException;
 
-public class Computer {
+public class Computer extends Entity {
 	private Long id;
 	private String name;
 	private LocalDateTime introduced, discontinued;
@@ -17,50 +17,58 @@ public class Computer {
 		private String name;
 		private LocalDateTime introduced, discontinued;
 		private Company company;
-		
-		public ComputerBuilder(String name){
+
+		public ComputerBuilder(String name) {
 			this.name = name;
 		}
-		public Computer build() throws DAOException{
-			if (introduced != null && discontinued != null){
-				if (introduced.isAfter(discontinued)){
+
+		public Computer build() throws DAOException {
+			// TODO : Put the verification in the service?
+			if (introduced != null && discontinued != null) {
+				if (introduced.isAfter(discontinued)) {
 					throw new DAOException("Introduced date cannot be greater than Discontinued date");
 				}
 			}
-			
+
 			return new Computer(this);
 		}
-		
-		public ComputerBuilder id(long id){
+
+		public ComputerBuilder id(long id) {
 			this.id = id;
 			return this;
 		}
-		public ComputerBuilder name(String name){
+
+		public ComputerBuilder name(String name) {
 			this.name = name;
 			return this;
 		}
-		public ComputerBuilder introduced(LocalDateTime introduced){
+
+		public ComputerBuilder introduced(LocalDateTime introduced) {
 			this.introduced = introduced;
 			return this;
 		}
-		public ComputerBuilder introduced(Timestamp introduced){
+
+		public ComputerBuilder introduced(Timestamp introduced) {
 			this.introduced = introduced.toLocalDateTime();
 			return this;
 		}
-		public ComputerBuilder discontinued(LocalDateTime discontinued){
+
+		public ComputerBuilder discontinued(LocalDateTime discontinued) {
 			this.discontinued = discontinued;
 			return this;
 		}
-		public ComputerBuilder discontinued(Timestamp discontinued){
+
+		public ComputerBuilder discontinued(Timestamp discontinued) {
 			this.discontinued = discontinued.toLocalDateTime();
 			return this;
 		}
-		public ComputerBuilder company(Company company){
+
+		public ComputerBuilder company(Company company) {
 			this.company = company;
 			return this;
 		}
 	}
-	
+
 	private Computer(ComputerBuilder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
@@ -73,7 +81,7 @@ public class Computer {
 		return this.getId() + "\t" + this.getName() + "\t" + this.getIntroduced() + "\t" + this.getDiscontinued() + "\t"
 				+ this.getCompany();
 	}
-	
+
 	public Long getId() {
 		return id;
 	}

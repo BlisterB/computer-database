@@ -4,36 +4,36 @@ import java.util.List;
 
 public class Page<T> {
 	public List<T> list;
-	public boolean first, last;
-	
-	public Page(List<T> list, boolean first, boolean last) {
-		this.list = list;
-		this.first = first;
-		this.last = last;
-	}
+	int pageNumber, nbPerPage;
 
-	
+	public Page(List<T> list, int pageNumber, int nbPerPage) {
+		this.list = list;
+		this.pageNumber = pageNumber;
+		this.nbPerPage = nbPerPage;
+	}
 	
 	@Override
-	public String toString(){
+	public String toString() {
+		System.out.println("acaoiucaoiza");
 		StringBuffer sb = new StringBuffer();
-		
+		sb.append("coucou je suis toString");
+
 		// The list
-		for(Object o : list){
+		for (Object o : list) {
 			sb.append(o);
 		}
-		
+
 		// The previous
-		if(!first)
+		if (pageNumber > 0)
 			sb.append("\tp : Previous\t)");
-		
+
 		// The next
-		if(!last)
+		if (list.size() < nbPerPage)
 			sb.append("\tn : Next");
-		
+
 		// Enter to fish
 		sb.append("\tEnter : Validate");
-	
-		return sb.toString();
+
+		return sb.length() + "10";
 	}
 }

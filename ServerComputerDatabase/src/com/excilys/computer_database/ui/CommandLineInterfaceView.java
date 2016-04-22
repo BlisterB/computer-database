@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
+import com.excilys.computer_database.entity.Entity;
 
 public class CommandLineInterfaceView {
 	private CommandLineInterfaceController controller;
@@ -38,5 +39,10 @@ public class CommandLineInterfaceView {
 	
 	public void showComputerDetail(Computer comp){
 		System.out.println(comp);
+	}
+	
+	public void showPage(Page<?> page){
+		System.out.println("Coucou");
+		System.out.println(page.toString());
 	}
 }

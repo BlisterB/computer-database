@@ -1,16 +1,18 @@
 package com.excilys.computer_database.entity;
 
-public class Company {
+public class Company extends Entity {
 	private String name;
 	private Long id;
-	
-	public Company(){
+
+	public Company() {
 	}
-	public Company(long id, String name){
+
+	public Company(long id, String name) {
 		this.name = name;
 		this.id = id;
 	}
-	public Company(String name){
+
+	public Company(String name) {
 		this.name = name;
 	}
 
@@ -29,11 +31,11 @@ public class Company {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return this.getId() + "\t" + this.getName();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -42,7 +44,7 @@ public class Company {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

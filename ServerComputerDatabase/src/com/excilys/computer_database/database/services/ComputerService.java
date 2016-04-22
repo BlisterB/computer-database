@@ -19,11 +19,10 @@ public class ComputerService {
 	}
 
 	public Page<Computer> listSomeComputers(int begining, int nbPerPage) throws DAOException {
-		boolean first = (begining == 0);
+		int pageNumber = begining/nbPerPage;
 		List<Computer> list = dao.findSome(begining, nbPerPage);
-		boolean last = list.size() <= nbPerPage;
-
-		return new Page<Computer>(list, first, last);
+		
+		return new Page<Computer>(list, pageNumber, nbPerPage);
 	}
 
 	public List<Computer> listAllComputers() throws DAOException {

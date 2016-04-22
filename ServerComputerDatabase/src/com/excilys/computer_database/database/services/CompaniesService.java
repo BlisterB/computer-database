@@ -16,11 +16,10 @@ public class CompaniesService {
 	}
 
 	public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException{
-		boolean first = (begining == 0);
+		int pageNumber = begining/nbPerPage + 1;
 		List<Company> list = dao.findSome(begining, nbPerPage);
-		boolean last = list.size() <= nbPerPage;
 		
-		return new Page<Company>(list, first, last);
+		return new Page<Company>(list, pageNumber, nbPerPage);
 	}
 	
 	public List<Company> listAllCompanies() throws DAOException {
