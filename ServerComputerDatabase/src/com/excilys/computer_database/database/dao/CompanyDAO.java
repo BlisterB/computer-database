@@ -27,12 +27,12 @@ public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public String getFindRequest() {
-		return FIND_ALL_REQUEST;
+		return FIND_REQUEST;
 	}
 
 	@Override
 	public String getFindAllRequest() {
-		return FIND_REQUEST;
+		return FIND_ALL_REQUEST;
 	}
 
 	public Company unmap(ResultSet rs) throws DAOException {

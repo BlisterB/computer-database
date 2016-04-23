@@ -62,7 +62,7 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
 		try (Connection con = ConnectionDB.getConnection()) {
 			List<T> list = new ArrayList<>();
 			
-			try (PreparedStatement stmt = con.prepareStatement(this.getFindRequest())) {
+			try (PreparedStatement stmt = con.prepareStatement(this.getFindAllRequest())) {
 				ResultSet rs = stmt.executeQuery();
 
 				// Création de la liste
@@ -81,6 +81,7 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
 		try (Connection con = ConnectionDB.getConnection()) {
 			try (PreparedStatement stmt = con
 					.prepareStatement(getFindAllRequest() + " LIMIT " + nbPerPage + " OFFSET " + begining)) {
+				System.out.println(stmt.toString());
 				ResultSet rs = stmt.executeQuery();
 
 				// Create, fill, and return a list

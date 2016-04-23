@@ -37,12 +37,12 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
 	@Override
 	public String getFindRequest() {
-		return FIND_ALL_REQUEST;
+		return FIND_REQUEST;
 	}
 
 	@Override
 	public String getFindAllRequest() {
-		return FIND_REQUEST;
+		return FIND_ALL_REQUEST;
 	}
 
 	@Override

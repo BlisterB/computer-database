@@ -44,12 +44,16 @@ public class Computer extends Entity {
 		}
 
 		public ComputerBuilder introduced(LocalDateTime introduced) {
-			this.introduced = introduced;
+			if (introduced != null) {
+				this.introduced = introduced;
+			}
 			return this;
 		}
 
 		public ComputerBuilder introduced(Timestamp introduced) {
-			this.introduced = introduced.toLocalDateTime();
+			if (introduced != null) {
+				this.introduced = introduced.toLocalDateTime();
+			}
 			return this;
 		}
 
@@ -59,7 +63,9 @@ public class Computer extends Entity {
 		}
 
 		public ComputerBuilder discontinued(Timestamp discontinued) {
-			this.discontinued = discontinued.toLocalDateTime();
+			if (discontinued != null) {
+				this.discontinued = discontinued.toLocalDateTime();
+			}
 			return this;
 		}
 

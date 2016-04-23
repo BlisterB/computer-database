@@ -59,24 +59,50 @@ public class CommandLineInterfaceController {
 			case 7:
 				listCompaniesByPage();
 				break;
+			case 8:
+				listComputerByPage();
+				break;
 			default:
 				break;
 			}
 		}
 	}
-
+	
 	private void listCompaniesByPage() {
 		try {
 			int begining = 0, nbPerPage = 20;
 			boolean continu = true;
 
 			while (continu) {
-				System.out.println("Début continu");
-				Page<Company> page = companiesService.listSomeCompanies(begining, 20);
-				System.out.println("test");
-				System.out.println(page.toString());
+				Page<Company> page = companiesService.listSomeCompanies(begining, nbPerPage);
+				
 				view.showPage(page);
-				System.out.println("Page affichée");
+
+				String choice = askString().trim();
+				if(choice.equals("n")){
+					begining += nbPerPage;
+				}
+				else if(choice.equals("p")){
+					begining -= nbPerPage;
+				}
+				else{
+					continu = false;
+				}
+			}
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void listComputerByPage() {
+		try {
+			int begining = 0, nbPerPage = 20;
+			boolean continu = true;
+
+			while (continu) {
+				Page<Computer> page = computerServ.listSomeComputers(begining, nbPerPage);
+				
+				view.showPage(page);
 
 				String choice = askString().trim();
 				if(choice.equals("n")){
@@ -145,14 +171,14 @@ public class CommandLineInterfaceController {
 
 		try {
 			Computer comp = computerServ.getComputerById(id);
-			System.out.println("Computer à mettre à jour : " + comp);
+			System.out.println("Computer à mettre à jour :\n" + comp);
 
 			Computer newComp = askComputerInformation();
 			newComp.setId(comp.getId());
 			computerServ.update(newComp);
 
 			System.out.println("Computer mis à jour : ");
-			view.showComputerDetail(comp);
+			view.showComputerDetail(newComp);
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}

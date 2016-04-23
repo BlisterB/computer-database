@@ -14,26 +14,28 @@ public class Page<T> {
 	
 	@Override
 	public String toString() {
-		System.out.println("acaoiucaoiza");
 		StringBuffer sb = new StringBuffer();
-		sb.append("coucou je suis toString");
+		
+		sb.append("Page ").append(pageNumber).append(" :\n");
 
 		// The list
 		for (Object o : list) {
-			sb.append(o);
+			sb.append("\t").append(o.toString()).append("\n");
 		}
 
+		//
+		sb.append("\n");
 		// The previous
 		if (pageNumber > 0)
-			sb.append("\tp : Previous\t)");
+			sb.append("\tp : Previous\t");
 
 		// The next
-		if (list.size() < nbPerPage)
+		if (list.size() >= nbPerPage)
 			sb.append("\tn : Next");
 
 		// Enter to fish
 		sb.append("\tEnter : Validate");
 
-		return sb.length() + "10";
+		return sb.toString();
 	}
 }
