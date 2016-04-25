@@ -21,246 +21,242 @@ import com.excilys.computer_database.entity.Computer;
  * start() to launch the Command Line Interface
  */
 public class CommandLineInterfaceController {
-	private CommandLineInterfaceView view;
-	private Scanner sc = new Scanner(System.in);
-	private ComputerService computerServ = new ComputerService();
-	private CompaniesService companiesService = new CompaniesService();
+    private CommandLineInterfaceView view;
+    private Scanner sc = new Scanner(System.in);
+    private ComputerService computerServ = new ComputerService();
+    private CompaniesService companiesService = new CompaniesService();
 
-	public CommandLineInterfaceController() {
-		this.view = new CommandLineInterfaceView(this);
-	}
+    public CommandLineInterfaceController() {
+        this.view = new CommandLineInterfaceView(this);
+    }
 
-	/** Start the Command Line Interface */
-	public void start() {
-		while (true) {
-			// Display the prompt
-			view.displayPrompt();
+    /** Start the Command Line Interface */
+    public void start() {
+        while (true) {
+            // Display the prompt
+            view.displayPrompt();
 
-			// Ask the command to execute
-			switch (askInt()) {
-			case 1:
-				listAllCompanies();
-				break;
-			case 2:
-				listAllComputers();
-				break;
-			case 3:
-				showComputerDetail();
-				break;
-			case 4:
-				createAComputer();
-				break;
-			case 5:
-				updateComputer();
-				break;
-			case 6:
-				deleteComputer();
-				break;
-			case 7:
-				listCompaniesByPage();
-				break;
-			case 8:
-				listComputerByPage();
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	
-	private void listCompaniesByPage() {
-		try {
-			int begining = 0, nbPerPage = 20;
-			boolean continu = true;
+            // Ask the command to execute
+            switch (askInt()) {
+            case 1:
+                listAllCompanies();
+                break;
+            case 2:
+                listAllComputers();
+                break;
+            case 3:
+                showComputerDetail();
+                break;
+            case 4:
+                createAComputer();
+                break;
+            case 5:
+                updateComputer();
+                break;
+            case 6:
+                deleteComputer();
+                break;
+            case 7:
+                listCompaniesByPage();
+                break;
+            case 8:
+                listComputerByPage();
+                break;
+            default:
+                break;
+            }
+        }
+    }
 
-			while (continu) {
-				Page<Company> page = companiesService.listSomeCompanies(begining, nbPerPage);
-				
-				view.showPage(page);
+    private void listCompaniesByPage() {
+        try {
+            int begining = 0, nbPerPage = 20;
+            boolean continu = true;
 
-				String choice = askString().trim();
-				if(choice.equals("n")){
-					begining += nbPerPage;
-				}
-				else if(choice.equals("p")){
-					begining -= nbPerPage;
-				}
-				else{
-					continu = false;
-				}
-			}
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void listComputerByPage() {
-		try {
-			int begining = 0, nbPerPage = 20;
-			boolean continu = true;
+            while (continu) {
+                Page<Company> page = companiesService.listSomeCompanies(begining, nbPerPage);
 
-			while (continu) {
-				Page<Computer> page = computerServ.listSomeComputers(begining, nbPerPage);
-				
-				view.showPage(page);
+                view.showPage(page);
 
-				String choice = askString().trim();
-				if(choice.equals("n")){
-					begining += nbPerPage;
-				}
-				else if(choice.equals("p")){
-					begining -= nbPerPage;
-				}
-				else{
-					continu = false;
-				}
-			}
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
+                String choice = askString().trim();
+                if (choice.equals("n")) {
+                    begining += nbPerPage;
+                } else if (choice.equals("p")) {
+                    begining -= nbPerPage;
+                } else {
+                    continu = false;
+                }
+            }
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void listAllCompanies() {
-		try {
-			List<Company> l = companiesService.listAllCompanies();
-			view.displayCompanies(l);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
+    private void listComputerByPage() {
+        try {
+            int begining = 0, nbPerPage = 20;
+            boolean continu = true;
 
-	private void listAllComputers() {
-		try {
-			List<Computer> l = computerServ.listAllComputers();
-			view.displayComputers(l);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
+            while (continu) {
+                Page<Computer> page = computerServ.listSomeComputers(begining, nbPerPage);
 
-	public void showComputerDetail() {
-		System.out.println("Entrez un id : ");
-		long id = askLong();
+                view.showPage(page);
 
-		try {
-			Computer computer = computerServ.getComputerById(id);
-			view.showComputerDetail(computer);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
+                String choice = askString().trim();
+                if (choice.equals("n")) {
+                    begining += nbPerPage;
+                } else if (choice.equals("p")) {
+                    begining -= nbPerPage;
+                } else {
+                    continu = false;
+                }
+            }
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void createAComputer() {
-		try {
-			Computer computer = askComputerInformation();
+    private void listAllCompanies() {
+        try {
+            List<Company> l = companiesService.listAllCompanies();
+            view.displayCompanies(l);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-			Computer comp = computerServ.createComputer(computer);
+    private void listAllComputers() {
+        try {
+            List<Computer> l = computerServ.listAllComputers();
+            view.displayComputers(l);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-			// Show the computer information (to show the new id)
-			System.out.println("Computer : ");
-			view.showComputerDetail(comp);
-		} catch (DAOException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-		}
-	}
+    public void showComputerDetail() {
+        System.out.println("Entrez un id : ");
+        long id = askLong();
 
-	public void updateComputer() {
-		System.out.println("Quel computer updater ?");
-		Long id = askLong();
+        try {
+            Computer computer = computerServ.getComputerById(id);
+            view.showComputerDetail(computer);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		try {
-			Computer comp = computerServ.getComputerById(id);
-			System.out.println("Computer à mettre à jour :\n" + comp);
+    public void createAComputer() {
+        try {
+            Computer computer = askComputerInformation();
 
-			Computer newComp = askComputerInformation();
-			newComp.setId(comp.getId());
-			computerServ.update(newComp);
+            Computer comp = computerServ.createComputer(computer);
 
-			System.out.println("Computer mis à jour : ");
-			view.showComputerDetail(newComp);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
+            // Show the computer information (to show the new id)
+            System.out.println("Computer : ");
+            view.showComputerDetail(comp);
+        } catch (DAOException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
-	public Computer askComputerInformation() throws DAOException {
-		// Name
-		System.out.println("Nom :");
-		String name = askString();
+    public void updateComputer() {
+        System.out.println("Quel computer updater ?");
+        Long id = askLong();
 
-		// Dates
-		DateFormat formatter = new SimpleDateFormat("yyyy MM dd");
+        try {
+            Computer comp = computerServ.getComputerById(id);
+            System.out.println("Computer à mettre à jour :\n" + comp);
 
-		// Introduced
-		System.out.println("Date introduced (yyyy MM dd) :");
-		String stringIntroduced = askString();
+            Computer newComp = askComputerInformation();
+            newComp.setId(comp.getId());
+            computerServ.update(newComp);
 
-		LocalDateTime introduced = null;
-		if (!stringIntroduced.isEmpty()) {
-			try {
-				Date dateIntroduced = formatter.parse(stringIntroduced);
-				introduced = LocalDateTime.ofInstant(dateIntroduced.toInstant(), ZoneId.systemDefault());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
+            System.out.println("Computer mis à jour : ");
+            view.showComputerDetail(newComp);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		// Discontinued
-		System.out.println("Date discontinued (yyyy MM dd) :");
-		String stringDiscontinued = askString();
+    public Computer askComputerInformation() throws DAOException {
+        // Name
+        System.out.println("Nom :");
+        String name = askString();
 
-		LocalDateTime discontinued = null;
-		if (!stringDiscontinued.isEmpty()) {
-			try {
-				Date dateDiscontinued = formatter.parse(stringDiscontinued);
-				discontinued = LocalDateTime.ofInstant(dateDiscontinued.toInstant(), ZoneId.systemDefault());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
+        // Dates
+        DateFormat formatter = new SimpleDateFormat("yyyy MM dd");
 
-		// Company id
-		System.out.println("Company id : ");
-		Long company_id = askLong();
+        // Introduced
+        System.out.println("Date introduced (yyyy MM dd) :");
+        String stringIntroduced = askString();
 
-		// Création de l'objet correspondant
-		Company company = CompanyDAO.getInstance().find(company_id);
-		return new Computer.ComputerBuilder(name).introduced(introduced).discontinued(discontinued).company(company)
-				.build();
-	}
+        LocalDateTime introduced = null;
+        if (!stringIntroduced.isEmpty()) {
+            try {
+                Date dateIntroduced = formatter.parse(stringIntroduced);
+                introduced = LocalDateTime.ofInstant(dateIntroduced.toInstant(), ZoneId.systemDefault());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
-	public void deleteComputer() {
-		System.out.println("Quel computer effacer ?");
-		Long id = askLong();
+        // Discontinued
+        System.out.println("Date discontinued (yyyy MM dd) :");
+        String stringDiscontinued = askString();
 
-		try {
-			computerServ.delete(id);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
-	}
+        LocalDateTime discontinued = null;
+        if (!stringDiscontinued.isEmpty()) {
+            try {
+                Date dateDiscontinued = formatter.parse(stringDiscontinued);
+                discontinued = LocalDateTime.ofInstant(dateDiscontinued.toInstant(), ZoneId.systemDefault());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
-	public int askInt() {
-		int l = sc.nextInt();
-		sc.nextLine();
+        // Company id
+        System.out.println("Company id : ");
+        Long companyId = askLong();
 
-		return l;
-	}
+        // Création de l'objet correspondant
+        Company company = CompanyDAO.getInstance().find(companyId);
+        return new Computer.ComputerBuilder(name).introduced(introduced).discontinued(discontinued).company(company)
+                .build();
+    }
 
-	public Long askLong() {
-		Long l = sc.nextLong();
-		sc.nextLine();
+    public void deleteComputer() {
+        System.out.println("Quel computer effacer ?");
+        Long id = askLong();
 
-		return l;
-	}
+        try {
+            computerServ.delete(id);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public String askString() {
-		return sc.nextLine();
-	}
+    public int askInt() {
+        int l = sc.nextInt();
+        sc.nextLine();
 
-	public static void main(String[] arg) {
-		CommandLineInterfaceController controller = new CommandLineInterfaceController();
-		controller.start();
-	}
+        return l;
+    }
+
+    public Long askLong() {
+        Long l = sc.nextLong();
+        sc.nextLine();
+
+        return l;
+    }
+
+    public String askString() {
+        return sc.nextLine();
+    }
+
+    public static void main(String[] arg) {
+        CommandLineInterfaceController controller = new CommandLineInterfaceController();
+        controller.start();
+    }
 }

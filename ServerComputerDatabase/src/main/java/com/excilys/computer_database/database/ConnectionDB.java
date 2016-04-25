@@ -5,18 +5,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionDB {
-	private static final String
-		url = "jdbc:mysql://127.0.0.1:3306/computer-database-db?zeroDateTimeBehavior=convertToNull",
-		user = "admincdb",
-		passwd = "qwerty1234";
-	
-	public static Connection getConnection(){
-		try {
-			return DriverManager.getConnection(url, user, passwd);
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
+    // TODO : Passer à des fichiers de propreties
+    private static final String
+    URL = "jdbc:mysql://127.0.0.1:3306/computer-database-db?zeroDateTimeBehavior=convertToNull",
+    USER = "admincdb",
+    PASSWORD = "qwerty1234";
+
+    /** Return a Connection to the DB.
+     * @return A Connection to the DB
+     */
+    public static Connection getConnection() {
+        try {
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

@@ -8,40 +8,79 @@ import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
 public class ComputerService {
-	private ComputerDAO dao;
+    private ComputerDAO dao;
 
-	public ComputerService() {
-		dao = ComputerDAO.getInstance();
-	}
+    /** Constructor. */
+    public ComputerService() {
+        dao = ComputerDAO.getInstance();
+    }
 
-	public Computer getComputerById(Long id) throws DAOException {
-		return dao.find(id);
-	}
+    /** Return the computer of id id.
+     * @param id The id
+     * @return The computer with the id field to "id"
+     * @throws DAOException In case of DAO problem
+     */
+    public Computer getComputerById(Long id) throws DAOException {
+        return dao.find(id);
+    }
 
-	public Page<Computer> listSomeComputers(int begining, int nbPerPage) throws DAOException {
-		int pageNumber = begining/nbPerPage;
-		List<Computer> list = dao.findSome(begining, nbPerPage);
-		
-		return new Page<Computer>(list, pageNumber, nbPerPage);
-	}
+    /**
+     * Return a page containing a number of "nbPerPage" Computer from "begining" in the DB.
+     * @param begining Begining in the DB
+     * @param nbPerPage Max number of element
+     * @return A page containing a number of "nbPerPage" Computer from "begining" in the DB
+     * @throws DAOException In case of DAO problem
+     */
+    public Page<Computer> listSomeComputers(int begining, int nbPerPage) throws DAOException {
+        int pageNumber = begining / nbPerPage;
+        List<Computer> list = dao.findSome(begining, nbPerPage);
 
-	public List<Computer> listAllComputers() throws DAOException {
-		return dao.findAll();
-	}
+        return new Page<Computer>(list, pageNumber, nbPerPage);
+    }
 
-	public Computer update(Computer comp) throws DAOException {
-		return dao.update(comp);
-	}
+    /** Return the list of all computers.
+     * @return The list of all computers
+     * @throws DAOException In case of DAO problem
+     */
+    public List<Computer> listAllComputers() throws DAOException {
+        return dao.findAll();
+    }
 
-	public Computer createComputer(Computer computer) throws DAOException {
-		return dao.create(computer);
-	}
+    /**
+     * Update the computer in the DB.
+     * @param comp The computer to update
+     * @return The computer
+     * @throws DAOException In case of DAO problem
+     */
+    public Computer update(Computer comp) throws DAOException {
+        return dao.update(comp);
+    }
 
-	public void delete(Computer comp) throws DAOException {
-		dao.delete(comp.getId());
-	}
+    /**
+     * Create the computer in the DB.
+     * @param computer The computer to put in the DB
+     * @return The computer
+     * @throws DAOException In case of DAO problem
+     */
+    public Computer createComputer(Computer computer) throws DAOException {
+        return dao.create(computer);
+    }
 
-	public void delete(Long id) throws DAOException {
-		dao.delete(id);
-	}
+    /**
+     * Delete the computer from the DB.
+     * @param comp The computer to delete from the DB
+     * @throws DAOException In case of DAO problem
+     */
+    public void delete(Computer comp) throws DAOException {
+        dao.delete(comp.getId());
+    }
+
+    /**
+     * Delete the computer from the DB.
+     * @param id The id of the computer to delete from the DB
+     * @throws DAOException In case of DAO problem
+     */
+    public void delete(Long id) throws DAOException {
+        dao.delete(id);
+    }
 }

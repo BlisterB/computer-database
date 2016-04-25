@@ -6,150 +6,223 @@ import java.time.LocalDateTime;
 import com.excilys.computer_database.database.dao.DAOException;
 
 public class Computer extends Entity {
-	private Long id;
-	private String name;
-	private LocalDateTime introduced, discontinued;
-	private Company company;
+    private Long id;
+    private String name;
+    private LocalDateTime introduced, discontinued;
+    private Company company;
 
-	/** Implementation of the Builder pattern */
-	public static class ComputerBuilder {
-		private Long id;
-		private String name;
-		private LocalDateTime introduced, discontinued;
-		private Company company;
+    /** Implementation of the Builder pattern. */
+    public static class ComputerBuilder {
+        private Long id;
+        private String name;
+        private LocalDateTime introduced, discontinued;
+        private Company company;
 
-		public ComputerBuilder(String name) {
-			this.name = name;
-		}
+        /** Initialise a ComputerBuild to customize and build.
+         *  @param name The computer name
+         */
+        public ComputerBuilder(String name) {
+            this.name = name;
+        }
 
-		public Computer build() throws DAOException {
-			// TODO : Put the verification in the service?
-			if (introduced != null && discontinued != null) {
-				if (introduced.isAfter(discontinued)) {
-					throw new DAOException("Introduced date cannot be greater than Discontinued date");
-				}
-			}
+        /** Build a computer instance.
+         *  @return the built computer
+         *  @throws DAOException */
+        public Computer build() throws DAOException {
+            // TODO : Put the verification in the service?
+            if (introduced != null && discontinued != null) {
+                if (introduced.isAfter(discontinued)) {
+                    throw new DAOException("Introduced date cannot be greater than Discontinued date");
+                }
+            }
 
-			return new Computer(this);
-		}
+            return new Computer(this);
+        }
 
-		public ComputerBuilder id(long id) {
-			this.id = id;
-			return this;
-		}
+        /** Customize the computer id.
+         * @param id The computer's id
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder id(long id) {
+            this.id = id;
+            return this;
+        }
 
-		public ComputerBuilder name(String name) {
-			this.name = name;
-			return this;
-		}
+        /** Customize the computer's name.
+         * @param name The computer's name
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
 
-		public ComputerBuilder introduced(LocalDateTime introduced) {
-			if (introduced != null) {
-				this.introduced = introduced;
-			}
-			return this;
-		}
+        /** Customize the computer's introduced date field.
+         * @param introduced The introduction date
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder introduced(LocalDateTime introduced) {
+            if (introduced != null) {
+                this.introduced = introduced;
+            }
+            return this;
+        }
 
-		public ComputerBuilder introduced(Timestamp introduced) {
-			if (introduced != null) {
-				this.introduced = introduced.toLocalDateTime();
-			}
-			return this;
-		}
+        /** Customize the computer's introduced date field.
+         * @param introduced The introduction date
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder introduced(Timestamp introduced) {
+            if (introduced != null) {
+                this.introduced = introduced.toLocalDateTime();
+            }
+            return this;
+        }
 
-		public ComputerBuilder discontinued(LocalDateTime discontinued) {
-			this.discontinued = discontinued;
-			return this;
-		}
+        /** Customize the computer's discontinued date field.
+         * @param discontinued The discontinued date
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder discontinued(LocalDateTime discontinued) {
+            this.discontinued = discontinued;
+            return this;
+        }
 
-		public ComputerBuilder discontinued(Timestamp discontinued) {
-			if (discontinued != null) {
-				this.discontinued = discontinued.toLocalDateTime();
-			}
-			return this;
-		}
+        /** Customize the computer's discontinued date field.
+         * @param discontinued The discontinued date
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder discontinued(Timestamp discontinued) {
+            if (discontinued != null) {
+                this.discontinued = discontinued.toLocalDateTime();
+            }
+            return this;
+        }
 
-		public ComputerBuilder company(Company company) {
-			this.company = company;
-			return this;
-		}
-	}
+        /** Customize the company field.
+         * @param company The company
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder company(Company company) {
+            this.company = company;
+            return this;
+        }
+    }
 
-	private Computer(ComputerBuilder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
-		this.introduced = builder.introduced;
-		this.discontinued = builder.discontinued;
-		this.company = builder.company;
-	}
+    /** Constructor
+     * @param builder The builder
+     */
+    private Computer(ComputerBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.introduced = builder.introduced;
+        this.discontinued = builder.discontinued;
+        this.company = builder.company;
+    }
 
-	public String toString() {
-		return this.getId() + "\t" + this.getName() + "\t" + this.getIntroduced() + "\t" + this.getDiscontinued() + "\t"
-				+ this.getCompany();
-	}
+    @Override
+    public String toString() {
+        return this.getId() + "\t" + this.getName() + "\t" + this.getIntroduced() + "\t" + this.getDiscontinued() + "\t"
+                + this.getCompany();
+    }
 
-	public Long getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public LocalDateTime getIntroduced() {
-		return introduced;
-	}
+    /**
+     * @return the introduced
+     */
+    public LocalDateTime getIntroduced() {
+        return introduced;
+    }
 
-	public void setIntroduced(LocalDateTime introduced) {
-		this.introduced = introduced;
-	}
+    /**
+     * @param introduced the introduced to set
+     */
+    public void setIntroduced(LocalDateTime introduced) {
+        this.introduced = introduced;
+    }
 
-	public LocalDateTime getDiscontinued() {
-		return discontinued;
-	}
+    /**
+     * @return the discontinued
+     */
+    public LocalDateTime getDiscontinued() {
+        return discontinued;
+    }
 
-	public void setDiscontinued(LocalDateTime discontinued) {
-		this.discontinued = discontinued;
-	}
+    /**
+     * @param discontinued the discontinued to set
+     */
+    public void setDiscontinued(LocalDateTime discontinued) {
+        this.discontinued = discontinued;
+    }
 
-	public Company getCompany() {
-		return company;
-	}
+    /**
+     * @return the company
+     */
+    public Company getCompany() {
+        return company;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
+    /**
+     * @param company the company to set
+     */
+    public void setCompany(Company company) {
+        this.company = company;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Computer other = (Computer) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Computer other = (Computer) obj;
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
 }
