@@ -17,8 +17,8 @@ public class CommandLineInterfaceView {
 		String prompt = "Please select a choice:\n" + "\t1) List all companies\n" + "\t2) List all computers\n"
 				+ "\t3) Show computer details\n" + "\t4) Create a computer\n" + "\t5) Modify a computer\n"
 				+ "\t6) Delete a computer\n"
-				+ "\t7) List companies (page version)"
-				+ "\t8) List computers (page version)";
+				+ "\t7) List companies (page version)\n"
+				+ "\t8) List computers (page version)\n";
 		System.out.println(prompt);
 	}
 	

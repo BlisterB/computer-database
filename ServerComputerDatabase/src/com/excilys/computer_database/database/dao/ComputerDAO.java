@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computer_database.database.ConnectionDB;
 import com.excilys.computer_database.database.mappers.Mapper;
 import com.excilys.computer_database.entity.Company;
@@ -31,8 +34,11 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 					+ " = ? , " + COMPANY_ID + " = ? WHERE " + ID + " = ?",
 			DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
+	private Logger logger;
+	
 	private ComputerDAO() {
 		super();
+		logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 	@Override
@@ -56,6 +62,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 					.introduced(rs.getTimestamp(INTRODUCED)).discontinued(rs.getTimestamp(DISCONTINUED))
 					.company(company).build();
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
@@ -89,12 +96,15 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 				if (rs.first()) {
 					comp.setId(rs.getLong(1));
 				} else {
-					throw new SQLException("L'insertion n'a pas aboutie");
+					String error_message = "L'insertion n'a pas aboutie";
+					logger.error(error_message);
+					throw new SQLException(error_message);
 				}
 
 				return comp;
 			}
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
@@ -114,6 +124,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 				return comp;
 			}
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
@@ -128,6 +139,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 				stmt.executeUpdate();
 			}
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}

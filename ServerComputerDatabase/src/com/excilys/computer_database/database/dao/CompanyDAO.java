@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computer_database.database.ConnectionDB;
 import com.excilys.computer_database.entity.Company;
 
@@ -20,11 +23,14 @@ public class CompanyDAO extends DAO<Company> {
 			INSERT_REQUEST = "INSERT INTO " + TABLE_NAME + " ( " + NAME + " ) VALUES (?) ",
 			UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?",
 			DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
-
+	
+	private Logger logger;
+	
 	private CompanyDAO() {
 		super();
+		logger = LoggerFactory.getLogger(this.getClass());
 	}
-
+	
 	@Override
 	public String getFindRequest() {
 		return FIND_REQUEST;
@@ -39,6 +45,7 @@ public class CompanyDAO extends DAO<Company> {
 		try {
 			return new Company(rs.getLong(ID), rs.getString(NAME));
 		} catch (SQLException e) {
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
@@ -76,6 +83,7 @@ public class CompanyDAO extends DAO<Company> {
 				return obj;
 			}
 		}catch(SQLException e){
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
@@ -91,6 +99,7 @@ public class CompanyDAO extends DAO<Company> {
 				return obj;
 			}
 		}catch(SQLException e){
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
@@ -103,6 +112,7 @@ public class CompanyDAO extends DAO<Company> {
 				stmt.executeUpdate();
 			}
 		}catch(SQLException e){
+			logger.error(e.getMessage());
 			throw new DAOException(e);
 		}
 	}
