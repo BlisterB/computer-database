@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
+import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
@@ -20,7 +21,7 @@ public class ComputerService {
      * @return The computer with the id field to "id"
      * @throws DAOException In case of DAO problem
      */
-    public Computer getComputerById(Long id) throws DAOException {
+    public Computer getComputerById(Long id) throws DAOException, NotFoundException {
         return dao.find(id);
     }
 

@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.DAOException;
+import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Company;
@@ -147,7 +148,7 @@ public class CommandLineInterfaceController {
         try {
             Computer computer = computerServ.getComputerById(id);
             view.showComputerDetail(computer);
-        } catch (DAOException e) {
+        } catch (DAOException | NotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -162,7 +163,7 @@ public class CommandLineInterfaceController {
             // Show the computer information (to show the new id)
             System.out.println("Computer : ");
             view.showComputerDetail(comp);
-        } catch (DAOException e) {
+        } catch (DAOException | NotFoundException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
@@ -183,7 +184,7 @@ public class CommandLineInterfaceController {
 
             System.out.println("Computer mis à jour : ");
             view.showComputerDetail(newComp);
-        } catch (DAOException e) {
+        } catch (DAOException | NotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -192,7 +193,7 @@ public class CommandLineInterfaceController {
      * @return Return the computer
      * @throws DAOException If an error occurs with the DAO
      */
-    private Computer askComputerInformation() throws DAOException {
+    private Computer askComputerInformation() throws DAOException, NotFoundException {
         // Name
         System.out.println("Nom :");
         String name = askString();

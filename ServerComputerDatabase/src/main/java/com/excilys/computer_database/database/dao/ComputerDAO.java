@@ -68,7 +68,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         }
     }
 
-    /** Factory pattern.
+    /**
+     * Factory pattern.
      * @return The unique instance of ComputerDAO
      */
     public static final ComputerDAO getInstance() {
@@ -89,9 +90,23 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         try (Connection con = ConnectionDB.getConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, comp.getName());
-                stmt.setTimestamp(2, Timestamp.valueOf(comp.getIntroduced()));
-                stmt.setTimestamp(3, Timestamp.valueOf(comp.getDiscontinued()));
-                stmt.setLong(4, comp.getCompany().getId());
+                if (comp.getIntroduced() != null) {
+                    stmt.setTimestamp(2, Timestamp.valueOf(comp.getIntroduced()));
+                } else {
+                    stmt.setTimestamp(2, null);
+                }
+
+                if (comp.getDiscontinued() != null) {
+                    stmt.setTimestamp(3, Timestamp.valueOf(comp.getDiscontinued()));
+                } else {
+                    stmt.setTimestamp(3, null);
+                }
+
+                if (comp.getCompany() != null) {
+                    stmt.setLong(4, comp.getCompany().getId());
+                } else {
+                    stmt.setNull(4,java.sql.Types.BIGINT);
+                }
 
                 stmt.executeUpdate();
 
