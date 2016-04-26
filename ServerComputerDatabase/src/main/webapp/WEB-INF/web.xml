@@ -14,4 +14,19 @@
 		<servlet-name>ServletTest</servlet-name>
 		<url-pattern>/hello</url-pattern>
 	</servlet-mapping>
+
+	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/views/403.html</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/views/404.html</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/views/500.html</location>
+	</error-page>
+	
 </web-app>
