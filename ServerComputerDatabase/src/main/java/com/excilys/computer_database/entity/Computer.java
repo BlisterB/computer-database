@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.excilys.computer_database.database.dao.DAOException;
 
 public class Computer extends Entity {
+    // TODO : implémenter serializable
+
     private Long id;
     private String name;
     private LocalDateTime introduced, discontinued;

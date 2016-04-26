@@ -120,7 +120,6 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
         try (Connection con = ConnectionDB.getConnection()) {
             try (PreparedStatement stmt = con
                     .prepareStatement(getFindAllRequest() + " LIMIT " + nbPerPage + " OFFSET " + begining)) {
-                System.out.println(stmt.toString());
                 ResultSet rs = stmt.executeQuery();
 
                 // Create, fill, and return a list

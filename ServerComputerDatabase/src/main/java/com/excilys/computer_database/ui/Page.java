@@ -3,8 +3,8 @@ package com.excilys.computer_database.ui;
 import java.util.List;
 
 public class Page<T> {
-    public List<T> list;
-    int pageNumber, nbPerPage;
+    private List<T> list;
+    private int pageNumber, nbPerPage;
 
     /** Constructor by default.
      * @param list The list containing the elements
@@ -45,4 +45,27 @@ public class Page<T> {
 
         return sb.toString();
     }
+
+    /**
+     * @return the list
+     */
+    public List<T> getList() {
+        return list;
+    }
+
+    /**
+     * @return the pageNumber
+     */
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    /**
+     * @return the nbPerPage
+     */
+    public int getNbPerPage() {
+        return nbPerPage;
+    }
+
+
 }
