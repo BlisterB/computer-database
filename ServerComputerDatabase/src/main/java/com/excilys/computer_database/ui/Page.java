@@ -6,7 +6,7 @@ public class Page<T> {
     public List<T> list;
     int pageNumber, nbPerPage;
 
-    /** Constructor by default
+    /** Constructor by default.
      * @param list The list containing the elements
      * @param pageNumber The number of the page
      * @param nbPerPage The maximum number of element per page

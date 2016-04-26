@@ -109,7 +109,7 @@ public class Computer extends Entity {
         }
     }
 
-    /** Constructor
+    /** Constructor.
      * @param builder The builder
      */
     private Computer(ComputerBuilder builder) {

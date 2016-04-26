@@ -4,21 +4,21 @@ public class Company extends Entity {
     private String name;
     private Long id;
 
-    /** Constructor */
+    /** Constructor. */
     public Company() {
     }
 
-    /** Constructor
-     * @param id
-     * @param name
+    /** Constructor.
+     * @param id The id
+     * @param name The name
      */
     public Company(long id, String name) {
         this.name = name;
         this.id = id;
     }
 
-    /** Constructor
-     * @param name
+    /** Constructor.
+     * @param name The company name
      */
     public Company(String name) {
         this.name = name;

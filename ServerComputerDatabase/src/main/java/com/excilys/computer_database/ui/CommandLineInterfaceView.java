@@ -25,7 +25,9 @@ public class CommandLineInterfaceView {
         System.out.println(prompt);
     }
 
-    /** Display a list of company. */
+    /** Display a list of company.
+     * @param l The list to display
+     */
     public void displayCompanies(List<Company> l) {
         StringBuilder sb = new StringBuilder();
         for (Company company : l) {
@@ -34,7 +36,9 @@ public class CommandLineInterfaceView {
         System.out.println(sb);
     }
 
-    /** Display a list of computers. */
+    /** Display a list of computers.
+     * @param l The list to display
+     */
     public void displayComputers(List<Computer> l) {
         StringBuilder sb = new StringBuilder();
         for (Computer computer : l) {
@@ -43,12 +47,16 @@ public class CommandLineInterfaceView {
         System.out.println(sb);
     }
 
-    /** Display the computer details. */
+    /** Display the computer details.
+     * @param comp The computer to display
+     */
     public void showComputerDetail(Computer comp) {
         System.out.println(comp);
     }
 
-    /** Display a page. */
+    /** Display a page.
+     * @param page The computer to display
+     */
     public void showPage(Page<?> page) {
         System.out.println(page);
     }

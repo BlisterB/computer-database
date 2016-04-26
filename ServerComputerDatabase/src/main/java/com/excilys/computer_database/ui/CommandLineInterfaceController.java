@@ -18,7 +18,7 @@ import com.excilys.computer_database.entity.Computer;
 
 /**
  * The Command Line Interface's controller, initialize an instance et use
- * start() to launch the Command Line Interface
+ * start() to launch the Command Line Interface.
  */
 public class CommandLineInterfaceController {
     private CommandLineInterfaceView view;
@@ -26,11 +26,12 @@ public class CommandLineInterfaceController {
     private ComputerService computerServ = new ComputerService();
     private CompaniesService companiesService = new CompaniesService();
 
+    /** The constructor. */
     public CommandLineInterfaceController() {
         this.view = new CommandLineInterfaceView(this);
     }
 
-    /** Start the Command Line Interface */
+    /** Start the Command Line Interface. */
     public void start() {
         while (true) {
             // Display the prompt
@@ -68,6 +69,7 @@ public class CommandLineInterfaceController {
         }
     }
 
+    /** Launch the listing companies by page process. */
     private void listCompaniesByPage() {
         try {
             int begining = 0, nbPerPage = 20;
@@ -92,6 +94,7 @@ public class CommandLineInterfaceController {
         }
     }
 
+    /** Launch the listing computers by page process. */
     private void listComputerByPage() {
         try {
             int begining = 0, nbPerPage = 20;
@@ -116,6 +119,7 @@ public class CommandLineInterfaceController {
         }
     }
 
+    /** Fetch the companies list and ask to the view to display them. */
     private void listAllCompanies() {
         try {
             List<Company> l = companiesService.listAllCompanies();
@@ -125,6 +129,7 @@ public class CommandLineInterfaceController {
         }
     }
 
+    /** Fetch the computers list and ask to the view to display them. */
     private void listAllComputers() {
         try {
             List<Computer> l = computerServ.listAllComputers();
@@ -134,6 +139,7 @@ public class CommandLineInterfaceController {
         }
     }
 
+    /** Fetch a computer's information and display them. */
     public void showComputerDetail() {
         System.out.println("Entrez un id : ");
         long id = askLong();
@@ -146,7 +152,8 @@ public class CommandLineInterfaceController {
         }
     }
 
-    public void createAComputer() {
+    /** Launch the "create computer" process. */
+    private void createAComputer() {
         try {
             Computer computer = askComputerInformation();
 
@@ -161,7 +168,8 @@ public class CommandLineInterfaceController {
         }
     }
 
-    public void updateComputer() {
+    /** Launch the "update the computer" process. */
+    private void updateComputer() {
         System.out.println("Quel computer updater ?");
         Long id = askLong();
 
@@ -180,7 +188,11 @@ public class CommandLineInterfaceController {
         }
     }
 
-    public Computer askComputerInformation() throws DAOException {
+    /** Launch the "display computer's informations" process.
+     * @return Return the computer
+     * @throws DAOException If an error occurs with the DAO
+     */
+    private Computer askComputerInformation() throws DAOException {
         // Name
         System.out.println("Nom :");
         String name = askString();
@@ -226,7 +238,8 @@ public class CommandLineInterfaceController {
                 .build();
     }
 
-    public void deleteComputer() {
+    /** Launch a "delete a computer" process. */
+    private void deleteComputer() {
         System.out.println("Quel computer effacer ?");
         Long id = askLong();
 
@@ -237,24 +250,36 @@ public class CommandLineInterfaceController {
         }
     }
 
-    public int askInt() {
+    /** Fetch an int in System.in and delete the rest of the line.
+     * @return The entered Int
+     */
+    private int askInt() {
         int l = sc.nextInt();
         sc.nextLine();
 
         return l;
     }
 
-    public Long askLong() {
+    /** Fetch a long in System.in and delete the rest of the line.
+     * @return The entered Long
+     */
+    private Long askLong() {
         Long l = sc.nextLong();
         sc.nextLine();
 
         return l;
     }
 
-    public String askString() {
+    /** Fetch an int in System.in.
+     * @return The entered String
+     */
+    private String askString() {
         return sc.nextLine();
     }
 
+    /** The main launching the CLI.
+     * @param arg The arguments
+     */
     public static void main(String[] arg) {
         CommandLineInterfaceController controller = new CommandLineInterfaceController();
         controller.start();
