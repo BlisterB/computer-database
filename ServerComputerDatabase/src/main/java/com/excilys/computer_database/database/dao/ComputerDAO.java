@@ -86,6 +86,11 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
     @Override
     public Computer create(Computer comp) throws DAOException {
+        // comp must not have an id
+        if(comp.getId() != null){
+            throw new DAOException("The object must have no id at the creation.");
+        }
+
         // Exécution de la requête
         try (Connection con = ConnectionDB.getConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {

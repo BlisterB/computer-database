@@ -83,5 +83,23 @@ public class TestComputerService {
             }
         }
 
+        // Illegal call
+        // Create a computer with a negative id
+        try {
+            Computer computer = (new ComputerBuilder("test")).id(-1).build();
+            service.createComputer(computer);
+            fail("An id must be positive");
+        } catch (DAOException e) {
+            // ok !
+        }
+
+        // Create a computer with an existing id
+        try {
+            Computer computer =  (new ComputerBuilder("test")).id(1).build();
+            service.createComputer(computer);
+            fail("Not supposed to permit the creation with an already existing id.");
+        } catch (DAOException e) {
+            // ok !
+        }
     }
 }
