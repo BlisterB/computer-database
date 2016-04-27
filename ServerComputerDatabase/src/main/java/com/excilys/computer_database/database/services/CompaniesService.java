@@ -1,9 +1,11 @@
 package com.excilys.computer_database.database.services;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.DAOException;
+import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
@@ -46,5 +48,19 @@ public class CompaniesService {
      *  @throws DAOException */
     public void delete(Long id) throws DAOException {
         dao.delete(id);
+    }
+
+    /** Return the list of all companies (DTO form)
+     * @return Return the list of all companies (DTO form)
+     * @throws DAOException If an error occurs in the DAO
+     */
+    public List<CompanyDTO> getDTOList() throws DAOException {
+        // TODO : Améliorer la complexité de l'obtention des DTO (complexité 2*n pour le moment)
+        List<Company> list = listAllCompanies();
+        List<CompanyDTO> dtoList = new LinkedList<CompanyDTO>();
+        for(Company company : list){
+            dtoList.add(new CompanyDTO(company));
+        }
+        return dtoList;
     }
 }

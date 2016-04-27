@@ -1,7 +1,8 @@
 package com.excilys.computer_database.entity;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+
+import org.joda.time.LocalDateTime;
 
 import com.excilys.computer_database.database.dao.DAOException;
 
@@ -76,7 +77,7 @@ public class Computer extends Entity {
          */
         public ComputerBuilder introduced(Timestamp introduced) {
             if (introduced != null) {
-                this.introduced = introduced.toLocalDateTime();
+                this.introduced = new LocalDateTime(introduced);
             }
             return this;
         }
@@ -96,7 +97,7 @@ public class Computer extends Entity {
          */
         public ComputerBuilder discontinued(Timestamp discontinued) {
             if (discontinued != null) {
-                this.discontinued = discontinued.toLocalDateTime();
+                this.discontinued = new LocalDateTime(discontinued);
             }
             return this;
         }

@@ -1,13 +1,11 @@
 package com.excilys.computer_database.ui;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.DAOException;
@@ -189,7 +187,8 @@ public class CommandLineInterfaceController {
         }
     }
 
-    /** Launch the "display computer's informations" process.
+    /**
+     * Launch the "display computer's informations" process.
      * @return Return the computer
      * @throws DAOException If an error occurs with the DAO
      */
@@ -199,7 +198,7 @@ public class CommandLineInterfaceController {
         String name = askString();
 
         // Dates
-        DateFormat formatter = new SimpleDateFormat("yyyy MM dd");
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy MM dd");
 
         // Introduced
         System.out.println("Date introduced (yyyy MM dd) :");
@@ -208,10 +207,9 @@ public class CommandLineInterfaceController {
         LocalDateTime introduced = null;
         if (!stringIntroduced.isEmpty()) {
             try {
-                Date dateIntroduced = formatter.parse(stringIntroduced);
-                introduced = LocalDateTime.ofInstant(dateIntroduced.toInstant(), ZoneId.systemDefault());
-            } catch (ParseException e) {
-                e.printStackTrace();
+                introduced = LocalDateTime.parse(stringIntroduced, formatter);
+            } catch (Exception e) {
+                System.out.println("Bad entry, introduced date set to null");
             }
         }
 
@@ -222,10 +220,9 @@ public class CommandLineInterfaceController {
         LocalDateTime discontinued = null;
         if (!stringDiscontinued.isEmpty()) {
             try {
-                Date dateDiscontinued = formatter.parse(stringDiscontinued);
-                discontinued = LocalDateTime.ofInstant(dateDiscontinued.toInstant(), ZoneId.systemDefault());
-            } catch (ParseException e) {
-                e.printStackTrace();
+                discontinued = LocalDateTime.parse(stringDiscontinued, formatter);
+            } catch (Exception e) {
+                System.out.println("Bad entry, discontinued date set to null");
             }
         }
 
@@ -251,7 +248,8 @@ public class CommandLineInterfaceController {
         }
     }
 
-    /** Fetch an int in System.in and delete the rest of the line.
+    /**
+     * Fetch an int in System.in and delete the rest of the line.
      * @return The entered Int
      */
     private int askInt() {
@@ -261,7 +259,8 @@ public class CommandLineInterfaceController {
         return l;
     }
 
-    /** Fetch a long in System.in and delete the rest of the line.
+    /**
+     * Fetch a long in System.in and delete the rest of the line.
      * @return The entered Long
      */
     private Long askLong() {
@@ -271,14 +270,16 @@ public class CommandLineInterfaceController {
         return l;
     }
 
-    /** Fetch an int in System.in.
+    /**
+     * Fetch an int in System.in.
      * @return The entered String
      */
     private String askString() {
         return sc.nextLine();
     }
 
-    /** The main launching the CLI.
+    /**
+     * The main launching the CLI.
      * @param arg The arguments
      */
     public static void main(String[] arg) {

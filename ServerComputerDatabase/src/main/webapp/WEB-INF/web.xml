@@ -5,17 +5,27 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>ServerComputerDatabase</display-name>
 
+	<!-- Servlet -->
 	<servlet>
 		<servlet-name>ServletTest</servlet-name>
 		<servlet-class>com.excilys.computer_database.servlets.ServletTest</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>AddComputer</servlet-name>
+		<servlet-class>com.excilys.computer_database.servlets.AddComputerServlet</servlet-class>
+	</servlet>
 
+	<!-- Servlet mapping -->
 	<servlet-mapping>
 		<servlet-name>ServletTest</servlet-name>
 		<url-pattern>/hello</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AddComputer</servlet-name>
+		<url-pattern>/addComputer</url-pattern>
+	</servlet-mapping>
 
-	
+	<!-- Error pages -->
 	<error-page>
 		<error-code>403</error-code>
 		<location>/views/403.html</location>
@@ -28,5 +38,4 @@
 		<error-code>500</error-code>
 		<location>/views/500.html</location>
 	</error-page>
-	
 </web-app>

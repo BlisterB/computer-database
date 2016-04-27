@@ -96,13 +96,13 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, comp.getName());
                 if (comp.getIntroduced() != null) {
-                    stmt.setTimestamp(2, Timestamp.valueOf(comp.getIntroduced()));
+                    stmt.setTimestamp(2, new Timestamp(comp.getIntroduced().toDateTime().getMillis()));
                 } else {
                     stmt.setTimestamp(2, null);
                 }
 
                 if (comp.getDiscontinued() != null) {
-                    stmt.setTimestamp(3, Timestamp.valueOf(comp.getDiscontinued()));
+                    stmt.setTimestamp(3, new Timestamp(comp.getDiscontinued().toDateTime().getMillis()));
                 } else {
                     stmt.setTimestamp(3, null);
                 }
@@ -138,8 +138,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         try (Connection con = ConnectionDB.getConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
                 stmt.setString(1, comp.getName());
-                stmt.setTimestamp(2, Timestamp.valueOf(comp.getIntroduced()));
-                stmt.setTimestamp(3, Timestamp.valueOf(comp.getDiscontinued()));
+                stmt.setTimestamp(2, new Timestamp(comp.getIntroduced().toDateTime().getMillis()));
+                stmt.setTimestamp(3, new Timestamp(comp.getDiscontinued().toDateTime().getMillis()));
                 stmt.setLong(4, comp.getCompany().getId());
                 stmt.setLong(5, comp.getId());
 
