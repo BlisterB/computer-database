@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.DAOException;
+import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
@@ -48,6 +49,10 @@ public class CompaniesService {
      *  @throws DAOException */
     public void delete(Long id) throws DAOException {
         dao.delete(id);
+    }
+
+    public Company find(Long id) throws DAOException, NotFoundException {
+        return dao.find(id);
     }
 
     /** Return the list of all companies (DTO form)
