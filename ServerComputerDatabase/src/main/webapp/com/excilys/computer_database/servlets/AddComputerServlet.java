@@ -16,6 +16,7 @@ import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.database.services.CompaniesService;
+import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer.ComputerBuilder;
 
@@ -43,9 +44,14 @@ public class AddComputerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        CompaniesService companyService = new CompaniesService();
+        ComputerService computerService= new ComputerService();
+
         // TODO : Effectuer les verification d'input
+        // TODO : Verifier name vide
         String name = request.getParameter("computerName");
         ComputerBuilder builder = new ComputerBuilder(name);
+
 
         // Date
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -70,16 +76,27 @@ public class AddComputerServlet extends HttpServlet {
 
         // Company id
         try {
-            Long companyId = Long.parseLong("company_id : " + request.getParameter("companyId"));
-            CompaniesService companyService = new CompaniesService();
             try {
+                Long companyId = Long.parseLong(request.getParameter("companyId"));
                 Company company = companyService.find(companyId);
+                System.out.println("company found : " + company);
+                builder.company(company);
             } catch (DAOException | NotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } catch (NumberFormatException  e) {
+            e.printStackTrace();
             // Stay with null value
         }
+
+        // Create the computer in the DB
+        try {
+            computerService.createComputer(builder.build());
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+
+        // On redirige vers le dashboard
+        response.sendRedirect("/computer-database/dashboard");
     }
 }
