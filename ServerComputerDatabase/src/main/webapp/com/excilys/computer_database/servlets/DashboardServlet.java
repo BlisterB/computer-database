@@ -36,9 +36,11 @@ public class DashboardServlet extends HttpServlet {
 
         // Fetch the number of computers to display
         int limit = getLimit(request);
+        request.setAttribute("limit", limit);
 
         // Fetch the page number
         int current = getCurrentPage(request);
+        request.setAttribute("current", current);
 
         // Fetch the total number of computers
         Integer nbComputer = null;
@@ -53,7 +55,7 @@ public class DashboardServlet extends HttpServlet {
         // Fetch the list of computers
         Page<ComputerDTO> computerList = null;
         try {
-            computerList = computerServ.listSomeComputersDTO(current*nbComputer, limit);
+            computerList = computerServ.listSomeComputersDTO(current*limit, limit);
             request.setAttribute("computerList", computerList.getList());
         } catch (DAOException e) {
             // TODO : Afficher message d'erreur

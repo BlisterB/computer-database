@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="perso" uri="/WEB-INF/taglink.tld"%>
 
 <!DOCTYPE html>
 <html>
@@ -10,7 +11,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nbComputer} Computers found</h1>
+			<h1 id="homeTitle">${nbComputer} computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -60,15 +61,13 @@
 				<tbody id="results">
 					<c:forEach var="computer" items="${computerList}">
 						<tr>
-							<td class="editMode">
-	                            <input type="checkbox" name="cb" class="cb" value="0">
-	                        </td>
-	                        <td>
-	                            <a href="editComputer.html" onclick=""><c:out value="${computer.name}"/></a>
-	                        </td>
-	                        <td><c:out value="${computer.introduced}"/></td>
-	                        <td><c:out value="${computer.discontinued}"/></td>
-	                        <td><c:out value="${computer.companyName}"/></td>
+							<td class="editMode"><input type="checkbox" name="cb"
+								class="cb" value="0"></td>
+							<td><a href="editComputer.html" onclick=""><c:out
+										value="${computer.name}" /></a></td>
+							<td><c:out value="${computer.introduced}" /></td>
+							<td><c:out value="${computer.discontinued}" /></td>
+							<td><c:out value="${computer.companyName}" /></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -78,27 +77,17 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<ul class="pagination">
-				<li><a href="#" aria-label="Previous"> <span
-						aria-hidden="true">&laquo;</span>
-				</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-				</a></li>
-			</ul>
+			<perso:taglink limit="${limit}" current="${current}"
+				nbComputer="${nbComputer}" />
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?limit=10" type="button" class="btn btn-default">10</a>
-				<a href="dashboard?limit=50" type="button" class="btn btn-default">50</a>
-				<a href="dashboard?limit=100" type="button" class="btn btn-default">100</a>
+				<a href="dashboard?current=0&limit=10" type="button" class="btn btn-default">10</a>
+				<a href="dashboard?current=0&limit=50" type="button" class="btn btn-default">50</a>
+				<a href="dashboard?current=0&limit=100" type="button" class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>
-	
+
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/dashboard.js"></script>
