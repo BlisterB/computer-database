@@ -32,7 +32,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                     + "," + COMPANY_ID + " ) VALUES (?,?,?,?) ",
                     UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? , " + INTRODUCED + " = ? , " + DISCONTINUED
                     + " = ? , " + COMPANY_ID + " = ? WHERE " + ID + " = ?",
-                    DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
+                    DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ",
+                    COUNT_REQUEST = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME;
 
     private Logger logger;
 
@@ -87,7 +88,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     @Override
     public Computer create(Computer comp) throws DAOException {
         // comp must not have an id
-        if(comp.getId() != null){
+        if (comp.getId() != null) {
             throw new DAOException("The object must have no id at the creation.");
         }
 
@@ -110,7 +111,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                 if (comp.getCompany() != null) {
                     stmt.setLong(4, comp.getCompany().getId());
                 } else {
-                    stmt.setNull(4,java.sql.Types.BIGINT);
+                    stmt.setNull(4, java.sql.Types.BIGINT);
                 }
 
                 stmt.executeUpdate();
@@ -164,6 +165,20 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             }
         } catch (SQLException e) {
             logger.error(e.getMessage());
+            throw new DAOException(e);
+        }
+    }
+
+    public int getCount() throws DAOException {
+        try (Connection con = ConnectionDB.getConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement(COUNT_REQUEST)) {
+                ResultSet rs = stmt.executeQuery();
+                if (rs.first()) {
+                    return rs.getInt(1);
+                }
+                return -1;
+            }
+        } catch (SQLException e) {
             throw new DAOException(e);
         }
     }

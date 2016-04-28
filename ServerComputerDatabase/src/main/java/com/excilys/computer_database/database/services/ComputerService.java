@@ -1,10 +1,13 @@
 package com.excilys.computer_database.database.services;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dao.NotFoundException;
+import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
@@ -83,5 +86,22 @@ public class ComputerService {
      */
     public void delete(Long id) throws DAOException {
         dao.delete(id);
+    }
+
+    public int getComputerCount() throws DAOException {
+        return dao.getCount();
+    }
+
+    public Page<ComputerDTO> listSomeComputersDTO(int begining, int nbPerPage) throws DAOException {
+        // TODO : Implémenter ça proprement (pour le moment complexité 2*n)
+        int pageNumber = begining / nbPerPage;
+        List<Computer> list = dao.findSome(begining, nbPerPage);
+        List<ComputerDTO> listDTO = new LinkedList<ComputerDTO>();
+        ComputerDTOMapper mapper = new ComputerDTOMapper();
+        for(Computer c : list){
+            listDTO.add(mapper.unmap(c));
+        }
+
+        return new Page<ComputerDTO>(listDTO, pageNumber, nbPerPage);
     }
 }
