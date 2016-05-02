@@ -104,4 +104,8 @@ public class ComputerService {
 
         return new Page<ComputerDTO>(listDTO, pageNumber, nbPerPage);
     }
+    
+    public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException{
+    	return dao.searchByName(name, begining, nbPerPage);
+    }
 }

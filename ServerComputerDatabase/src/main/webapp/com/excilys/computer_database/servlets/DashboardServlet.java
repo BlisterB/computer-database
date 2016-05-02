@@ -16,110 +16,135 @@ import com.excilys.computer_database.ui.Page;
  * Servlet implementation class DashboardServlet
  */
 public class DashboardServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DashboardServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public DashboardServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    /**
-     * The GET method is called to display computer list with simple parameters : limit (nb of element per page), current (page)
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ComputerService computerServ = new ComputerService();
+	/**
+	 * The GET method is called to display computer list with simple parameters
+	 * : limit (nb of element per page), current (page)
+	 * 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		ComputerService computerServ = new ComputerService();
 
-        // Fetch the number of computers to display
-        int limit = getLimit(request);
-        request.setAttribute("limit", limit);
+		// Fetch the number of computers to display
+		int limit = getLimit(request);
+		request.setAttribute("limit", limit);
 
-        // Fetch the page number
-        int current = getCurrentPage(request);
-        request.setAttribute("current", current);
+		// Fetch the page number
+		int current = getCurrentPage(request);
+		request.setAttribute("current", current);
 
-        // Fetch the total number of computers
-        Integer nbComputer = null;
-        try {
-            nbComputer = computerServ.getComputerCount();
-        } catch (DAOException e) {
-            // Stay at null
-            e.printStackTrace();
-        }
-        request.setAttribute("nbComputer", nbComputer);
+		// List to display : 2 cases
+		Page<ComputerDTO> computerList = null;
+		// A) Display a search result
+		if (request.getParameter("search") != null) {
+			// Fetch the computers list
+			try {
+				computerList = computerServ.searchByName(request.getParameter("search"), current, limit);
+				request.setAttribute("computerList", computerList.getList());
+			} catch (DAOException e) {
+				// TODO : Afficher message d'erreur
+				e.printStackTrace();
+			}
+		}
+		// B) Display all computer
+		else {
+			// Fetch the list of computers
+			try {
+				computerList = computerServ.listSomeComputersDTO(current * limit, limit);
+				request.setAttribute("computerList", computerList.getList());
+			} catch (DAOException e) {
+				// TODO : Afficher message d'erreur
+				e.printStackTrace();
+			}
 
-        // Fetch the list of computers
-        Page<ComputerDTO> computerList = null;
-        try {
-            computerList = computerServ.listSomeComputersDTO(current*limit, limit);
-            request.setAttribute("computerList", computerList.getList());
-        } catch (DAOException e) {
-            // TODO : Afficher message d'erreur
-            e.printStackTrace();
-        }
+			// Fetch the total number of computers
+			Integer nbComputer = null;
+			try {
+				nbComputer = computerServ.getComputerCount();
+			} catch (DAOException e) {
+				// Stay at null
+				e.printStackTrace();
+			}
+			request.setAttribute("nbComputer", nbComputer);
+		}
 
-        this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
-    }
+		this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
+	}
 
-    /**
-     * The POST method is called to display result based on a name filter.
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        doGet(request, response);
-    }
+	/**
+	 * The POST method is called to display result based on a name filter.
+	 * 
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
 
-    /** Return the number of computers to display.
-     * @param request The request
-     * @return The number of computers to display
-     */
-    private int getLimit(HttpServletRequest request){
-        int nbPerDefault = 10;
-        int[] acceptedNumbers = {10, 50, 100};
+	/**
+	 * Return the number of computers to display.
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The number of computers to display
+	 */
+	private int getLimit(HttpServletRequest request) {
+		int nbPerDefault = 10;
+		int[] acceptedNumbers = { 10, 50, 100 };
 
-        // Fetch the eventual "limit" parameter
-        String limitParam = request.getParameter("limit");
-        if (limitParam == null) {
-            return nbPerDefault;
-        }
+		// Fetch the eventual "limit" parameter
+		String limitParam = request.getParameter("limit");
+		if (limitParam == null) {
+			return nbPerDefault;
+		}
 
-        // Convert it to int
-        int limit = -1;
-        try {
-            limit = Integer.parseInt(limitParam);
-        } catch(NumberFormatException e) {
-            return nbPerDefault;
-        }
+		// Convert it to int
+		int limit = -1;
+		try {
+			limit = Integer.parseInt(limitParam);
+		} catch (NumberFormatException e) {
+			return nbPerDefault;
+		}
 
-        // Verify if the value is legal
-        for(int i : acceptedNumbers){
-            if (limit == i) {
-                return i;
-            }
-        }
-        return nbPerDefault;
-    }
+		// Verify if the value is legal
+		for (int i : acceptedNumbers) {
+			if (limit == i) {
+				return i;
+			}
+		}
+		return nbPerDefault;
+	}
 
-    private int getCurrentPage(HttpServletRequest request){
-        int nbPerDefault = 0;
+	private int getCurrentPage(HttpServletRequest request) {
+		int nbPerDefault = 0;
 
-        // Fetch the eventual "current" parameter
-        String currentParam = request.getParameter("current");
-        if (currentParam == null) {
-            return nbPerDefault;
-        }
+		// Fetch the eventual "current" parameter
+		String currentParam = request.getParameter("current");
+		if (currentParam == null) {
+			return nbPerDefault;
+		}
 
-        // Convert it to int
-        try {
-            return Integer.parseInt(currentParam);
-        } catch(NumberFormatException e) {
-            return nbPerDefault;
-        }
-    }
+		// Convert it to int
+		try {
+			return Integer.parseInt(currentParam);
+		} catch (NumberFormatException e) {
+			return nbPerDefault;
+		}
+	}
 }
