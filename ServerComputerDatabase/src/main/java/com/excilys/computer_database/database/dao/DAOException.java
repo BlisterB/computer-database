@@ -5,7 +5,7 @@ import java.sql.SQLException;
 /**
  * Exception thrown by the DAO, it could be linked to a SQLException.
  */
-public class DAOException extends Exception {
+public class DAOException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
