@@ -30,7 +30,7 @@ public class ConnectionDB {
         if (config == null) {
             synchronized (ConnectionDB.class) {
                 if (config == null) {
-                    config = new HikariConfig("hikari.properties");
+                    config = new HikariConfig("/hikari.properties");
                     config.setJdbcUrl(URL);
                     // Should we close the datasource ?
                     datasource = new HikariDataSource(config);

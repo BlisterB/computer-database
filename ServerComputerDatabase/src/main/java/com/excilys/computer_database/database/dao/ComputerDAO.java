@@ -19,6 +19,7 @@ import com.excilys.computer_database.database.mappers.Mapper;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
+import com.excilys.computer_database.helpers.DateHelper;
 
 public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, ResultSet> {
 	// TODO : study the utility of the "volatile"
@@ -100,21 +101,20 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 			throw new DAOException("The object must have no id at the creation.");
 		}
 
-		// Exécution de la requête
-		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
-				stmt.setString(1, comp.getName());
-				if (comp.getIntroduced() != null) {
-					stmt.setTimestamp(2, new Timestamp(comp.getIntroduced().toDateTime().getMillis()));
-				} else {
-					stmt.setTimestamp(2, null);
-				}
-
-				if (comp.getDiscontinued() != null) {
-					stmt.setTimestamp(3, new Timestamp(comp.getDiscontinued().toDateTime().getMillis()));
-				} else {
-					stmt.setTimestamp(3, null);
-				}
+        // Exécution de la requête
+        try (Connection con = ConnectionDB.getConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, comp.getName());
+                if (comp.getIntroduced() != null) {
+                    stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
+                } else {
+                    stmt.setTimestamp(2, null);
+                }
+                if (comp.getDiscontinued() != null) {
+                    stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
+                } else {
+                    stmt.setTimestamp(3, null);
+                }
 
 				if (comp.getCompany() != null) {
 					stmt.setLong(4, comp.getCompany().getId());
@@ -142,15 +142,15 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 		}
 	}
 
-	@Override
-	public Computer update(Computer comp) throws DAOException {
-		try (Connection con = ConnectionDB.getConnection()) {
-			try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
-				stmt.setString(1, comp.getName());
-				stmt.setTimestamp(2, new Timestamp(comp.getIntroduced().toDateTime().getMillis()));
-				stmt.setTimestamp(3, new Timestamp(comp.getDiscontinued().toDateTime().getMillis()));
-				stmt.setLong(4, comp.getCompany().getId());
-				stmt.setLong(5, comp.getId());
+    @Override
+    public Computer update(Computer comp) throws DAOException {
+        try (Connection con = ConnectionDB.getConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
+                stmt.setString(1, comp.getName());
+                stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
+                stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
+                stmt.setLong(4, comp.getCompany().getId());
+                stmt.setLong(5, comp.getId());
 
 				stmt.executeUpdate();
 

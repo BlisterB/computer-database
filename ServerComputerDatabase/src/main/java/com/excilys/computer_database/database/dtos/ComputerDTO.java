@@ -1,13 +1,13 @@
 package com.excilys.computer_database.database.dtos;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalDate;
 
 import com.excilys.computer_database.entity.Computer;
 
 public class ComputerDTO {
     private Long id, companyId;
     private String name, companyName;
-    private LocalDateTime introduced, discontinued;
+    private LocalDate introduced, discontinued;
 
     public ComputerDTO(Computer c){
         this.id = c.getId();
@@ -80,28 +80,28 @@ public class ComputerDTO {
     /**
      * @return the introduced
      */
-    public LocalDateTime getIntroduced() {
+    public LocalDate getIntroduced() {
         return introduced;
     }
 
     /**
      * @param introduced the introduced to set
      */
-    public void setIntroduced(LocalDateTime introduced) {
+    public void setIntroduced(LocalDate introduced) {
         this.introduced = introduced;
     }
 
     /**
      * @return the discontinued
      */
-    public LocalDateTime getDiscontinued() {
+    public LocalDate getDiscontinued() {
         return discontinued;
     }
 
     /**
      * @param discontinued the discontinued to set
      */
-    public void setDiscontinued(LocalDateTime discontinued) {
+    public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
 
