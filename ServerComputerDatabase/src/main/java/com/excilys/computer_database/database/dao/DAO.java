@@ -68,7 +68,7 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
      * @return The object of id id
      * @throws DAOException If an SQLException is thrown
      */
-    public T find(long id) throws DAOException, NotFoundException {
+    public T find(long id) throws DAOException {
         try (Connection con = ConnectionDB.getConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(this.getFindRequest())) {
                 // Fill the id field
@@ -80,7 +80,7 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
                 if (rs.first()) {
                     return unmap(rs);
                 }
-                throw new NotFoundException(id);
+                throw new DAOException(id + " not found.");
             }
         } catch (SQLException e) {
             throw new DAOException(e);

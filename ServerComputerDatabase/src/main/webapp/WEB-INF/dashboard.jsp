@@ -66,7 +66,7 @@
 								class="cb" value="${computer.id}"></td>
 
 							<!--  Cellules d'affichage des informations du computer -->
-							<td><a href="editComputer.html" onclick=""><c:out
+							<td><a href="editComputer?idComputer=${computer.id}"><c:out
 										value="${computer.name}" /></a></td>
 							<td><c:out value="${computer.introduced}" /></td>
 							<td><c:out value="${computer.discontinued}" /></td>
