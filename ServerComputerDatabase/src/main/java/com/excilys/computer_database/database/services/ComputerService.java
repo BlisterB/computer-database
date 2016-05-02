@@ -112,4 +112,8 @@ public class ComputerService {
     public int countSearchByNameNbResult(String name) throws DAOException {
         return dao.countSearchByNameNbResult(name);
     }
+
+    public void deleteComputerList(Long[] t) throws DAOException {
+        dao.deleteComputerList(t);
+    }
 }

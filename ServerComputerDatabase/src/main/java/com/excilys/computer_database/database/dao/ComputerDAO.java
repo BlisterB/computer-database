@@ -44,7 +44,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                     + " LIKE ? LIMIT ? OFFSET ?",
                     COUNT_FIND_BY_NAME = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME
                     + " ON " + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
-                    + " LIKE ?";
+                    + " LIKE ?",
+                    DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ";
 
     private Logger logger;
 
@@ -232,6 +233,30 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                 return -1;
             }
         } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public void deleteComputerList(Long[] t) throws DAOException {
+        // setArray(..) is not supported with mysql, so we have to implement it...
+        StringBuffer sb = new StringBuffer();
+        sb.append("(");
+        for(int i = 0; i < t.length; i++){
+            if(i > 0) {
+                sb.append(",");
+            }
+            sb.append(t[i]);
+        }
+        sb.append(")");
+
+
+        try (Connection con = ConnectionDB.getConnection()) {
+            try (PreparedStatement stmt = con.prepareStatement(DELETE_LIST + sb.toString())) {
+                System.out.println(stmt.toString());
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }

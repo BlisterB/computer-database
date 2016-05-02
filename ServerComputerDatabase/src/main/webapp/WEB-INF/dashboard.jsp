@@ -11,7 +11,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nbResults} computers found</h1>
+			<h1 id="homeTitle">${nbResults}computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -61,8 +61,11 @@
 				<tbody id="results">
 					<c:forEach var="computer" items="${computerList}">
 						<tr>
+							<!-- Cellule de suppression du computer -->
 							<td class="editMode"><input type="checkbox" name="cb"
-								class="cb" value="0"></td>
+								class="cb" value="${computer.id}"></td>
+
+							<!--  Cellules d'affichage des informations du computer -->
 							<td><a href="editComputer.html" onclick=""><c:out
 										value="${computer.name}" /></a></td>
 							<td><c:out value="${computer.introduced}" /></td>
@@ -81,9 +84,12 @@
 				nbComputer="${nbComputer}" />
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?current=0&limit=10" type="button" class="btn btn-default">10</a>
-				<a href="dashboard?current=0&limit=50" type="button" class="btn btn-default">50</a>
-				<a href="dashboard?current=0&limit=100" type="button" class="btn btn-default">100</a>
+				<a href="dashboard?current=0&limit=10" type="button"
+					class="btn btn-default">10</a> <a
+					href="dashboard?current=0&limit=50" type="button"
+					class="btn btn-default">50</a> <a
+					href="dashboard?current=0&limit=100" type="button"
+					class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>

@@ -82,7 +82,26 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
+
+        // The parameters "selection" indicate a list of computer to delete
+        String selection = request.getParameter("selection");
+        if(selection != null){
+            System.out.println(selection);
+
+            // Fetch the list
+            String[] tab = selection.split(",");
+
+            // Verify it's long value
+            Long[] idTab = new Long[tab.length];
+            for(int i = 0; i < tab.length; i++) {
+                idTab[i] = Long.parseLong(tab[i]);
+            }
+
+            ComputerService computerServ = new ComputerService();
+            computerServ.deleteComputerList(idTab);
+        }
+
+        // Redirection to the GET Page
         doGet(request, response);
     }
 
