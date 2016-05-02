@@ -2,7 +2,7 @@ package com.excilys.computer_database.entity;
 
 import java.sql.Timestamp;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalDate;
 
 import com.excilys.computer_database.database.dao.DAOException;
 
@@ -11,14 +11,14 @@ public class Computer extends Entity {
 
     private Long id;
     private String name;
-    private LocalDateTime introduced, discontinued;
+    private LocalDate introduced, discontinued;
     private Company company;
 
     /** Implementation of the Builder pattern. */
     public static class ComputerBuilder {
         private Long id;
         private String name;
-        private LocalDateTime introduced, discontinued;
+        private LocalDate introduced, discontinued;
         private Company company;
 
         /** Initialise a ComputerBuild to customize and build.
@@ -64,7 +64,7 @@ public class Computer extends Entity {
          * @param introduced The introduction date
          * @return The instance of ComputerBuilder
          */
-        public ComputerBuilder introduced(LocalDateTime introduced) {
+        public ComputerBuilder introduced(LocalDate introduced) {
             if (introduced != null) {
                 this.introduced = introduced;
             }
@@ -77,7 +77,7 @@ public class Computer extends Entity {
          */
         public ComputerBuilder introduced(Timestamp introduced) {
             if (introduced != null) {
-                this.introduced = new LocalDateTime(introduced);
+                this.introduced = new LocalDate(introduced);
             }
             return this;
         }
@@ -86,7 +86,7 @@ public class Computer extends Entity {
          * @param discontinued The discontinued date
          * @return The instance of ComputerBuilder
          */
-        public ComputerBuilder discontinued(LocalDateTime discontinued) {
+        public ComputerBuilder discontinued(LocalDate discontinued) {
             this.discontinued = discontinued;
             return this;
         }
@@ -97,7 +97,7 @@ public class Computer extends Entity {
          */
         public ComputerBuilder discontinued(Timestamp discontinued) {
             if (discontinued != null) {
-                this.discontinued = new LocalDateTime(discontinued);
+                this.discontinued = new LocalDate(discontinued);
             }
             return this;
         }
@@ -160,28 +160,28 @@ public class Computer extends Entity {
     /**
      * @return the introduced
      */
-    public LocalDateTime getIntroduced() {
+    public LocalDate getIntroduced() {
         return introduced;
     }
 
     /**
      * @param introduced the introduced to set
      */
-    public void setIntroduced(LocalDateTime introduced) {
+    public void setIntroduced(LocalDate introduced) {
         this.introduced = introduced;
     }
 
     /**
      * @return the discontinued
      */
-    public LocalDateTime getDiscontinued() {
+    public LocalDate getDiscontinued() {
         return discontinued;
     }
 
     /**
      * @param discontinued the discontinued to set
      */
-    public void setDiscontinued(LocalDateTime discontinued) {
+    public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
 

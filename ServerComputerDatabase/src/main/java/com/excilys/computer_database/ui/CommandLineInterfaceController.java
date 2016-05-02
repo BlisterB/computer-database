@@ -3,7 +3,7 @@ package com.excilys.computer_database.ui;
 import java.util.List;
 import java.util.Scanner;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -204,10 +204,10 @@ public class CommandLineInterfaceController {
         System.out.println("Date introduced (yyyy MM dd) :");
         String stringIntroduced = askString();
 
-        LocalDateTime introduced = null;
+        LocalDate introduced = null;
         if (!stringIntroduced.isEmpty()) {
             try {
-                introduced = LocalDateTime.parse(stringIntroduced, formatter);
+                introduced = LocalDate.parse(stringIntroduced, formatter);
             } catch (Exception e) {
                 System.out.println("Bad entry, introduced date set to null");
             }
@@ -217,10 +217,10 @@ public class CommandLineInterfaceController {
         System.out.println("Date discontinued (yyyy MM dd) :");
         String stringDiscontinued = askString();
 
-        LocalDateTime discontinued = null;
+        LocalDate discontinued = null;
         if (!stringDiscontinued.isEmpty()) {
             try {
-                discontinued = LocalDateTime.parse(stringDiscontinued, formatter);
+                discontinued = LocalDate.parse(stringDiscontinued, formatter);
             } catch (Exception e) {
                 System.out.println("Bad entry, discontinued date set to null");
             }

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -57,18 +57,18 @@ public class AddComputerServlet extends HttpServlet {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 
         String introducedString = request.getParameter("introduced");
-        LocalDateTime introduced = null;
+        LocalDate introduced = null;
         try {
-            introduced = LocalDateTime.parse(introducedString, formatter);
+            introduced = LocalDate.parse(introducedString, formatter);
             builder.introduced(introduced);
         } catch (Exception e) {
             // Stay with null value
         }
 
-        String discontinuedString = request.getParameter("introduced");
-        LocalDateTime discontinued = null;
+        String discontinuedString = request.getParameter("discontinued");
+        LocalDate discontinued = null;
         try {
-            discontinued = LocalDateTime.parse(discontinuedString, formatter);
+            discontinued = LocalDate.parse(discontinuedString, formatter);
             builder.discontinued(discontinued);
         } catch (Exception e) {
             // Stay with null value

@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import com.excilys.computer_database.database.ConnectionDB;
 import com.excilys.computer_database.database.mappers.Mapper;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
+import com.excilys.computer_database.helpers.DateHelper;
 
 public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, ResultSet> {
     // TODO : study the utility of the "volatile"
@@ -97,13 +97,13 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, comp.getName());
                 if (comp.getIntroduced() != null) {
-                    stmt.setTimestamp(2, new Timestamp(comp.getIntroduced().toDateTime().getMillis()));
+                    stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
                 } else {
                     stmt.setTimestamp(2, null);
                 }
 
                 if (comp.getDiscontinued() != null) {
-                    stmt.setTimestamp(3, new Timestamp(comp.getDiscontinued().toDateTime().getMillis()));
+                    stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
                 } else {
                     stmt.setTimestamp(3, null);
                 }
@@ -139,8 +139,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         try (Connection con = ConnectionDB.getConnection()) {
             try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
                 stmt.setString(1, comp.getName());
-                stmt.setTimestamp(2, new Timestamp(comp.getIntroduced().toDateTime().getMillis()));
-                stmt.setTimestamp(3, new Timestamp(comp.getDiscontinued().toDateTime().getMillis()));
+                stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
+                stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
                 stmt.setLong(4, comp.getCompany().getId());
                 stmt.setLong(5, comp.getId());
 
