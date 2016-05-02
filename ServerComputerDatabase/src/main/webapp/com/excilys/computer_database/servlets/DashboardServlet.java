@@ -47,23 +47,28 @@ public class DashboardServlet extends HttpServlet {
 
         // List to display : 2 cases
         Page<ComputerDTO> computerList = null;
+        Integer nbResult = null;
+
         // A) Display a search result
         if (request.getParameter("search") != null) {
+            String search = request.getParameter("search");
             // Fetch the computers list
-            computerList = computerServ.searchByName(request.getParameter("search"), current, limit);
-            request.setAttribute("computerList", computerList.getList());
+            computerList = computerServ.searchByName(search, current, limit);
+
+            // Fetch the number of results
+            nbResult = computerServ.countSearchByNameNbResult(search);
         }
         // B) Display all computer
         else {
             // Fetch the list of computers
             computerList = computerServ.listSomeComputersDTO(current * limit, limit);
-            request.setAttribute("computerList", computerList.getList());
 
             // Fetch the total number of computers
-            Integer nbComputer = null;
-            nbComputer = computerServ.getComputerCount();
-            request.setAttribute("nbComputer", nbComputer);
+            nbResult = computerServ.getComputerCount();
         }
+
+        request.setAttribute("computerList", computerList.getList());
+        request.setAttribute("nbResults", nbResult);
 
         this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
