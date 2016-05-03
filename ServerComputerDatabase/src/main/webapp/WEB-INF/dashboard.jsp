@@ -39,14 +39,23 @@
 				<thead>
 					<tr>
 						<!-- Table headers -->
-						<th class="editMode" style="width: 60px; height: 22px;">
-							<input type="checkbox" id="selectall" />
-								<span style="vertical-align: top;"> - <a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();"> <i class="fa fa-trash-o fa-lg"></i> </a> </span>
-						</th>
-						<th><a href="dashboard?orderby=name&limit=${limit}&current=0">Computer Name</a></th>
-						<th><a href="dashboard?orderby=introduced&limit=${limit}&current=0">Introduced date</a></th>
-						<th><a href="dashboard?orderby=discontinued&limit=${limit}&current=0">Discontinued date</a></th>
-						<th><a href="dashboard?orderby=company&limit=${limit}&current=0">Company</a></th>
+						<th class="editMode" style="width: 60px; height: 22px;"><input
+							type="checkbox" id="selectall" /> <span
+							style="vertical-align: top;"> - <a href="#"
+								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
+									class="fa fa-trash-o fa-lg"></i>
+							</a>
+						</span></th>
+						<th><a href="dashboard?orderby=name&limit=${limit}&current=0">Computer
+								Name</a></th>
+						<th><a
+							href="dashboard?orderby=introduced&limit=${limit}&current=0">Introduced
+								date</a></th>
+						<th><a
+							href="dashboard?orderby=discontinued&limit=${limit}&current=0">Discontinued
+								date</a></th>
+						<th><a
+							href="dashboard?orderby=company&limit=${limit}&current=0">Company</a></th>
 
 					</tr>
 				</thead>
@@ -74,15 +83,25 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<perso:taglink limit="${limit}" orderby="${orderby}" current="${current}" nbComputer="${nbResults}" />
+			<c:choose>
+				<c:when test="${not empty param.search}">
+					<perso:taglink limit="${limit}" orderby="${orderby}"
+						current="${current}" nbComputer="${nbResults}"
+						search="${param.search}" />
+				</c:when>
+				<c:otherwise>
+					<perso:taglink limit="${limit}" orderby="${orderby}"
+						current="${current}" nbComputer="${nbResults}" />
+				</c:otherwise>
+			</c:choose>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?current=0&limit=10&orderby=${orderby}" type="button"
-					class="btn btn-default">10</a> <a
-					href="dashboard?current=0&limit=50&orderby=${orderby}" type="button"
-					class="btn btn-default">50</a> <a
-					href="dashboard?current=0&limit=100&orderby=${orderby}" type="button"
-					class="btn btn-default">100</a>
+				<a href="dashboard?current=0&limit=10&orderby=${orderby}"
+					type="button" class="btn btn-default">10</a> <a
+					href="dashboard?current=0&limit=50&orderby=${orderby}"
+					type="button" class="btn btn-default">50</a> <a
+					href="dashboard?current=0&limit=100&orderby=${orderby}"
+					type="button" class="btn btn-default">100</a>
 			</div>
 		</div>
 	</footer>

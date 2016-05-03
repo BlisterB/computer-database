@@ -60,7 +60,7 @@ public class DashboardServlet extends HttpServlet {
         if (request.getParameter("search") != null) {
             String search = request.getParameter("search");
             // Fetch the computers list
-            computerList = computerServ.searchByName(search, current, limit);
+            computerList = computerServ.searchByName(search, current * limit, limit);
 
             // Fetch the number of results
             nbResult = computerServ.countSearchByNameNbResult(search);

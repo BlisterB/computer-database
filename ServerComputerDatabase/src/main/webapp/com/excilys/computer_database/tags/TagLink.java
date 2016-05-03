@@ -9,8 +9,8 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 public class TagLink extends SimpleTagSupport {
     private static final int nbOfButton = 5;
 
-    private int current, limit, nbComputer;
-    private String orderby;
+    private int current, limit, nbComputer, nbCase = 0;
+    private String orderby, search;
 
     @Override
     public void doTag() throws JspException, IOException {
@@ -19,32 +19,31 @@ public class TagLink extends SimpleTagSupport {
 
         // Previous button
         if (current > 0) {
-            sb.append("<li><a href=\"").append(getLink(0, limit, orderby))
+            sb.append("<li><a href=\"").append(getLink(0, limit))
             .append("\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>");
         }
 
         // Previous number : 2 nb max
-        for (int i = current - 2; i < current; i++) {
+        for (int i = current - 2; i < current ; i++) {
             if (i >= 0) {
-                appendButton(sb, i, limit, orderby);
+                appendButton(sb, i, limit);
             }
         }
 
         // Current number
-        appendButton(sb, current, limit, orderby);
+        appendButton(sb, current, limit);
 
         // Next number
-        for (int i = current + 1; i * limit <= nbComputer && i <= current + 2 ; i++) {
-            appendButton(sb, i, limit, orderby);
+        for (int i = current + 1; i * limit <= nbComputer && nbCase < 5; i++) {
+            appendButton(sb, i, limit);
         }
 
         // Next Button
         if ((current + 1) * limit <= nbComputer) {
-            sb.append("<li><a href=\"").append(getLink(current+1, limit, orderby)).append("\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>");
+            sb.append("<li><a href=\"").append(getLink(current+1, limit)).append("\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>");
         }
 
         sb.append("</ul>");
-
 
         try {
             JspWriter out = getJspContext().getOut();
@@ -54,12 +53,17 @@ public class TagLink extends SimpleTagSupport {
         }
     }
 
-    private String getLink(int current, int limit, String orderby) {
-        return "dashboard?current=" + current + "&limit=" + limit + "&orderby=" + orderby;
+    private String getLink(int current, int limit) {
+        StringBuffer bf = new StringBuffer("dashboard?current=" + current + "&limit=" + limit + "&orderby=" + orderby);
+        if(search != null) {
+            bf.append("&search=").append(search);
+        }
+        return bf.toString();
     }
 
-    private void appendButton(StringBuffer sb, int current, int limit, String orderby) {
-        sb.append("<li><a href=\"").append(getLink(current, limit, orderby)).append("\">").append(current).append("</a></li>");
+    private void appendButton(StringBuffer sb, int current, int limit) {
+        sb.append("<li><a href=\"").append(getLink(current, limit)).append("\">").append(current).append("</a></li>");
+        this.nbCase++;
     }
 
     /**
@@ -123,5 +127,19 @@ public class TagLink extends SimpleTagSupport {
      */
     public void setOrderby(String orderby) {
         this.orderby = orderby;
+    }
+
+    /**
+     * @return the search
+     */
+    public String getSearch() {
+        return search;
+    }
+
+    /**
+     * @param search the search to set
+     */
+    public void setSearch(String search) {
+        this.search = search;
     }
 }
