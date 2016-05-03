@@ -21,7 +21,8 @@ public class CommandLineInterfaceView {
                 + "\t3) Show computer details\n" + "\t4) Create a computer\n" + "\t5) Modify a computer\n"
                 + "\t6) Delete a computer\n"
                 + "\t7) List companies (page version)\n"
-                + "\t8) List computers (page version)\n";
+                + "\t8) List computers (page version)\n"
+                + "\t9) Delete a company";
         System.out.println(prompt);
     }
 

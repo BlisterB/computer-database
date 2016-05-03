@@ -62,6 +62,9 @@ public class CommandLineInterfaceController {
             case 8:
                 listComputerByPage();
                 break;
+            case 9:
+                deleteCompany();
+                break;
             default:
                 break;
             }
@@ -243,6 +246,18 @@ public class CommandLineInterfaceController {
 
         try {
             computerServ.delete(id);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** Launch the "delete a company" process. */
+    private void deleteCompany() {
+        System.out.println("Quelle company effacer ?");
+        Long id = askLong();
+
+        try {
+            companiesService.delete(id);
         } catch (DAOException e) {
             e.printStackTrace();
         }

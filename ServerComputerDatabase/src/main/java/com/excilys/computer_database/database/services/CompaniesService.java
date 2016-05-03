@@ -8,7 +8,6 @@ import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
 public class CompaniesService {
@@ -35,13 +34,6 @@ public class CompaniesService {
      * @throws DAOException */
     public List<Company> listAllCompanies() throws DAOException {
         return dao.findAll();
-    }
-
-    /** Delete the computer "comp" using its id.
-     *  @param comp The computer to delete
-     *  @throws DAOException */
-    public void delete(Computer comp) throws DAOException {
-        dao.delete(comp.getId());
     }
 
     /** Delete the computer of id "id".
