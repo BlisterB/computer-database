@@ -13,29 +13,30 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST">
+					<form id="addComputer" action="addComputer" method="POST">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
-									type="text" class="form-control" id="computerName"
-									name="computerName" placeholder="Computer name"
-									required="required" pattern="^([a-zA-Z0-9)$">
+									type="text" minlength="3" class="form-control"
+									pattern="^([a-zA-Z0-9)$" required="required"
+									placeholder="Computer name" id="computerName"
+									name="computerName">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
-									type="date" class="form-control" id="introduced"
+								<label for="introduced">Introduced date (YYYY-MM-dd) :</label>
+								<input type="text" class="form-control" id="introduced"
 									name="introduced" placeholder="Introduced date">
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
-									type="date" class="form-control" id="discontinued"
+								<label for="discontinued">Discontinued date (YYYY-MM-dd) :</label> <input type="date" class="form-control" id="discontinued"
 									name="discontinued" placeholder="Discontinued date">
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label>
-								<select class="form-control" id="companyId" name="companyId">
+								<label for="companyId">Company</label> <select
+									class="form-control" id="companyId" name="companyId">
 									<c:forEach var="company" items="${companyList}">
-										<option value="${company.id}" <c:if test="${company.id == computer.companyId}">selected</c:if> >${company.name}</option>
+										<option value="${company.id}"
+											<c:if test="${company.id == computer.companyId}">selected</c:if>>${company.name}</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -45,14 +46,24 @@
 							or <a href="dashboard.html" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
-					<script
-						src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-					<!-- Appeller le script en local -->
-					<script
-						src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.2.8/jquery.form-validator.min.js"></script>
+
+					<!-- Form validation -->
+					<!-- JQuery -->
+					<script src="js/jquery.min.js"></script>
+					<!-- JQuery form validator -->
+					<script src="js/jquery.validate.js"></script>
+
+					<!-- Form validator -->
 					<script>
-						$.validate({
-							modules : 'html5'
+						$("#addComputer").validate({
+							rules : {
+								introduced : {
+									dateISO : true
+								},
+								discontinued : {
+									dateISO : true
+								}
+							}
 						});
 					</script>
 				</div>

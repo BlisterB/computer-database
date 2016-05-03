@@ -51,8 +51,10 @@ public class CompanyDAO extends DAO<Company> {
         }
     }
 
-    /** Return the unique instance of CompanyDAO (singleton pattern).
-     *  @return The unique instance of CompanyDAO */
+    /**
+     * Return the unique instance of CompanyDAO (singleton pattern).
+     * @return The unique instance of CompanyDAO
+     */
     public static final CompanyDAO getInstance() {
         // TODO : implements a Backoff-lock ? (for the moment : Test&Test&Set)
         if (CompanyDAO.instance == null) {
@@ -117,7 +119,8 @@ public class CompanyDAO extends DAO<Company> {
             PreparedStatement deleteCompanyStmt = con.prepareStatement(deleteCompanyRequest);
             deleteCompanyStmt.setLong(1, id);
 
-            String deleteComputersRequest = "DELETE FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.COMPANY_ID + " = ? ";
+            String deleteComputersRequest = "DELETE FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.COMPANY_ID
+                    + " = ? ";
             PreparedStatement deleteComputersStmt = con.prepareStatement(deleteComputersRequest);
             deleteComputersStmt.setLong(1, id);
 
@@ -126,7 +129,7 @@ public class CompanyDAO extends DAO<Company> {
                 deleteCompanyStmt.executeUpdate();
 
                 con.commit();
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 con.rollback();
             } finally {

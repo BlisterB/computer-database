@@ -18,7 +18,8 @@ public class ComputerService {
         dao = ComputerDAO.getInstance();
     }
 
-    /** Return the computer of id id.
+    /**
+     * Return the computer of id id.
      * @param id The id
      * @return The computer with the id field to "id"
      * @throws DAOException In case of DAO problem
@@ -28,11 +29,13 @@ public class ComputerService {
     }
 
     /**
-     * Return a page containing a number of "nbPerPage" Computer from "begining" in the DB.
+     * Return a page containing a number of "nbPerPage" Computer from "begining"
+     * in the DB.
      * @param begining Begining in the DB
      * @param nbPerPage Max number of element
      * @param orderBy "id", "name", "introduced", "discontinued" or "company"
-     * @return A page containing a number of "nbPerPage" Computer from "begining" in the DB
+     * @return A page containing a number of "nbPerPage" Computer from
+     *         "begining" in the DB
      * @throws DAOException In case of DAO problem
      */
     public Page<Computer> listSomeComputers(int begining, int nbPerPage, String orderBy) throws DAOException {
@@ -59,14 +62,15 @@ public class ComputerService {
         List<Computer> list = dao.findSome(begining, nbPerPage, orderBy);
         List<ComputerDTO> listDTO = new LinkedList<ComputerDTO>();
         ComputerDTOMapper mapper = new ComputerDTOMapper();
-        for(Computer c : list){
+        for (Computer c : list) {
             listDTO.add(mapper.unmap(c));
         }
 
         return new Page<ComputerDTO>(listDTO, pageNumber, nbPerPage);
     }
 
-    /** Return the list of all computers.
+    /**
+     * Return the list of all computers.
      * @return The list of all computers
      * @throws DAOException In case of DAO problem
      */
@@ -116,7 +120,7 @@ public class ComputerService {
         return dao.getCount();
     }
 
-    public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException{
+    public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException {
         return dao.searchByName(name, begining, nbPerPage);
     }
 

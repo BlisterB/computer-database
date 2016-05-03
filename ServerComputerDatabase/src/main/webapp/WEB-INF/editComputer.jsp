@@ -16,22 +16,22 @@
 						${computer.id}</div>
 					<h1>Edit Computer</h1>
 
-					<form action="editComputer" method="POST">
+					<form id="editComputer" action="editComputer" method="POST">
 						<input type="hidden" value="0" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
-									type="text" class="form-control" id="computerName"
+									type="text" class="form-control" id="computerName" required="required" minlength="3"
 									value="${computer.name}">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
-									type="date" class="form-control" id="introduced"
+								<label for="introduced">Introduced date (YYYY-MM-dd) :</label> <input
+									type="text" class="form-control" id="introduced" name="introduced"
 									value="${computer.introduced}">
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
-									type="date" class="form-control" id="discontinued"
+								<label for="discontinued">Discontinued date (YYYY-MM-dd) :</label> <input
+									type="text" class="form-control" id="discontinued" name="discontinued"
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
@@ -48,6 +48,26 @@
 							or <a href="dashboard.html" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
+					
+					<!-- Form validation -->
+					<!-- JQuery -->
+					<script src="js/jquery.min.js"></script>
+					<!-- JQuery form validator -->
+					<script src="js/jquery.validate.js"></script>
+
+					<!-- Form validator -->
+					<script>
+						$("#editComputer").validate({
+							rules : {
+								introduced : {
+									dateISO : true
+								},
+								discontinued : {
+									dateISO : true
+								}
+							}
+						});
+					</script>
 				</div>
 			</div>
 		</div>

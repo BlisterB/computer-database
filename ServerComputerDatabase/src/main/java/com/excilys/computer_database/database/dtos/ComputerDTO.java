@@ -9,13 +9,13 @@ public class ComputerDTO {
     private String name, companyName;
     private LocalDate introduced, discontinued;
 
-    public ComputerDTO(Computer c){
+    public ComputerDTO(Computer c) {
         this.id = c.getId();
         this.name = c.getName();
         this.introduced = c.getIntroduced();
         this.discontinued = c.getDiscontinued();
 
-        if(c.getCompany() != null){
+        if (c.getCompany() != null) {
             this.companyId = c.getCompany().getId();
             this.companyName = c.getCompany().getName();
         }
@@ -104,6 +104,5 @@ public class ComputerDTO {
     public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
-
 
 }
