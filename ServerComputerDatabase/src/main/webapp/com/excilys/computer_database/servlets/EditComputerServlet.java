@@ -14,6 +14,8 @@ import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
 import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
+import com.excilys.computer_database.database.validators.ComputerValidator;
+import com.excilys.computer_database.entity.Computer;
 
 /**
  * Servlet implementation class EditComputerServlet
@@ -21,6 +23,8 @@ import com.excilys.computer_database.database.services.ComputerService;
 @WebServlet("/EditComputerServlet")
 public class EditComputerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private CompaniesService companyService = new CompaniesService();
+    private ComputerService computerService = new ComputerService();
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -61,7 +65,22 @@ public class EditComputerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+        // Fetch the parameters
+        Long idComputer = Long.parseLong(request.getParameter("idComputer"));
+        String name = request.getParameter("computerName");
+        String introducedString = request.getParameter("introduced");
+        String discontinuedString = request.getParameter("discontinued");
+        Long companyId = Long.parseLong(request.getParameter("companyId"));
+
+        // Validate the computer informations
+        Computer computer = ComputerValidator.validate(name, introducedString, discontinuedString, companyId);
+        computer.setId(idComputer);
+
+        // Create the computer in the DB
+        computerService.update(computer);
+
+        // On redirige vers le dashboard
+        response.sendRedirect("/computer-database/dashboard");
     }
 
 }

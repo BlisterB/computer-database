@@ -16,7 +16,6 @@ import com.excilys.computer_database.entity.Computer;
 
 public class AddComputerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
     private CompaniesService companyService = new CompaniesService();
     private ComputerService computerService = new ComputerService();
 
