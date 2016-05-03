@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.excilys.computer_database.database.dao.DAOException;
-import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.entity.Computer.ComputerBuilder;
@@ -26,14 +25,14 @@ public class TestComputerService {
         try {
             service.getComputerById(-1L);
             fail("Le service ne doit pas trouver un id négatif");
-        } catch (DAOException | NotFoundException e) {
+        } catch (DAOException e) {
             // Ok!
         }
 
         // Legal call
         try {
             assertEquals(new Long(1), service.getComputerById(1L).getId());
-        } catch (DAOException | NotFoundException e) {
+        } catch (DAOException e) {
             e.printStackTrace();
         }
 
@@ -42,8 +41,6 @@ public class TestComputerService {
             service.getComputerById(Long.MAX_VALUE);
             fail("The computer of maximum id is not supposed to exist");
         } catch (DAOException e) {
-            fail("Find for the computer of maximum id is supposed to throw a NotFoundException");
-        } catch (NotFoundException e) {
             // Ok !
         }
     }
@@ -75,11 +72,8 @@ public class TestComputerService {
             // Verify that the deletion is effective
             try {
                 Computer computer = service.getComputerById(createdId);
-            } catch (NotFoundException e) {
-                // Ok !
             } catch (DAOException e) {
-                fail("Error while finding a deleted computer");
-                e.printStackTrace();
+                // Ok !
             }
         }
 
@@ -95,7 +89,7 @@ public class TestComputerService {
 
         // Create a computer with an existing id
         try {
-            Computer computer =  (new ComputerBuilder("test")).id(1).build();
+            Computer computer = (new ComputerBuilder("test")).id(1).build();
             service.createComputer(computer);
             fail("Not supposed to permit the creation with an already existing id.");
         } catch (DAOException e) {

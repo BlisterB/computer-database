@@ -100,7 +100,7 @@ public class CommandLineInterfaceController {
             boolean continu = true;
 
             while (continu) {
-                Page<Computer> page = computerServ.listSomeComputers(begining, nbPerPage);
+                Page<Computer> page = computerServ.listSomeComputers(begining, nbPerPage, "id");
 
                 view.showPage(page);
 
@@ -146,7 +146,7 @@ public class CommandLineInterfaceController {
         try {
             Computer computer = computerServ.getComputerById(id);
             view.showComputerDetail(computer);
-        } catch (DAOException | NotFoundException e) {
+        } catch (DAOException e) {
             e.printStackTrace();
         }
     }

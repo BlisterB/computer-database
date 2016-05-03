@@ -1,6 +1,7 @@
 package com.excilys.computer_database.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,8 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.computer_database.database.dtos.CompanyDTO;
+import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
+import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
-import com.excilys.computer_database.entity.Computer;
 
 /**
  * Servlet implementation class EditComputerServlet
@@ -38,8 +42,14 @@ public class EditComputerServlet extends HttpServlet {
 
         // Fetch the computer to edit
         ComputerService serv = new ComputerService();
-        Computer computer = serv.getComputerById(idComputer);
+        ComputerDTOMapper mapper = new ComputerDTOMapper();
+        ComputerDTO computer = mapper.unmap(serv.getComputerById(idComputer));
         request.setAttribute("computer", computer);
+
+        // Fetch the company list
+        CompaniesService service = new CompaniesService();
+        List<CompanyDTO> companyList = service.getDTOList();
+        request.setAttribute("companyList", companyList);
 
         this.getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
     }

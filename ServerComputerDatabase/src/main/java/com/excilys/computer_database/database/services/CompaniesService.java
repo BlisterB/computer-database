@@ -25,7 +25,7 @@ public class CompaniesService {
      *  @throws DAOException */
     public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage + 1;
-        List<Company> list = dao.findSome(begining, nbPerPage);
+        List<Company> list = dao.findSome(begining, nbPerPage, CompanyDAO.NAME);
 
         return new Page<Company>(list, pageNumber, nbPerPage);
     }

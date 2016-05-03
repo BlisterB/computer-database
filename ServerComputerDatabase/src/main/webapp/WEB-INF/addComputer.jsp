@@ -32,12 +32,10 @@
 									name="discontinued" placeholder="Discontinued date">
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId" name="companyId">
+								<label for="companyId">Company</label>
+								<select class="form-control" id="companyId" name="companyId">
 									<c:forEach var="company" items="${companyList}">
-                                		<<option
-											value="<c:out value="${company.id}"/>"><c:out
-												value="${company.name}" /></option>
+										<option value="${company.id}" <c:if test="${company.id == computer.companyId}">selected</c:if> >${company.name}</option>
 									</c:forEach>
 								</select>
 							</div>

@@ -25,7 +25,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     private static volatile ComputerDAO instance = null;
 
     public static final String TABLE_NAME = "computer";
-    private static final String ID = TABLE_NAME + ".id", NAME = TABLE_NAME + ".name",
+    public static final String ID = TABLE_NAME + ".id", NAME = TABLE_NAME + ".name",
             COMPANY_ID = TABLE_NAME + ".company_id", INTRODUCED = TABLE_NAME + ".introduced",
             DISCONTINUED = TABLE_NAME + ".discontinued";
 
@@ -258,6 +258,27 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        }
+    }
+
+    public static String normalizeOrderByClause(String orderby) {
+        if(orderby == null) {
+            return ComputerDAO.ID;
+        }
+
+        switch (orderby) {
+        case "id":
+            return ComputerDAO.ID;
+        case "name":
+            return ComputerDAO.NAME;
+        case "introduced" :
+            return ComputerDAO.INTRODUCED;
+        case "discontinued" :
+            return ComputerDAO.DISCONTINUED;
+        case "company" :
+            return ComputerDAO.COMPANY_ID;
+        default:
+            return ComputerDAO.NAME;
         }
     }
 }

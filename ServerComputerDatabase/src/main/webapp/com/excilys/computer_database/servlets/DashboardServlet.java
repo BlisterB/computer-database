@@ -1,6 +1,8 @@
 package com.excilys.computer_database.servlets;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +18,7 @@ import com.excilys.computer_database.ui.Page;
  */
 public class DashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final List<String> ORDER_BY_AUTHORIZED = Arrays.asList(new String[] { "id", "name", "introduced", "discontinued", "company" });
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -45,6 +48,10 @@ public class DashboardServlet extends HttpServlet {
         int current = getCurrentPage(request);
         request.setAttribute("current", current);
 
+        // Analyse "orderby" parameter
+        String orderby = getOrderBy(request);
+        request.setAttribute("orderby", orderby);
+
         // List to display : 2 cases
         Page<ComputerDTO> computerList = null;
         Integer nbResult = null;
@@ -58,10 +65,10 @@ public class DashboardServlet extends HttpServlet {
             // Fetch the number of results
             nbResult = computerServ.countSearchByNameNbResult(search);
         }
-        // B) Display all computer
+        // B) Display all computers
         else {
             // Fetch the list of computers
-            computerList = computerServ.listSomeComputersDTO(current * limit, limit);
+            computerList = computerServ.listSomeComputersDTO(current * limit, limit, orderby);
 
             // Fetch the total number of computers
             nbResult = computerServ.getComputerCount();
@@ -85,7 +92,7 @@ public class DashboardServlet extends HttpServlet {
 
         // The parameters "selection" indicate a list of computer to delete
         String selection = request.getParameter("selection");
-        if(selection != null){
+        if (selection != null) {
             System.out.println(selection);
 
             // Fetch the list
@@ -93,7 +100,7 @@ public class DashboardServlet extends HttpServlet {
 
             // Verify it's long value
             Long[] idTab = new Long[tab.length];
-            for(int i = 0; i < tab.length; i++) {
+            for (int i = 0; i < tab.length; i++) {
                 idTab[i] = Long.parseLong(tab[i]);
             }
 
@@ -153,5 +160,14 @@ public class DashboardServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             return nbPerDefault;
         }
+    }
+
+    private String getOrderBy(HttpServletRequest request) {
+        String orderby = request.getParameter("orderby");
+
+        if (orderby == null || !ORDER_BY_AUTHORIZED.contains(orderby)) {
+            return ORDER_BY_AUTHORIZED.get(0);
+        }
+        return orderby;
     }
 }

@@ -10,6 +10,7 @@ public class TagLink extends SimpleTagSupport {
     private static final int nbOfButton = 5;
 
     private int current, limit, nbComputer;
+    private String orderby;
 
     @Override
     public void doTag() throws JspException, IOException {
@@ -18,28 +19,28 @@ public class TagLink extends SimpleTagSupport {
 
         // Previous button
         if (current > 0) {
-            sb.append("<li><a href=\"").append(getLink(0, limit))
+            sb.append("<li><a href=\"").append(getLink(0, limit, orderby))
             .append("\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>");
         }
 
         // Previous number : 2 nb max
         for (int i = current - 2; i < current; i++) {
             if (i >= 0) {
-                appendButton(sb, i, limit);
+                appendButton(sb, i, limit, orderby);
             }
         }
 
         // Current number
-        appendButton(sb, current, limit);
+        appendButton(sb, current, limit, orderby);
 
         // Next number
         for (int i = current + 1; i * limit <= nbComputer && i <= current + 2 ; i++) {
-            appendButton(sb, i, limit);
+            appendButton(sb, i, limit, orderby);
         }
 
         // Next Button
         if ((current + 1) * limit <= nbComputer) {
-            sb.append("<li><a href=\"").append(getLink(current+1, limit)).append("\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>");
+            sb.append("<li><a href=\"").append(getLink(current+1, limit, orderby)).append("\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>");
         }
 
         sb.append("</ul>");
@@ -53,12 +54,12 @@ public class TagLink extends SimpleTagSupport {
         }
     }
 
-    private String getLink(int current, int limit) {
-        return "dashboard?current=" + current + "&limit=" + limit;
+    private String getLink(int current, int limit, String orderby) {
+        return "dashboard?current=" + current + "&limit=" + limit + "&orderby=" + orderby;
     }
 
-    private void appendButton(StringBuffer sb, int current, int limit) {
-        sb.append("<li><a href=\"").append(getLink(current, limit)).append("\">").append(current).append("</a></li>");
+    private void appendButton(StringBuffer sb, int current, int limit, String orderby) {
+        sb.append("<li><a href=\"").append(getLink(current, limit, orderby)).append("\">").append(current).append("</a></li>");
     }
 
     /**
@@ -108,5 +109,19 @@ public class TagLink extends SimpleTagSupport {
      */
     public static int getNbofbutton() {
         return nbOfButton;
+    }
+
+    /**
+     * @return the orderby
+     */
+    public String getOrderby() {
+        return orderby;
+    }
+
+    /**
+     * @param orderby the orderby to set
+     */
+    public void setOrderby(String orderby) {
+        this.orderby = orderby;
     }
 }

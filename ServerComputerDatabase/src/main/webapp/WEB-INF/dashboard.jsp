@@ -11,7 +11,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nbResults}computers found</h1>
+			<h1 id="homeTitle">${nbResults} computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -38,25 +38,19 @@
 			<table class="table table-striped table-bordered">
 				<thead>
 					<tr>
-						<!-- Variable declarations for passing labels as parameters -->
-						<!-- Table header for Computer Name -->
-
-						<th class="editMode" style="width: 60px; height: 22px;"><input
-							type="checkbox" id="selectall" /> <span
-							style="vertical-align: top;"> - <a href="#"
-								id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-									class="fa fa-trash-o fa-lg"></i>
-							</a>
-						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
-						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
-						<!-- Table header for Company -->
-						<th>Company</th>
+						<!-- Table headers -->
+						<th class="editMode" style="width: 60px; height: 22px;">
+							<input type="checkbox" id="selectall" />
+								<span style="vertical-align: top;"> - <a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();"> <i class="fa fa-trash-o fa-lg"></i> </a> </span>
+						</th>
+						<th><a href="dashboard?orderby=name&limit=${limit}&current=0">Computer Name</a></th>
+						<th><a href="dashboard?orderby=introduced&limit=${limit}&current=0">Introduced date</a></th>
+						<th><a href="dashboard?orderby=discontinued&limit=${limit}&current=0">Discontinued date</a></th>
+						<th><a href="dashboard?orderby=company&limit=${limit}&current=0">Company</a></th>
 
 					</tr>
 				</thead>
+
 				<!-- Browse attribute computers -->
 				<tbody id="results">
 					<c:forEach var="computer" items="${computerList}">
@@ -80,15 +74,14 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<perso:taglink limit="${limit}" current="${current}"
-				nbComputer="${nbComputer}" />
+			<perso:taglink limit="${limit}" orderby="${orderby}" current="${current}" nbComputer="${nbResults}" />
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?current=0&limit=10" type="button"
+				<a href="dashboard?current=0&limit=10&orderby=${orderby}" type="button"
 					class="btn btn-default">10</a> <a
-					href="dashboard?current=0&limit=50" type="button"
+					href="dashboard?current=0&limit=50&orderby=${orderby}" type="button"
 					class="btn btn-default">50</a> <a
-					href="dashboard?current=0&limit=100" type="button"
+					href="dashboard?current=0&limit=100&orderby=${orderby}" type="button"
 					class="btn btn-default">100</a>
 			</div>
 		</div>

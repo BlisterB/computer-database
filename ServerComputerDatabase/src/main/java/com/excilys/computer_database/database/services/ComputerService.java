@@ -31,14 +31,39 @@ public class ComputerService {
      * Return a page containing a number of "nbPerPage" Computer from "begining" in the DB.
      * @param begining Begining in the DB
      * @param nbPerPage Max number of element
+     * @param orderBy "id", "name", "introduced", "discontinued" or "company"
      * @return A page containing a number of "nbPerPage" Computer from "begining" in the DB
      * @throws DAOException In case of DAO problem
      */
-    public Page<Computer> listSomeComputers(int begining, int nbPerPage) throws DAOException {
+    public Page<Computer> listSomeComputers(int begining, int nbPerPage, String orderBy) throws DAOException {
         int pageNumber = begining / nbPerPage;
-        List<Computer> list = dao.findSome(begining, nbPerPage);
+        orderBy = ComputerDAO.normalizeOrderByClause(orderBy);
+
+        List<Computer> list = dao.findSome(begining, nbPerPage, orderBy);
 
         return new Page<Computer>(list, pageNumber, nbPerPage);
+    }
+
+    /**
+     * @param begining
+     * @param nbPerPage
+     * @param orderBy "id", "name", "introduced", "discontinued" or "company"
+     * @return
+     * @throws DAOException
+     */
+    public Page<ComputerDTO> listSomeComputersDTO(int begining, int nbPerPage, String orderBy) throws DAOException {
+        // TODO : Implémenter ça proprement (pour le moment complexité 2*n)
+        int pageNumber = begining / nbPerPage;
+        orderBy = ComputerDAO.normalizeOrderByClause(orderBy);
+
+        List<Computer> list = dao.findSome(begining, nbPerPage, orderBy);
+        List<ComputerDTO> listDTO = new LinkedList<ComputerDTO>();
+        ComputerDTOMapper mapper = new ComputerDTOMapper();
+        for(Computer c : list){
+            listDTO.add(mapper.unmap(c));
+        }
+
+        return new Page<ComputerDTO>(listDTO, pageNumber, nbPerPage);
     }
 
     /** Return the list of all computers.
@@ -89,19 +114,6 @@ public class ComputerService {
 
     public int getComputerCount() throws DAOException {
         return dao.getCount();
-    }
-
-    public Page<ComputerDTO> listSomeComputersDTO(int begining, int nbPerPage) throws DAOException {
-        // TODO : Implémenter ça proprement (pour le moment complexité 2*n)
-        int pageNumber = begining / nbPerPage;
-        List<Computer> list = dao.findSome(begining, nbPerPage);
-        List<ComputerDTO> listDTO = new LinkedList<ComputerDTO>();
-        ComputerDTOMapper mapper = new ComputerDTOMapper();
-        for(Computer c : list){
-            listDTO.add(mapper.unmap(c));
-        }
-
-        return new Page<ComputerDTO>(listDTO, pageNumber, nbPerPage);
     }
 
     public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException{

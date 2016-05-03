@@ -23,35 +23,30 @@ import com.excilys.computer_database.entity.Computer.ComputerBuilder;
 public class AddComputerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-
     public AddComputerServlet() {
         super();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         // Fetch the company list
         CompaniesService service = new CompaniesService();
-        try {
-            List<CompanyDTO> companyList = service.getDTOList();
-            request.setAttribute("companyList", companyList);
-            this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
-        } catch (DAOException e) {
-            // TODO : Que faire en cas d'erreur ?
-            e.printStackTrace();
-        }
+        List<CompanyDTO> companyList = service.getDTOList();
+        request.setAttribute("companyList", companyList);
+        this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         CompaniesService companyService = new CompaniesService();
-        ComputerService computerService= new ComputerService();
+        ComputerService computerService = new ComputerService();
 
         // TODO : Effectuer les verification d'input
         // TODO : Verifier name vide
         String name = request.getParameter("computerName");
         ComputerBuilder builder = new ComputerBuilder(name);
-
 
         // Date
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -84,7 +79,7 @@ public class AddComputerServlet extends HttpServlet {
             } catch (DAOException | NotFoundException e) {
                 e.printStackTrace();
             }
-        } catch (NumberFormatException  e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
             // Stay with null value
         }

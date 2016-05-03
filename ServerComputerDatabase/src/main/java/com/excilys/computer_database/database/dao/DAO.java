@@ -116,10 +116,14 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
      * @return The list
      * @throws DAOException if an error occurs
      */
-    public List<T> findSome(int begining, int nbPerPage) throws DAOException {
+    public List<T> findSome(int begining, int nbPerPage, String orderBy) throws DAOException {
         try (Connection con = ConnectionDB.getConnection()) {
+            String request = getFindAllRequest()
+                    + " ORDER BY case when " + orderBy + " is null then 1 else 0 end ," + orderBy
+                    //+ " ORDER BY +" + orderBy + " ASC "
+                    + " LIMIT " + nbPerPage + " OFFSET " + begining;
             try (PreparedStatement stmt = con
-                    .prepareStatement(getFindAllRequest() + " LIMIT " + nbPerPage + " OFFSET " + begining)) {
+                    .prepareStatement(request)) {
                 ResultSet rs = stmt.executeQuery();
 
                 // Create, fill, and return a list
