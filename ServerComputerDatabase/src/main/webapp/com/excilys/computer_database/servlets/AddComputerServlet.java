@@ -8,20 +8,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import com.excilys.computer_database.database.dao.DAOException;
-import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
-import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.entity.Computer.ComputerBuilder;
+import com.excilys.computer_database.database.validators.ComputerValidator;
+import com.excilys.computer_database.entity.Computer;
 
 public class AddComputerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
+    private CompaniesService companyService = new CompaniesService();
+    private ComputerService computerService = new ComputerService();
 
     public AddComputerServlet() {
         super();
@@ -31,65 +28,27 @@ public class AddComputerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Fetch the company list
-        CompaniesService service = new CompaniesService();
-        List<CompanyDTO> companyList = service.getDTOList();
+        List<CompanyDTO> companyList = companyService.getDTOList();
         request.setAttribute("companyList", companyList);
+
+        // Redirect to the JSP
         this.getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CompaniesService companyService = new CompaniesService();
-        ComputerService computerService = new ComputerService();
-
-        // TODO : Effectuer les verification d'input
-        // TODO : Verifier name vide
+        // Fetch the parameters
         String name = request.getParameter("computerName");
-        ComputerBuilder builder = new ComputerBuilder(name);
-
-        // Date
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
-
         String introducedString = request.getParameter("introduced");
-        LocalDate introduced = null;
-        try {
-            introduced = LocalDate.parse(introducedString, formatter);
-            builder.introduced(introduced);
-        } catch (Exception e) {
-            // Stay with null value
-        }
-
         String discontinuedString = request.getParameter("discontinued");
-        LocalDate discontinued = null;
-        try {
-            discontinued = LocalDate.parse(discontinuedString, formatter);
-            builder.discontinued(discontinued);
-        } catch (Exception e) {
-            // Stay with null value
-        }
+        Long companyId = Long.parseLong(request.getParameter("companyId"));
 
-        // Company id
-        try {
-            try {
-                Long companyId = Long.parseLong(request.getParameter("companyId"));
-                Company company = companyService.find(companyId);
-                System.out.println("company found : " + company);
-                builder.company(company);
-            } catch (DAOException | NotFoundException e) {
-                e.printStackTrace();
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            // Stay with null value
-        }
+        // Validate the computer informations
+        Computer computer = ComputerValidator.validate(name, introducedString, discontinuedString, companyId);
 
         // Create the computer in the DB
-        try {
-            computerService.createComputer(builder.build());
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
+        computerService.createComputer(computer);
 
         // On redirige vers le dashboard
         response.sendRedirect("/computer-database/dashboard");
