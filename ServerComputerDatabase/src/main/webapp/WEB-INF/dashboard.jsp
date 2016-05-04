@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="perso"	uri="/WEB-INF/taglink.tld" %>
 <%@ taglib prefix="tag"	tagdir="/WEB-INF/tags/" %>
 
 <!DOCTYPE html>
@@ -85,17 +84,7 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<c:choose>
-				<c:when test="${not empty param.search}">
-					<perso:taglink limit="${limit}" orderby="${orderby}"
-						current="${current}" nbComputer="${nbResults}"
-						search="${param.search}" />
-				</c:when>
-				<c:otherwise>
-					<perso:taglink limit="${limit}" orderby="${orderby}"
-						current="${current}" nbComputer="${nbResults}" />
-				</c:otherwise>
-			</c:choose>
+			<tag:pagination pageUrl="dashboard" currentPage="${currentPage}" nbResults="${nbResults}" nbPerPage="${nbPerPage}"></tag:pagination>
 
 			<!-- NumberPerPage buttons -->
 			<div class="btn-group btn-group-sm pull-right" role="group">
