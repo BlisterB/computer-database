@@ -24,10 +24,10 @@
     	</c:otherwise>
     </c:choose>
     
-	<c:forEach begin="${begining}" end="${begining + 5}" varStatus="loop">
+	<c:forEach begin="${begining}" end="${begining + 4}" varStatus="loop">
 		<c:choose>
 	    	<c:when test="${loop.index == currentPage}">
-	    		<li>${currentPage}</li>
+	    		<li><a>${currentPage}</a></li>
 	    	</c:when>
 	    	<c:when test="${ loop.index < nbResults/nbPerPage }">
     			<li><tag:link currentPage="${loop.index}" pageUrl="dashboard">${loop.index}</tag:link></li>
