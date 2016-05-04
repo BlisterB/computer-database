@@ -18,7 +18,13 @@ import com.excilys.computer_database.ui.Page;
  */
 public class DashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final List<String> ORDER_BY_AUTHORIZED = Arrays.asList(new String[] { "id", "name", "introduced", "discontinued", "company" });
+    // Request's parameters
+    private static final String NB_PER_PAGE = "nbPerPage", CURRENT_PAGE = "currentPage", ORDER_BY = "orderBy",
+            SEARCH = "search", COMPUTER_LIST = "computerList", NB_RESULTS = "nbResults", LIST_TO_DELETE = "selection";
+    // Legal values
+    private static final List<String> ORDER_BY_AUTHORIZED = Arrays
+            .asList(new String[] { "id", "name", "introduced", "discontinued", "company" });
+    private static final List<String> NB_PER_PAGE_AUTHORIZED = Arrays.asList(new String[] { "10", "50", "100" });
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,26 +47,26 @@ public class DashboardServlet extends HttpServlet {
         ComputerService computerServ = new ComputerService();
 
         // Fetch the number of computers to display
-        int limit = getLimit(request);
-        request.setAttribute("limit", limit);
+        int nbPerPage = getNbPerPage(request);
+        request.setAttribute(NB_PER_PAGE, nbPerPage);
 
         // Fetch the page number
-        int current = getCurrentPage(request);
-        request.setAttribute("current", current);
+        int currentPage = getCurrentPage(request);
+        request.setAttribute(CURRENT_PAGE, currentPage);
 
         // Analyse "orderby" parameter
-        String orderby = getOrderBy(request);
-        request.setAttribute("orderby", orderby);
+        String orderBy = getOrderBy(request);
+        request.setAttribute(ORDER_BY, orderBy);
 
         // List to display : 2 cases
         Page<ComputerDTO> computerList = null;
         Integer nbResult = null;
 
         // A) Display a search result
-        if (request.getParameter("search") != null) {
-            String search = request.getParameter("search");
+        String search = request.getParameter(SEARCH);
+        if (search != null) {
             // Fetch the computers list
-            computerList = computerServ.searchByName(search, current * limit, limit);
+            computerList = computerServ.searchByName(search, currentPage * nbPerPage, nbPerPage);
 
             // Fetch the number of results
             nbResult = computerServ.countSearchByNameNbResult(search);
@@ -68,14 +74,14 @@ public class DashboardServlet extends HttpServlet {
         // B) Display all computers
         else {
             // Fetch the list of computers
-            computerList = computerServ.listSomeComputersDTO(current * limit, limit, orderby);
+            computerList = computerServ.listSomeComputersDTO(currentPage * nbPerPage, nbPerPage, orderBy);
 
             // Fetch the total number of computers
             nbResult = computerServ.getComputerCount();
         }
 
-        request.setAttribute("computerList", computerList.getList());
-        request.setAttribute("nbResults", nbResult);
+        request.setAttribute(COMPUTER_LIST, computerList.getList());
+        request.setAttribute(NB_RESULTS, nbResult);
 
         this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
@@ -91,10 +97,8 @@ public class DashboardServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // The parameters "selection" indicate a list of computer to delete
-        String selection = request.getParameter("selection");
+        String selection = request.getParameter(LIST_TO_DELETE);
         if (selection != null) {
-            System.out.println(selection);
-
             // Fetch the list
             String[] tab = selection.split(",");
 
@@ -118,54 +122,39 @@ public class DashboardServlet extends HttpServlet {
      * @param request The request
      * @return The number of computers to display
      */
-    private int getLimit(HttpServletRequest request) {
-        int nbPerDefault = 10;
-        int[] acceptedNumbers = { 10, 50, 100 };
-
+    private int getNbPerPage(HttpServletRequest request) {
         // Fetch the eventual "limit" parameter
-        String limitParam = request.getParameter("limit");
-        if (limitParam == null) {
-            return nbPerDefault;
+        String limitParam = request.getParameter(NB_PER_PAGE);
+
+        // Check the legality of the value
+        if (!NB_PER_PAGE_AUTHORIZED.contains(limitParam)) {
+            return Integer.valueOf(NB_PER_PAGE_AUTHORIZED.get(0));
         }
 
-        // Convert it to int
-        int limit = -1;
-        try {
-            limit = Integer.parseInt(limitParam);
-        } catch (NumberFormatException e) {
-            return nbPerDefault;
-        }
-
-        // Verify if the value is legal
-        for (int i : acceptedNumbers) {
-            if (limit == i) {
-                return i;
-            }
-        }
-        return nbPerDefault;
+        return Integer.valueOf(limitParam);
     }
 
     private int getCurrentPage(HttpServletRequest request) {
-        int nbPerDefault = 0;
+        int defaultValue = 0;
 
         // Fetch the eventual "current" parameter
-        String currentParam = request.getParameter("current");
+        String currentParam = request.getParameter(CURRENT_PAGE);
         if (currentParam == null) {
-            return nbPerDefault;
+            return defaultValue;
         }
 
-        // Convert it to int
+        // Convert it to int (catching risk of illegal value)
         try {
             return Integer.parseInt(currentParam);
         } catch (NumberFormatException e) {
-            return nbPerDefault;
+            return defaultValue;
         }
     }
 
     private String getOrderBy(HttpServletRequest request) {
-        String orderby = request.getParameter("orderby");
+        String orderby = request.getParameter(ORDER_BY);
 
-        if (orderby == null || !ORDER_BY_AUTHORIZED.contains(orderby)) {
+        if (!ORDER_BY_AUTHORIZED.contains(orderby)) {
             return ORDER_BY_AUTHORIZED.get(0);
         }
         return orderby;

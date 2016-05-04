@@ -54,7 +54,7 @@ public class TagLink extends SimpleTagSupport {
     }
 
     private String getLink(int current, int limit) {
-        StringBuffer bf = new StringBuffer("dashboard?current=" + current + "&limit=" + limit + "&orderby=" + orderby);
+        StringBuffer bf = new StringBuffer("dashboard?currentPage=" + current + "&nbPerPage=" + limit + "&orderBy=" + orderby);
         if(search != null) {
             bf.append("&search=").append(search);
         }

@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="perso" uri="/WEB-INF/taglink.tld"%>
+<%@taglib prefix="perso"	uri="/WEB-INF/taglink.tld" %>
+<%@ taglib prefix="tag"	tagdir="/WEB-INF/tags/" %>
 
 <!DOCTYPE html>
 <html>
@@ -79,6 +80,7 @@
 				</tbody>
 			</table>
 		</div>
+		
 	</section>
 
 	<footer class="navbar-fixed-bottom">
@@ -95,13 +97,11 @@
 				</c:otherwise>
 			</c:choose>
 
+			<!-- NumberPerPage buttons -->
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?current=0&limit=10&orderby=${orderby}"
-					type="button" class="btn btn-default">10</a> <a
-					href="dashboard?current=0&limit=50&orderby=${orderby}"
-					type="button" class="btn btn-default">50</a> <a
-					href="dashboard?current=0&limit=100&orderby=${orderby}"
-					type="button" class="btn btn-default">100</a>
+				<tag:link pageUrl="dashboard" currentPage="0" nbPerPage="10"	type="button" cssClass="btn btn-default">10</tag:link>
+				<tag:link pageUrl="dashboard" currentPage="0" nbPerPage="50"	type="button" cssClass="btn btn-default">50</tag:link>
+				<tag:link pageUrl="dashboard" currentPage="0" nbPerPage="100"	type="button" cssClass="btn btn-default">100</tag:link>
 			</div>
 		</div>
 	</footer>
