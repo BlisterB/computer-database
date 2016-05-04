@@ -69,11 +69,10 @@
 								class="cb" value="${computer.id}"></td>
 
 							<!--  Cellules d'affichage des informations du computer -->
-							<td><a href="editComputer?idComputer=${computer.id}"><c:out
-										value="${computer.name}" /></a></td>
-							<td><c:out value="${computer.introduced}" /></td>
-							<td><c:out value="${computer.discontinued}" /></td>
-							<td><c:out value="${computer.companyName}" /></td>
+							<td><a href="editComputer?idComputer=${computer.id}">${computer.name}</a></td>
+							<td>${computer.introduced}</td>
+							<td>${computer.discontinued}</td>
+							<td>${computer.companyName}</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -84,6 +83,7 @@
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
+			<!-- Pagination buttons -->
 			<tag:pagination pageUrl="dashboard" currentPage="${currentPage}" nbResults="${nbResults}" nbPerPage="${nbPerPage}"></tag:pagination>
 
 			<!-- NumberPerPage buttons -->

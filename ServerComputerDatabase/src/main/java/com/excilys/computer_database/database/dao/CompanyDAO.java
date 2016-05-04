@@ -21,7 +21,8 @@ public class CompanyDAO extends DAO<Company> {
     private static final String FIND_REQUEST = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " = ?",
             FIND_ALL_REQUEST = "SELECT " + ID + "," + NAME + " FROM company",
             INSERT_REQUEST = "INSERT INTO " + TABLE_NAME + " ( " + NAME + " ) VALUES (?) ",
-            UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?";
+            UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?",
+            DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
     private Logger logger;
 
@@ -108,37 +109,18 @@ public class CompanyDAO extends DAO<Company> {
         }
     }
 
-    @Override
-    public void delete(Long id) throws DAOException {
-        // Dete a company implies to delete all the associated computer
-        try (Connection con = ConnectionDB.getConnection()) {
-            // Begin the transaction
-            con.setAutoCommit(false);
-
-            String deleteCompanyRequest = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
-            PreparedStatement deleteCompanyStmt = con.prepareStatement(deleteCompanyRequest);
+    /** Delete the company identified by "id" using the connection "con". */
+    public void delete(Long id, Connection con) throws DAOException {
+        try (PreparedStatement deleteCompanyStmt = con.prepareStatement(DELETE_REQUEST)) {
             deleteCompanyStmt.setLong(1, id);
-
-            String deleteComputersRequest = "DELETE FROM " + ComputerDAO.TABLE_NAME + " WHERE " + ComputerDAO.COMPANY_ID
-                    + " = ? ";
-            PreparedStatement deleteComputersStmt = con.prepareStatement(deleteComputersRequest);
-            deleteComputersStmt.setLong(1, id);
-
-            try {
-                deleteComputersStmt.executeUpdate();
-                deleteCompanyStmt.executeUpdate();
-
-                con.commit();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                con.rollback();
-            } finally {
-                deleteCompanyStmt.close();
-                deleteComputersStmt.close();
-            }
+            deleteCompanyStmt.executeUpdate();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
+    }
+
+    @Override
+    public void delete(Long id) throws DAOException {
+        throw new DAOException("Delete a computer must be completed in the Service step to delete related Computer.");
     }
 }

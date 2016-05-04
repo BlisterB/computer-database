@@ -45,7 +45,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                     COUNT_FIND_BY_NAME = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME
                     + " ON " + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
                     + " LIKE ?",
-                    DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ";
+                    DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ",
+                    DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
     private Logger logger;
 
@@ -279,6 +280,15 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             return ComputerDAO.COMPANY_ID;
         default:
             return ComputerDAO.NAME;
+        }
+    }
+
+    public void deleteByCompanyID(Long companyId, Connection con) throws DAOException {
+        try (PreparedStatement stmt = con.prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
+            stmt.setLong(1, companyId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
         }
     }
 }

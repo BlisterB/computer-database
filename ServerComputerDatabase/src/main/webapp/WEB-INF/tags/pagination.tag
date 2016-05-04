@@ -15,15 +15,24 @@
 	</c:if>
 
 	<!-- Numeroted buttons -->
-	<c:set var="i" value="${currentPage - 2}" />
-	<c:if test="${i < 0}">
-    		<c:set var="i" value="0" />
-    </c:if>
+    <c:choose>
+    	<c:when test="${currentPage < 2}">
+    		<c:set var="begining" value="0" />
+    	</c:when>
+    	<c:otherwise>
+    		<c:set var="begining" value="${currentPage - 2}" />
+    	</c:otherwise>
+    </c:choose>
     
-	<c:forEach begin="${i}" end="${currentPage + 2}" varStatus="loop">
-    	<c:if test="${loop.index > 0 && loop.index < nbResults/nbPerPage }">
-    		<li><tag:link currentPage="${loop.index}" pageUrl="dashboard">${loop.index}</tag:link></li>
-    	</c:if>
+	<c:forEach begin="${begining}" end="${begining + 5}" varStatus="loop">
+		<c:choose>
+	    	<c:when test="${loop.index == currentPage}">
+	    		<li>${currentPage}</li>
+	    	</c:when>
+	    	<c:when test="${ loop.index < nbResults/nbPerPage }">
+    			<li><tag:link currentPage="${loop.index}" pageUrl="dashboard">${loop.index}</tag:link></li>
+    		</c:when>
+	    </c:choose>
 	</c:forEach>
 
 	<!-- "Last page" button -->
