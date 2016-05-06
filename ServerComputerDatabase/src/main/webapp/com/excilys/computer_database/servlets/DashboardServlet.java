@@ -44,7 +44,7 @@ public class DashboardServlet extends HttpServlet {
     static {
         ORDER_AUTHORIZED = new HashMap<>();
         ORDER_AUTHORIZED.put("ASC", ORDER.ASC);
-        ORDER_AUTHORIZED.put("50", ORDER.DESC);
+        ORDER_AUTHORIZED.put("DESC", ORDER.DESC);
     }
 
     /**
@@ -64,11 +64,10 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ComputerService computerServ = new ComputerService();
 
         // Fetch the page's size
-        Integer pageSize = PAGE_SIZE_AUTHORIZED.get(request.getAttribute(PAGE_SIZE));
-        if (pageSize != null) {
+        Integer pageSize = PAGE_SIZE_AUTHORIZED.get(request.getParameter(PAGE_SIZE));
+        if (pageSize == null) {
             pageSize = 10;
         }
         request.setAttribute(PAGE_SIZE, pageSize);
@@ -78,17 +77,30 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute(CURRENT_PAGE, currentPage);
 
         // Fetch the orderby column
-        COLUMN column = COLUMN_AUTHORISED.get(request.getAttribute(ORDER_BY));
-        request.setAttribute(ORDER_BY, column);
+        String columnParam = request.getParameter(ORDER_BY);
+        COLUMN column = COLUMN_AUTHORISED.get(columnParam);
+        if (column == null) {
+            column = COLUMN.COMPUTER_NAME;
+            request.setAttribute(ORDER_BY, "computerName");
+        } else {
+            request.setAttribute(ORDER_BY, columnParam);
+        }
 
         // Fetch the order
-        ORDER order = ORDER_AUTHORIZED.get(request.getAttribute(ORDER_TAG));
+        ORDER order = ORDER_AUTHORIZED.get(request.getParameter(ORDER_TAG));
+        if (order == null) {
+            order = ORDER.ASC;
+        }
+        request.setAttribute(ORDER_TAG, order);
 
         // Search attribute can be null
         String search = request.getParameter(SEARCH);
+        request.setAttribute(SEARCH, search);
 
         // Ask the DB
-        Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage, pageSize);
+        ComputerService computerServ = new ComputerService();
+        Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage * pageSize,
+                pageSize);
         int nbResult = computerServ.countListResult(search);
 
         request.setAttribute(COMPUTER_LIST, computerList.getList());

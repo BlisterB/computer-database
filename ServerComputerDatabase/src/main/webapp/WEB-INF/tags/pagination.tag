@@ -4,39 +4,39 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ attribute name="pageUrl" required="true"%>
-<%@ attribute name="currentPage" required="true"%>
+<%@ attribute name="page" required="true"%>
 <%@ attribute name="nbResults" required="true"%>
-<%@ attribute name="nbPerPage" required="true"%>
+<%@ attribute name="pageSize" required="true"%>
 
 <ul class="pagination">
 	<!-- "First page" button -->
-	<c:if test="${currentPage > 0}">
-		<li><tag:link currentPage="0" pageUrl="dashboard"><span aria-hidden="true">&laquo;</span></tag:link></li>
+	<c:if test="${page > 0}">
+		<li><tag:link page="0" pageUrl="dashboard"><span aria-hidden="true">&laquo;</span></tag:link></li>
 	</c:if>
 
 	<!-- Numeroted buttons -->
     <c:choose>
-    	<c:when test="${currentPage < 2}">
+    	<c:when test="${page < 2}">
     		<c:set var="begining" value="0" />
     	</c:when>
     	<c:otherwise>
-    		<c:set var="begining" value="${currentPage - 2}" />
+    		<c:set var="begining" value="${page - 2}" />
     	</c:otherwise>
     </c:choose>
     
 	<c:forEach begin="${begining}" end="${begining + 4}" varStatus="loop">
 		<c:choose>
-	    	<c:when test="${loop.index == currentPage}">
-	    		<li><a>${currentPage}</a></li>
+	    	<c:when test="${loop.index == page}">
+	    		<li><a>${page}</a></li>
 	    	</c:when>
-	    	<c:when test="${ loop.index < nbResults/nbPerPage }">
-    			<li><tag:link currentPage="${loop.index}" pageUrl="dashboard">${loop.index}</tag:link></li>
+	    	<c:when test="${ loop.index < nbResults/pageSize }">
+    			<li><tag:link page="${loop.index}" pageUrl="dashboard">${loop.index}</tag:link></li>
     		</c:when>
 	    </c:choose>
 	</c:forEach>
 
 	<!-- "Last page" button -->
-	<c:if test="${currentPage + 1 < nbResults/nbPerPage}">
-		<li><tag:link currentPage="${fn:substringBefore(nbResults/nbPerPage, '.')}" pageUrl="dashboard"><span aria-hidden="true">&raquo;</span></tag:link></li>
+	<c:if test="${page + 1 < nbResults/pageSize}">
+		<li><tag:link page="${fn:substringBefore(nbResults/pageSize, '.')}" pageUrl="dashboard"><span aria-hidden="true">&raquo;</span></tag:link></li>
 	</c:if>
 </ul>

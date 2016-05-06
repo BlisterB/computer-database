@@ -216,13 +216,32 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
         // Column
         if (column != null) {
-            sb.append(" ORDER BY ? ");
+            String col;
+
+            switch (column) {
+            case COMPUTER_NAME:
+                col = NAME;
+                break;
+            case INTRODUCED:
+                col = INTRODUCED;
+                break;
+            case DISCONTINUED:
+                col = DISCONTINUED;
+                break;
+            case COMPANY_NAME:
+                col = CompanyDAO.NAME;
+                break;
+            default:
+                col = NAME;
+                break;
+            }
+            sb.append(" ORDER BY ").append(col);
 
             // ASC / DESC
             if (order != null && order.equals(ORDER.ASC)) {
-                sb.append("ASC");
+                sb.append(" ASC ");
             } else {
-                sb.append("DESC");
+                sb.append(" DESC ");
             }
         }
 
@@ -240,30 +259,6 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                 stmt.setString(nextParam++, s);
             }
 
-            // Column
-            if (column != null) {
-                String col;
-
-                switch (column) {
-                case COMPUTER_NAME:
-                    col = NAME;
-                    break;
-                case INTRODUCED:
-                    col = INTRODUCED;
-                    break;
-                case DISCONTINUED:
-                    col = DISCONTINUED;
-                    break;
-                case COMPANY_NAME:
-                    col = CompanyDAO.NAME;
-                    break;
-                default:
-                    col = NAME;
-                    break;
-                }
-                stmt.setString(nextParam++, col);
-            }
-
             // Limit
             stmt.setInt(nextParam++, pageSize);
             stmt.setInt(nextParam++, begining);
@@ -275,6 +270,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             ComputerDTOMapper mapper = new ComputerDTOMapper();
             List<ComputerDTO> list = new LinkedList<>();
             while (rs.next()) {
+                System.out.println(unmap(rs));
                 list.add(mapper.unmap(unmap(rs)));
             }
 
@@ -286,10 +282,10 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
     public int countSearchResult(String search) {
         String request;
-        if(search != null){
-            request =
-                    "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID + " = " + CompanyDAO.ID
-                    + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME + " LIKE ?";
+        if (search != null) {
+            request = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON "
+                    + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
+                    + " LIKE ?";
         } else {
             request = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME;
         }
@@ -302,7 +298,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             }
 
             ResultSet rs = stmt.executeQuery();
-            if(rs.first()) {
+            if (rs.first()) {
                 return rs.getInt(1);
             }
             throw new DAOException("Imposible to calculate the DB size");

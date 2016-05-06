@@ -84,13 +84,13 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<!-- Pagination buttons -->
-			<tag:pagination pageUrl="dashboard" currentPage="${currentPage}" nbResults="${nbResults}" nbPerPage="${nbPerPage}"></tag:pagination>
+			<tag:pagination pageUrl="dashboard" page="${page}" nbResults="${nbResults}" pageSize="${pageSize}"></tag:pagination>
 
 			<!-- NumberPerPage buttons -->
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<tag:link pageUrl="dashboard" currentPage="0" nbPerPage="10"	type="button" cssClass="btn btn-default">10</tag:link>
-				<tag:link pageUrl="dashboard" currentPage="0" nbPerPage="50"	type="button" cssClass="btn btn-default">50</tag:link>
-				<tag:link pageUrl="dashboard" currentPage="0" nbPerPage="100"	type="button" cssClass="btn btn-default">100</tag:link>
+				<tag:link pageUrl="dashboard" page="0" pageSize="10"	type="button" cssClass="btn btn-default">10</tag:link>
+				<tag:link pageUrl="dashboard" page="0" pageSize="50"	type="button" cssClass="btn btn-default">50</tag:link>
+				<tag:link pageUrl="dashboard" page="0" pageSize="100"	type="button" cssClass="btn btn-default">100</tag:link>
 			</div>
 		</div>
 	</footer>
