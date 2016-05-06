@@ -1,6 +1,5 @@
 package com.excilys.computer_database.database.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computer_database.database.ConnectionDB;
+import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
 import com.excilys.computer_database.database.mappers.Mapper;
@@ -107,40 +106,39 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         }
 
         // Exécution de la requête
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, comp.getName());
-                if (comp.getIntroduced() != null) {
-                    stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
-                } else {
-                    stmt.setTimestamp(2, null);
-                }
-                if (comp.getDiscontinued() != null) {
-                    stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
-                } else {
-                    stmt.setTimestamp(3, null);
-                }
-
-                if (comp.getCompany() != null) {
-                    stmt.setLong(4, comp.getCompany().getId());
-                } else {
-                    stmt.setNull(4, java.sql.Types.BIGINT);
-                }
-
-                stmt.executeUpdate();
-
-                // Mise à jour de l'id de l'objet inséré
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.first()) {
-                    comp.setId(rs.getLong(1));
-                } else {
-                    String errorMessage = "L'insertion n'a pas aboutie";
-                    logger.error(errorMessage);
-                    throw new SQLException(errorMessage);
-                }
-
-                return comp;
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(INSERT_FULL_REQUEST,
+                Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, comp.getName());
+            if (comp.getIntroduced() != null) {
+                stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
+            } else {
+                stmt.setTimestamp(2, null);
             }
+            if (comp.getDiscontinued() != null) {
+                stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
+            } else {
+                stmt.setTimestamp(3, null);
+            }
+
+            if (comp.getCompany() != null) {
+                stmt.setLong(4, comp.getCompany().getId());
+            } else {
+                stmt.setNull(4, java.sql.Types.BIGINT);
+            }
+
+            stmt.executeUpdate();
+
+            // Mise à jour de l'id de l'objet inséré
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.first()) {
+                comp.setId(rs.getLong(1));
+            } else {
+                String errorMessage = "L'insertion n'a pas aboutie";
+                logger.error(errorMessage);
+                throw new SQLException(errorMessage);
+            }
+
+            return comp;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             throw new DAOException(e);
@@ -149,18 +147,16 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
     @Override
     public Computer update(Computer comp) throws DAOException {
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
-                stmt.setString(1, comp.getName());
-                stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
-                stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
-                stmt.setLong(4, comp.getCompany().getId());
-                stmt.setLong(5, comp.getId());
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(UPDATE_REQUEST)) {
+            stmt.setString(1, comp.getName());
+            stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
+            stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
+            stmt.setLong(4, comp.getCompany().getId());
+            stmt.setLong(5, comp.getId());
 
-                stmt.executeUpdate();
+            stmt.executeUpdate();
 
-                return comp;
-            }
+            return comp;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             throw new DAOException(e);
@@ -170,12 +166,10 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     @Override
     public void delete(Long id) throws DAOException {
         // TODO : Vérifier que l'id existe
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(DELETE_REQUEST)) {
-                stmt.setLong(1, id);
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_REQUEST)) {
+            stmt.setLong(1, id);
 
-                stmt.executeUpdate();
-            }
+            stmt.executeUpdate();
         } catch (SQLException e) {
             logger.error(e.getMessage());
             throw new DAOException(e);
@@ -183,14 +177,12 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     }
 
     public int getCount() throws DAOException {
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(COUNT_REQUEST)) {
-                ResultSet rs = stmt.executeQuery();
-                if (rs.first()) {
-                    return rs.getInt(1);
-                }
-                return -1;
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(COUNT_REQUEST)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.first()) {
+                return rs.getInt(1);
             }
+            return -1;
         } catch (SQLException e) {
             throw new DAOException(e);
         }
@@ -199,63 +191,57 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage;
 
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(FIND_BY_NAME)) {
-                stmt.setString(1, '%' + name + '%');
-                stmt.setString(2, '%' + name + '%');
-                stmt.setInt(3, nbPerPage);
-                stmt.setInt(4, begining);
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(FIND_BY_NAME)) {
+            stmt.setString(1, '%' + name + '%');
+            stmt.setString(2, '%' + name + '%');
+            stmt.setInt(3, nbPerPage);
+            stmt.setInt(4, begining);
 
-                // Récupération de la liste
-                List<ComputerDTO> l = new LinkedList<>();
-                ResultSet rs = stmt.executeQuery();
-                ComputerDTOMapper mapper = new ComputerDTOMapper();
-                while (rs.next()) {
-                    l.add(mapper.unmap(this.unmap(rs)));
-                }
-
-                return new Page<ComputerDTO>(l, pageNumber, nbPerPage);
+            // Récupération de la liste
+            List<ComputerDTO> l = new LinkedList<>();
+            ResultSet rs = stmt.executeQuery();
+            ComputerDTOMapper mapper = new ComputerDTOMapper();
+            while (rs.next()) {
+                l.add(mapper.unmap(this.unmap(rs)));
             }
+
+            return new Page<ComputerDTO>(l, pageNumber, nbPerPage);
         } catch (SQLException e) {
             throw new DAOException(e);
         }
     }
 
     public int countSearchByNameNbResult(String name) throws DAOException {
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(COUNT_FIND_BY_NAME)) {
-                stmt.setString(1, '%' + name + '%');
-                stmt.setString(2, '%' + name + '%');
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(COUNT_FIND_BY_NAME)) {
+            stmt.setString(1, '%' + name + '%');
+            stmt.setString(2, '%' + name + '%');
 
-                ResultSet rs = stmt.executeQuery();
-                if (rs.first()) {
-                    return rs.getInt(1);
-                }
-                return -1;
+            ResultSet rs = stmt.executeQuery();
+            if (rs.first()) {
+                return rs.getInt(1);
             }
+            return -1;
         } catch (SQLException e) {
             throw new DAOException(e);
         }
     }
 
     public void deleteComputerList(Long[] t) throws DAOException {
-        // setArray(..) is not supported with mysql, so we have to implement it...
+        // setArray(..) is not supported with mysql, so we have to implement
+        // it...
         StringBuffer sb = new StringBuffer();
         sb.append("(");
-        for(int i = 0; i < t.length; i++){
-            if(i > 0) {
+        for (int i = 0; i < t.length; i++) {
+            if (i > 0) {
                 sb.append(",");
             }
             sb.append(t[i]);
         }
         sb.append(")");
 
-
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(DELETE_LIST + sb.toString())) {
-                System.out.println(stmt.toString());
-                stmt.executeUpdate();
-            }
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_LIST + sb.toString())) {
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
@@ -263,7 +249,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     }
 
     public static String normalizeOrderByClause(String orderby) {
-        if(orderby == null) {
+        if (orderby == null) {
             return ComputerDAO.ID;
         }
 
@@ -272,19 +258,19 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             return ComputerDAO.ID;
         case "name":
             return ComputerDAO.NAME;
-        case "introduced" :
+        case "introduced":
             return ComputerDAO.INTRODUCED;
-        case "discontinued" :
+        case "discontinued":
             return ComputerDAO.DISCONTINUED;
-        case "company" :
+        case "company":
             return ComputerDAO.COMPANY_ID;
         default:
             return ComputerDAO.NAME;
         }
     }
 
-    public void deleteByCompanyID(Long companyId, Connection con) throws DAOException {
-        try (PreparedStatement stmt = con.prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
+    public void deleteByCompanyID(Long companyId) throws DAOException {
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
             stmt.setLong(1, companyId);
             stmt.executeUpdate();
         } catch (SQLException e) {

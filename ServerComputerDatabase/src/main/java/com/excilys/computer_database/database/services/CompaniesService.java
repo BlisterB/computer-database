@@ -1,11 +1,9 @@
 package com.excilys.computer_database.database.services;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.excilys.computer_database.database.ConnectionDB;
+import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
@@ -31,6 +29,7 @@ public class CompaniesService {
     public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage + 1;
         List<Company> list = dao.findSome(begining, nbPerPage, CompanyDAO.NAME);
+        DBManager.closeConnection();
 
         return new Page<Company>(list, pageNumber, nbPerPage);
     }
@@ -41,7 +40,9 @@ public class CompaniesService {
      * @throws DAOException
      */
     public List<Company> listAllCompanies() throws DAOException {
-        return dao.findAll();
+        List<Company> list = dao.findAll();
+        DBManager.closeConnection();
+        return list;
     }
 
     /**
@@ -52,30 +53,29 @@ public class CompaniesService {
      */
     public void delete(Long id) throws DAOException {
         // Use here a transaction, to delete related computers
-        try (Connection con = ConnectionDB.getConnection()) {
-            // Begin the transaction
-            con.setAutoCommit(false);
+        DBManager.initTransaction();
 
-            try {
-                // Delete related computers
-                (ComputerDAO.getInstance()).deleteByCompanyID(id, con);
+        try {
+            // Delete related computers
+            (ComputerDAO.getInstance()).deleteByCompanyID(id);
 
-                // Delete the company
-                dao.delete(id, con);
+            // Delete the company
+            dao.delete(id);
 
-                // Terminate the transaction
-                con.commit();
-            } catch (DAOException e) {
-                // Rollback if a problem is detected
-                con.rollback();
-            }
-        } catch (SQLException e){
-            throw new DAOException(e);
+            // Terminate the transaction
+            DBManager.commit();
+        } catch (DAOException e) {
+            // Rollback if a problem is detected
+            DBManager.rollback();
         }
+
+        DBManager.closeConnection();
     }
 
     public Company find(Long id) throws DAOException {
-        return dao.find(id);
+        Company company = dao.find(id);
+        DBManager.closeConnection();
+        return company;
     }
 
     /**
@@ -91,6 +91,9 @@ public class CompaniesService {
         for (Company company : list) {
             dtoList.add(new CompanyDTO(company));
         }
+
+        DBManager.closeConnection();
+
         return dtoList;
     }
 }

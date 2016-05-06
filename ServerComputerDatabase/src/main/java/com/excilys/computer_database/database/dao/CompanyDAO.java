@@ -1,6 +1,5 @@
 package com.excilys.computer_database.database.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +8,7 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computer_database.database.ConnectionDB;
+import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.entity.Company;
 
 public class CompanyDAO extends DAO<Company> {
@@ -71,22 +70,21 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Company create(Company obj) throws DAOException {
         // Exécution de la requête
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(INSERT_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, obj.getName());
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(INSERT_REQUEST,
+                Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, obj.getName());
 
-                stmt.executeUpdate();
+            stmt.executeUpdate();
 
-                // Mise à jour de l'id de l'objet inséré
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.first()) {
-                    obj.setId(rs.getLong(1));
-                } else {
-                    throw new SQLException("L'insertion n'a pas aboutie");
-                }
-
-                return obj;
+            // Mise à jour de l'id de l'objet inséré
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.first()) {
+                obj.setId(rs.getLong(1));
+            } else {
+                throw new SQLException("L'insertion n'a pas aboutie");
             }
+
+            return obj;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             throw new DAOException(e);
@@ -95,32 +93,28 @@ public class CompanyDAO extends DAO<Company> {
 
     @Override
     public Company update(Company obj) throws DAOException {
-        try (Connection con = ConnectionDB.getConnection()) {
-            try (PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST)) {
-                stmt.setString(1, obj.getName());
-                stmt.setLong(2, obj.getId());
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(UPDATE_REQUEST)) {
+            stmt.setString(1, obj.getName());
+            stmt.setLong(2, obj.getId());
 
-                stmt.executeUpdate();
-                return obj;
-            }
+            stmt.executeUpdate();
+            return obj;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
 
-    /** Delete the company identified by "id" using the connection "con". */
-    public void delete(Long id, Connection con) throws DAOException {
-        try (PreparedStatement deleteCompanyStmt = con.prepareStatement(DELETE_REQUEST)) {
+    /**
+     * Delete the company identified by "id".
+     */
+    @Override
+    public void delete(Long id) throws DAOException {
+        try (PreparedStatement deleteCompanyStmt = DBManager.getConnection().prepareStatement(DELETE_REQUEST)) {
             deleteCompanyStmt.setLong(1, id);
             deleteCompanyStmt.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-    }
-
-    @Override
-    public void delete(Long id) throws DAOException {
-        throw new DAOException("Delete a computer must be completed in the Service step to delete related Computer.");
     }
 }
