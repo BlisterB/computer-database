@@ -270,7 +270,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             ComputerDTOMapper mapper = new ComputerDTOMapper();
             List<ComputerDTO> list = new LinkedList<>();
             while (rs.next()) {
-                System.out.println(unmap(rs));
+                //System.out.println(unmap(rs));
                 list.add(mapper.unmap(unmap(rs)));
             }
 

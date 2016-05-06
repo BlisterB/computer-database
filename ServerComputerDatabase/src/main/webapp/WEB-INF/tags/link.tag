@@ -28,6 +28,11 @@
 		</c:choose>
 		
 		<c:choose>
+			<c:when test="${not empty order}">order=${order}&</c:when>
+			<c:when test="${not empty param.order}">order=${param.order}&</c:when>
+		</c:choose>
+		
+		<c:choose>
 			<c:when test="${not empty search}">search=${search}&</c:when>
 			<c:when test="${not empty param.search}">search=${param.search}&</c:when>
 		</c:choose>

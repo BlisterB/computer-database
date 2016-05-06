@@ -46,16 +46,18 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th><a href="dashboard?orderby=name&limit=${limit}&current=0">Computer
-								Name</a></th>
-						<th><a
-							href="dashboard?orderby=introduced&limit=${limit}&current=0">Introduced
-								date</a></th>
-						<th><a
-							href="dashboard?orderby=discontinued&limit=${limit}&current=0">Discontinued
-								date</a></th>
-						<th><a
-							href="dashboard?orderby=company&limit=${limit}&current=0">Company</a></th>
+						<th>
+							<tag:link pageUrl="dashboard" page="0" column="computerName" order="ASC" >Computer Name</tag:link>
+						</th>
+						<th>
+							<tag:link pageUrl="dashboard" page="0" column="introduced" order="DESC" >Introduced Date</tag:link>
+						</th>
+						<th>
+							<tag:link pageUrl="dashboard" page="0" column="discontinued" order="DESC" >Discontinued Date</tag:link>
+						</th>
+						<th>
+							<tag:link pageUrl="dashboard" page="0" column="companyName" order="ASC" >Company name</tag:link>
+						</th>
 
 					</tr>
 				</thead>
