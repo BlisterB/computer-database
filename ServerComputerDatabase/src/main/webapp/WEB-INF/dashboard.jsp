@@ -66,10 +66,10 @@
 						<tr>
 							<!-- Cellule de suppression du computer -->
 							<td class="editMode"><input type="checkbox" name="cb"
-								class="cb" value="${computer.id}"></td>
+								class="cb" value="${computer.id}" id="${computer.name}_id"></td>
 
 							<!--  Cellules d'affichage des informations du computer -->
-							<td><a href="editComputer?idComputer=${computer.id}">${computer.name}</a></td>
+							<td><a href="editComputer?idComputer=${computer.id}" id="${computer.name}_name">${computer.name}</a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
 							<td>${computer.companyName}</td>

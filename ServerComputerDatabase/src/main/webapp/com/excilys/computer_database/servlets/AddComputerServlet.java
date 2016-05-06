@@ -38,7 +38,7 @@ public class AddComputerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Fetch the parameters
-        String name = request.getParameter("computerName");
+        String name = request.getParameter("name");
         String introducedString = request.getParameter("introduced");
         String discontinuedString = request.getParameter("discontinued");
         Long companyId = Long.parseLong(request.getParameter("companyId"));

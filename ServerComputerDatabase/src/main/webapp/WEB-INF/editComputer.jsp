@@ -21,7 +21,7 @@
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
-									type="text" class="form-control" id="computerName" name="computerName" required="required" minlength="3"
+									type="text" class="form-control" id="name" name="name" required="required" minlength="3"
 									value="${computer.name}">
 							</div>
 							<div class="form-group">

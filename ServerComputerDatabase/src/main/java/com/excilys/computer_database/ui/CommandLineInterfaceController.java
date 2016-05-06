@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dao.NotFoundException;
+import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.services.CompaniesService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Company;
@@ -99,19 +100,19 @@ public class CommandLineInterfaceController {
     /** Launch the listing computers by page process. */
     private void listComputerByPage() {
         try {
-            int begining = 0, nbPerPage = 20;
+            int begining = 0, pageSize = 20;
             boolean continu = true;
 
             while (continu) {
-                Page<Computer> page = computerServ.listSomeComputers(begining, nbPerPage, "id");
+                Page<ComputerDTO> page = computerServ.listComputersDTO(null, null, null, begining, pageSize);
 
                 view.showPage(page);
 
                 String choice = askString().trim();
                 if (choice.equals("n")) {
-                    begining += nbPerPage;
+                    begining += pageSize;
                 } else if (choice.equals("p")) {
-                    begining -= nbPerPage;
+                    begining -= pageSize;
                 } else {
                     continu = false;
                 }

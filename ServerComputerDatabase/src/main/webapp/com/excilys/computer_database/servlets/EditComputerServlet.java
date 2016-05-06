@@ -42,7 +42,7 @@ public class EditComputerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Verify the request contains the computer's id to edit
-        Long idComputer = Long.parseLong(request.getParameter("idComputer"));
+        Long idComputer = Long.parseLong(request.getParameter("name"));
 
         // Fetch the computer to edit
         ComputerService serv = new ComputerService();

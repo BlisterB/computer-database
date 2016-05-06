@@ -19,8 +19,8 @@
 								<label for="computerName">Computer name</label> <input
 									type="text" minlength="3" class="form-control"
 									pattern="^([a-zA-Z0-9)$" required="required"
-									placeholder="Computer name" id="computerName"
-									name="computerName">
+									placeholder="Computer name" id="name"
+									name="name">
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date (YYYY-MM-dd) :</label>

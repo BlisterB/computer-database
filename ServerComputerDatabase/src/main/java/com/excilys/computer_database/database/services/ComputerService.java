@@ -1,16 +1,18 @@
 package com.excilys.computer_database.database.services;
 
-import java.util.LinkedList;
 import java.util.List;
 
+import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
 public class ComputerService {
+    public static enum COLUMN   { COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME };
+    public static enum ORDER    { ASC, DESC }
+
     private ComputerDAO dao;
 
     /** Constructor. */
@@ -25,26 +27,9 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public Computer getComputerById(Long id) throws DAOException {
-        return dao.find(id);
-    }
-
-    /**
-     * Return a page containing a number of "nbPerPage" Computer from "begining"
-     * in the DB.
-     * @param begining Begining in the DB
-     * @param nbPerPage Max number of element
-     * @param orderBy "id", "name", "introduced", "discontinued" or "company"
-     * @return A page containing a number of "nbPerPage" Computer from
-     *         "begining" in the DB
-     * @throws DAOException In case of DAO problem
-     */
-    public Page<Computer> listSomeComputers(int begining, int nbPerPage, String orderBy) throws DAOException {
-        int pageNumber = begining / nbPerPage;
-        orderBy = ComputerDAO.normalizeOrderByClause(orderBy);
-
-        List<Computer> list = dao.findSome(begining, nbPerPage, orderBy);
-
-        return new Page<Computer>(list, pageNumber, nbPerPage);
+        Computer computer = dao.find(id);
+        DBManager.closeConnection();
+        return computer;
     }
 
     /**
@@ -54,19 +39,16 @@ public class ComputerService {
      * @return
      * @throws DAOException
      */
-    public Page<ComputerDTO> listSomeComputersDTO(int begining, int nbPerPage, String orderBy) throws DAOException {
-        // TODO : Implémenter ça proprement (pour le moment complexité 2*n)
-        int pageNumber = begining / nbPerPage;
-        orderBy = ComputerDAO.normalizeOrderByClause(orderBy);
+    public Page<ComputerDTO> listComputersDTO(COLUMN column, ORDER order, String search, int begining, int pageSize) throws DAOException {
+        Page<ComputerDTO> page = dao.listComputersDTO(column, order, search, begining, pageSize);
+        DBManager.closeConnection();
+        return page;
+    }
 
-        List<Computer> list = dao.findSome(begining, nbPerPage, orderBy);
-        List<ComputerDTO> listDTO = new LinkedList<ComputerDTO>();
-        ComputerDTOMapper mapper = new ComputerDTOMapper();
-        for (Computer c : list) {
-            listDTO.add(mapper.unmap(c));
-        }
-
-        return new Page<ComputerDTO>(listDTO, pageNumber, nbPerPage);
+    public int countListResult(String search){
+        int c = dao.countSearchResult(search);
+        DBManager.closeConnection();
+        return c;
     }
 
     /**
@@ -75,7 +57,9 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public List<Computer> listAllComputers() throws DAOException {
-        return dao.findAll();
+        List<Computer> list = dao.findAll();
+        DBManager.closeConnection();
+        return list;
     }
 
     /**
@@ -85,7 +69,9 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public Computer update(Computer comp) throws DAOException {
-        return dao.update(comp);
+        Computer computer = dao.update(comp);
+        DBManager.closeConnection();
+        return computer;
     }
 
     /**
@@ -95,7 +81,9 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public Computer createComputer(Computer computer) throws DAOException {
-        return dao.create(computer);
+        Computer c= dao.create(computer);
+        DBManager.closeConnection();
+        return c;
     }
 
     /**
@@ -105,6 +93,7 @@ public class ComputerService {
      */
     public void delete(Computer comp) throws DAOException {
         dao.delete(comp.getId());
+        DBManager.closeConnection();
     }
 
     /**
@@ -114,21 +103,11 @@ public class ComputerService {
      */
     public void delete(Long id) throws DAOException {
         dao.delete(id);
+        DBManager.closeConnection();
     }
 
-    public int getComputerCount() throws DAOException {
-        return dao.getCount();
-    }
-
-    public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException {
-        return dao.searchByName(name, begining, nbPerPage);
-    }
-
-    public int countSearchByNameNbResult(String name) throws DAOException {
-        return dao.countSearchByNameNbResult(name);
-    }
-
-    public void deleteComputerList(Long[] t) throws DAOException {
-        dao.deleteComputerList(t);
+    public void deleteComputerList(Long[] idList){
+        dao.deleteComputerList(idList);
+        DBManager.closeConnection();
     }
 }

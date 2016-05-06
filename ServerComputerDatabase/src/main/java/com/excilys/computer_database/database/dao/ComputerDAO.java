@@ -14,6 +14,8 @@ import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
 import com.excilys.computer_database.database.mappers.Mapper;
+import com.excilys.computer_database.database.services.ComputerService.COLUMN;
+import com.excilys.computer_database.database.services.ComputerService.ORDER;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.helpers.DateHelper;
@@ -37,13 +39,6 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                     UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? , " + INTRODUCED + " = ? , " + DISCONTINUED
                     + " = ? , " + COMPANY_ID + " = ? WHERE " + ID + " = ?",
                     DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ",
-                    COUNT_REQUEST = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME,
-                    FIND_BY_NAME = "SELECT * FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID
-                    + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
-                    + " LIKE ? LIMIT ? OFFSET ?",
-                    COUNT_FIND_BY_NAME = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME
-                    + " ON " + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
-                    + " LIKE ?",
                     DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ",
                     DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
@@ -176,56 +171,6 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         }
     }
 
-    public int getCount() throws DAOException {
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(COUNT_REQUEST)) {
-            ResultSet rs = stmt.executeQuery();
-            if (rs.first()) {
-                return rs.getInt(1);
-            }
-            return -1;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-
-    public Page<ComputerDTO> searchByName(String name, int begining, int nbPerPage) throws DAOException {
-        int pageNumber = begining / nbPerPage;
-
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(FIND_BY_NAME)) {
-            stmt.setString(1, '%' + name + '%');
-            stmt.setString(2, '%' + name + '%');
-            stmt.setInt(3, nbPerPage);
-            stmt.setInt(4, begining);
-
-            // Récupération de la liste
-            List<ComputerDTO> l = new LinkedList<>();
-            ResultSet rs = stmt.executeQuery();
-            ComputerDTOMapper mapper = new ComputerDTOMapper();
-            while (rs.next()) {
-                l.add(mapper.unmap(this.unmap(rs)));
-            }
-
-            return new Page<ComputerDTO>(l, pageNumber, nbPerPage);
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-
-    public int countSearchByNameNbResult(String name) throws DAOException {
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(COUNT_FIND_BY_NAME)) {
-            stmt.setString(1, '%' + name + '%');
-            stmt.setString(2, '%' + name + '%');
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.first()) {
-                return rs.getInt(1);
-            }
-            return -1;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-
     public void deleteComputerList(Long[] t) throws DAOException {
         // setArray(..) is not supported with mysql, so we have to implement
         // it...
@@ -248,31 +193,119 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         }
     }
 
-    public static String normalizeOrderByClause(String orderby) {
-        if (orderby == null) {
-            return ComputerDAO.ID;
-        }
-
-        switch (orderby) {
-        case "id":
-            return ComputerDAO.ID;
-        case "name":
-            return ComputerDAO.NAME;
-        case "introduced":
-            return ComputerDAO.INTRODUCED;
-        case "discontinued":
-            return ComputerDAO.DISCONTINUED;
-        case "company":
-            return ComputerDAO.COMPANY_ID;
-        default:
-            return ComputerDAO.NAME;
-        }
-    }
-
     public void deleteByCompanyID(Long companyId) throws DAOException {
         try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
             stmt.setLong(1, companyId);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public Page<ComputerDTO> listComputersDTO(COLUMN column, ORDER order, String search, int begining, int pageSize)
+            throws DAOException {
+        // Request construction
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID + " = "
+                + CompanyDAO.ID);
+
+        // Search
+        if (search != null) {
+            sb.append(" WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME + " LIKE ? ");
+        }
+
+        // Column
+        if (column != null) {
+            sb.append(" ORDER BY ? ");
+
+            // ASC / DESC
+            if (order != null && order.equals(ORDER.ASC)) {
+                sb.append("ASC");
+            } else {
+                sb.append("DESC");
+            }
+        }
+
+        // Page size
+        sb.append("LIMIT ? OFFSET ? ");
+
+        // PreparedStatement
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(sb.toString())) {
+            int nextParam = 1;
+
+            // Search
+            if (search != null) {
+                String s = '%' + search + '%';
+                stmt.setString(nextParam++, s);
+                stmt.setString(nextParam++, s);
+            }
+
+            // Column
+            if (column != null) {
+                String col;
+
+                switch (column) {
+                case COMPUTER_NAME:
+                    col = NAME;
+                    break;
+                case INTRODUCED:
+                    col = INTRODUCED;
+                    break;
+                case DISCONTINUED:
+                    col = DISCONTINUED;
+                    break;
+                case COMPANY_NAME:
+                    col = CompanyDAO.NAME;
+                    break;
+                default:
+                    col = NAME;
+                    break;
+                }
+                stmt.setString(nextParam++, col);
+            }
+
+            // Limit
+            stmt.setInt(nextParam++, pageSize);
+            stmt.setInt(nextParam++, begining);
+
+            // Execute request
+            ResultSet rs = stmt.executeQuery();
+
+            // Unmap
+            ComputerDTOMapper mapper = new ComputerDTOMapper();
+            List<ComputerDTO> list = new LinkedList<>();
+            while (rs.next()) {
+                list.add(mapper.unmap(unmap(rs)));
+            }
+
+            return new Page<>(list, begining / pageSize, pageSize);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public int countSearchResult(String search) {
+        String request;
+        if(search != null){
+            request =
+                    "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID + " = " + CompanyDAO.ID
+                    + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME + " LIKE ?";
+        } else {
+            request = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME;
+        }
+
+        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(request)) {
+            if (search != null) {
+                String s = '%' + search + '%';
+                stmt.setString(1, s);
+                stmt.setString(2, s);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if(rs.first()) {
+                return rs.getInt(1);
+            }
+            throw new DAOException("Imposible to calculate the DB size");
         } catch (SQLException e) {
             throw new DAOException(e);
         }
