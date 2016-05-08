@@ -17,7 +17,7 @@
 					<h1>Edit Computer</h1>
 
 					<form id="editComputer" action="editComputer" method="POST">
-						<input type="hidden" id="idComputer" name="idComputer" value="${computer.id}" />
+						<input type="hidden" id="id" name="id" value="${computer.id}" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
