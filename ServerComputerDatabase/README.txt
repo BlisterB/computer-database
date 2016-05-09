@@ -1,3 +1,4 @@
 | Optimization | Best number of users | Performance gain |
 | --- | --- | --- |
-| No optimisation | 0 user |  |
+| No optimization | 0 user |  |
+| Add Indexes, (Select (*)) | 1 user | |

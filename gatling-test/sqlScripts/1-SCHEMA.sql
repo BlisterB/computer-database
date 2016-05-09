@@ -10,6 +10,7 @@ drop schema if exists `computer-database-db2`;
     name                      varchar(255),
     constraint pk_company primary key (id))
   ;
+CREATE INDEX ind_company_name ON company (name);
 
   create table computer (
     id                        bigint not null auto_increment,
@@ -19,6 +20,8 @@ drop schema if exists `computer-database-db2`;
     company_id                bigint default NULL,
     constraint pk_computer primary key (id))
   ;
+
+CREATE INDEX ind_computer_name ON computer (name);
 
   alter table computer add constraint fk_computer_company_1 foreign key (company_id) references company (id) on delete restrict on update restrict;
   create index ix_computer_company_1 on computer (company_id);
