@@ -30,7 +30,7 @@ class ComputerDatabaseSimulation extends Simulation {
   val users = scenario("Users").exec(Browse.browse,Search.search)
 
   setUp(
-    users.inject(rampUsers(2) over (30 seconds))
+    users.inject(rampUsers(1) over (30 seconds))
   ).protocols(httpConf)
 
   after {
