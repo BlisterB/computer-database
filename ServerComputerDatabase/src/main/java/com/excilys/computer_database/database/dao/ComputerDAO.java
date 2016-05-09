@@ -283,11 +283,11 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     public int countSearchResult(String search) {
         String request;
         if (search != null) {
-            request = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON "
+            request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON "
                     + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
                     + " LIKE ?";
         } else {
-            request = "SELECT COUNT(" + ID + ") FROM " + TABLE_NAME;
+            request = "SELECT COUNT(*) FROM " + TABLE_NAME;
         }
 
         try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(request)) {

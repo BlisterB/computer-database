@@ -66,8 +66,8 @@ public class EditComputerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Fetch the parameters
-        Long idComputer = Long.parseLong(request.getParameter("idComputer"));
-        String name = request.getParameter("computerName");
+        Long idComputer = Long.parseLong(request.getParameter("id"));
+        String name = request.getParameter("name");
         String introducedString = request.getParameter("introduced");
         String discontinuedString = request.getParameter("discontinued");
         Long companyId = Long.parseLong(request.getParameter("companyId"));

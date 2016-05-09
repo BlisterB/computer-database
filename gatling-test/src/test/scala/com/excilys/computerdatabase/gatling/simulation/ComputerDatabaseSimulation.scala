@@ -27,10 +27,10 @@ class ComputerDatabaseSimulation extends Simulation {
   val headers_10 = Map("Content-Type" -> "application/x-www-form-urlencoded") // Note the headers specific to a given request
 
 
-  val users = scenario("Users").exec(Browse.browse,Search.search, Add.add, Edit.edit, Delete.delete)
+  val users = scenario("Users").exec(Browse.browse,Search.search)
 
   setUp(
-    users.inject(rampUsers(1000) over (30 seconds))
+    users.inject(rampUsers(1) over (30 seconds))
   ).protocols(httpConf)
 
   after {

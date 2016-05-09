@@ -33,7 +33,7 @@ public class DBManager {
     }
 
     // TODO : Passer à des fichiers de propreties
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/computer-database-db2?zeroDateTimeBehavior=convertToNull";
 
     private static void initConnection() throws DAOException {
         // First use for all : initialize universal properties, just one time
