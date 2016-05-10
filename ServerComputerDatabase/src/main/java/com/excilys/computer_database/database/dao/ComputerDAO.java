@@ -185,7 +185,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         sb.append(")");
 
         try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_LIST + sb.toString())) {
-            System.out.println(stmt.toString());
+            //System.out.println(stmt.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -206,12 +206,12 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             throws DAOException {
         // Request construction
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID + " = "
-                + CompanyDAO.ID);
+        sb.append("SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name ");
+        sb.append("FROM computer LEFT JOIN company ON company.id = computer.id ");
 
         // Search
         if (search != null) {
-            sb.append(" WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME + " LIKE ? ");
+            sb.append(" WHERE computer.name LIKE ?  OR company.name LIKE ? ");
         }
 
         // Column
@@ -254,9 +254,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
             // Search
             if (search != null) {
-                String s = '%' + search + '%';
-                stmt.setString(nextParam++, s);
-                stmt.setString(nextParam++, s);
+                stmt.setString(nextParam++, search);
+                stmt.setString(nextParam++, search);
             }
 
             // Limit
@@ -264,14 +263,14 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             stmt.setInt(nextParam++, begining);
 
             // Execute request
+            //System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
 
             // Unmap
-            ComputerDTOMapper mapper = new ComputerDTOMapper();
             List<ComputerDTO> list = new LinkedList<>();
             while (rs.next()) {
                 //System.out.println(unmap(rs));
-                list.add(mapper.unmap(unmap(rs)));
+                list.add(ComputerDTOMapper.unmap(rs));
             }
 
             return new Page<>(list, begining / pageSize, pageSize);
@@ -292,9 +291,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
         try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(request)) {
             if (search != null) {
-                String s = '%' + search + '%';
-                stmt.setString(1, s);
-                stmt.setString(2, s);
+                stmt.setString(1, search);
+                stmt.setString(2, search);
             }
 
             ResultSet rs = stmt.executeQuery();

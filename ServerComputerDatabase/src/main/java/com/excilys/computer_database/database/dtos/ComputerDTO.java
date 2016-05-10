@@ -9,6 +9,18 @@ public class ComputerDTO {
     private String name, companyName;
     private LocalDate introduced, discontinued;
 
+
+
+    public ComputerDTO(Long id, String name, LocalDate introduced,
+            LocalDate discontinued, Long companyId, String companyName) {
+        this.id = id;
+        this.companyId = companyId;
+        this.name = name;
+        this.companyName = companyName;
+        this.introduced = introduced;
+        this.discontinued = discontinued;
+    }
+
     public ComputerDTO(Computer c) {
         this.id = c.getId();
         this.name = c.getName();

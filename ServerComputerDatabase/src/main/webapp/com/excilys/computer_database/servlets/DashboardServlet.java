@@ -76,26 +76,19 @@ public class DashboardServlet extends HttpServlet {
         int currentPage = getCurrentPage(request);
         request.setAttribute(CURRENT_PAGE, currentPage);
 
-        // Fetch the orderby column
+        // Fetch the orderby column : can be null
         String columnParam = request.getParameter(ORDER_BY);
         COLUMN column = COLUMN_AUTHORISED.get(columnParam);
-        if (column == null) {
-            column = COLUMN.COMPUTER_NAME;
-            request.setAttribute(ORDER_BY, "computerName");
-        } else {
-            request.setAttribute(ORDER_BY, columnParam);
-        }
 
-        // Fetch the order
+        // Fetch the order : can be null
         ORDER order = ORDER_AUTHORIZED.get(request.getParameter(ORDER_TAG));
-        if (order == null) {
-            order = ORDER.ASC;
-        }
         request.setAttribute(ORDER_TAG, order);
 
-        // Search attribute can be null
+        // Search : can be null
         String search = request.getParameter(SEARCH);
-        request.setAttribute(SEARCH, search);
+        if (search != null) {
+            request.setAttribute(SEARCH, search);
+        }
 
         // Ask the DB
         ComputerService computerServ = new ComputerService();
