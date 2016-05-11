@@ -4,8 +4,10 @@ CMD /bin/bash
 COPY hikari.properties /hikari.properties
 
 RUN git clone https://github.com/Medhoc/computer-database
-RUN mv hikari.properties /computer-database/ServerComputerDatabase/src/main/ressources
+RUN cp hikari.properties /computer-database/ServerComputerDatabase/src/main/ressources
+RUN cp hikari.properties /computer-database/ServerComputerDatabase/src/test/ressources
 WORKDIR computer-database/ServerComputerDatabase
 
 # For the moment, we skip tests
-RUN mvn -Dmaven.test.skip=true install
+#RUN mvn -Dmaven.test.skip=true install
+RUN mvn test
