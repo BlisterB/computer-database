@@ -18,7 +18,7 @@
 
 		<!-- The checktstyle file to respect -->
 		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
-		
+
 		<!-- Versions des plugins -->
 		<junit.version>4.12</junit.version>
 		<slf4j.version>1.7.21</slf4j.version>
@@ -28,6 +28,23 @@
 		<joda-time.version>2.9</joda-time.version>
 		<hikariCP.version>2.4.5</hikariCP.version>
 	</properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/ressources</directory>
+        <includes>
+          <include>*.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/test/ressources</directory>
+        <includes>
+          <include>*.properties</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 
 	<!-- Librairies -->
 	<dependencies>
