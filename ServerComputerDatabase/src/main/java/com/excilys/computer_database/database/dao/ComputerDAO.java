@@ -211,7 +211,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
 
         // Search
         if (search != null) {
-            sb.append(" WHERE computer.name LIKE ?  OR company.name LIKE ? ");
+            sb.append(" WHERE computer.name = ?  OR company.name = ? ");
         }
 
         // Column
@@ -263,8 +263,9 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             stmt.setInt(nextParam++, begining);
 
             // Execute request
-            //System.out.println(stmt);
+            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
+            System.out.println("fin");
 
             // Unmap
             List<ComputerDTO> list = new LinkedList<>();
@@ -283,8 +284,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         String request;
         if (search != null) {
             request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON "
-                    + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " LIKE ?  OR " + CompanyDAO.NAME
-                    + " LIKE ?";
+                    + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " = ?  OR " + CompanyDAO.NAME
+                    + " = ?";
         } else {
             request = "SELECT COUNT(*) FROM " + TABLE_NAME;
         }
@@ -295,7 +296,9 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                 stmt.setString(2, search);
             }
 
+            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
+            System.out.println("fin");
             if (rs.first()) {
                 return rs.getInt(1);
             }

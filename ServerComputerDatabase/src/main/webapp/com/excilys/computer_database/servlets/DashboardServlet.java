@@ -86,14 +86,11 @@ public class DashboardServlet extends HttpServlet {
 
         // Search : can be null
         String search = request.getParameter(SEARCH);
-        if (search != null) {
-            request.setAttribute(SEARCH, search);
-        }
+        request.setAttribute(SEARCH, search);
 
         // Ask the DB
         ComputerService computerServ = new ComputerService();
-        Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage * pageSize,
-                pageSize);
+        Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage * pageSize, pageSize);
         int nbResult = computerServ.countListResult(search);
 
         request.setAttribute(COMPUTER_LIST, computerList.getList());
