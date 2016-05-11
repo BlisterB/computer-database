@@ -1,13 +1,24 @@
 package com.excilys.computer_database.database;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import com.excilys.computer_database.database.dao.DAOException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class DBManager {
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static HikariConfig config;
     private static HikariDataSource datasource;
     private static ThreadLocalConnection localConnection = new ThreadLocalConnection();
@@ -24,25 +35,24 @@ public class DBManager {
         }
     };
 
-    static {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     // TODO : Passer à des fichiers de propreties
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/computer-database-db2?zeroDateTimeBehavior=convertToNull";
 
     private static void initConnection() throws DAOException {
         // First use for all : initialize universal properties, just one time
         if (config == null) {
             synchronized (DBManager.class) {
                 if (config == null) {
-                    config = new HikariConfig("/hikari.properties");
-                    config.setJdbcUrl(URL);
+                    // Load the property file
+                    String resourceName = "hikari.properties";
+                    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                    Properties props = new Properties();
+                    try(InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
+                        props.load(resourceStream);
+                    } catch (IOException e) {
+                        new DAOException(e.getMessage());
+                    }
 
+                    config = new HikariConfig(props);
                     // Should we close the datasource ?
                     datasource = new HikariDataSource(config);
                 }
