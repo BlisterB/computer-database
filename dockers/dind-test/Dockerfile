@@ -1,0 +1,1 @@
+FROM docker:1.11.1
