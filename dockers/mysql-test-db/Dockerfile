@@ -17,4 +17,4 @@ COPY 2-PRIVILEGES.sql /docker-entrypoint-initdb.d/2-PRIVILEGES.sql
 
 # Il faut lancer le script de remplissage à partir d'un autre terminal
 # Car il contient des données incorrectes qui stope le run
-# COPY 3-ENTRIES.sql /docker-entrypoint-initdb.d/3-ENTRIES.sql
+COPY 3-ENTRIES.sql /docker-entrypoint-initdb.d/3-ENTRIES.sql
