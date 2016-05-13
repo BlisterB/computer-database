@@ -10,7 +10,7 @@ docker exec -it dind-test docker network create --subnet 172.19.0.0/16 --gateway
 # Jenkins : occupy the ip:port  172.18.0.2:8080, accessible from localhost:8080
 docker stop jenkins-test ; docker rm jenkins-test
 docker pull mkhelifi/jenkins-test
-docker run -d --name jenkins-test --net jenkins-dind -p 8080:8080 -p 50000:50000 mkhelifi/jenkins-test:latest
+docker run -d --name jenkins-test --net jenkins-dind -p 8080:8080 -p 50000:50000 -v $HOME/jenkins_home:/var/jenkins_home mkhelifi/jenkins-test:latest
 
 # Mysql
 #docker exec -it dind-test docker stop mysql-test-db ; docker exec -it dind-test docker rm mysql-test-db

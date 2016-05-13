@@ -1,5 +1,7 @@
 FROM ubuntu:trusty
 
+ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
+
 RUN apt-get update \
 	&& apt-get install -y software-properties-common
 
@@ -14,3 +16,6 @@ RUN apt-get -y update \
 	&& apt-get install -y maven
 
 COPY hikari.properties /hikari.properties
+
+RUN mkdir -p ServerComputerDatabase/ServerComputerDatabase
+WORKDIR ServerComputerDatabase/ServerComputerDatabase
