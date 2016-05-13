@@ -1,0 +1,10 @@
+Build the image :
+docker build -t mysql-test-db .
+
+Run a container :
+docker run --name mysql-test-db mysql-test-db
+
+Connect from host or another container
+mysql -h 172.17.0.2 -P 3306 -uroot -proot
+
+NB : The IP adress consider that the container is the first started.

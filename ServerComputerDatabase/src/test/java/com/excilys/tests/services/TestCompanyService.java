@@ -1,9 +1,6 @@
 package com.excilys.tests.services;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,26 +25,13 @@ public class TestCompanyService{
     }
 
     @Test
-    public void testListAllCompanies(){
-        // TODO : Enlever ce test en cas de table volumineuse (ou de possibilité d'ajouter/suppression des company)
-        List<Company> list;
-        try {
-            list = service.listAllCompanies();
-            assertEquals(58, list.size());
-        } catch (DAOException e) {
-            e.printStackTrace();
-            fail();
-        }
-    }
-
-    @Test
     public void testListByPage(){
         // On vérifie le nombre d'elements par page
         int nbCompanies = 58;
         int nbPerPage = 10;
 
         Page<Company> page;
-        for(int i = 0; i < nbCompanies; i += nbPerPage){
+        for(int i = 0; i < 1; i += nbPerPage){
             try {
                 page = service.listSomeCompanies(i, nbPerPage);
 
