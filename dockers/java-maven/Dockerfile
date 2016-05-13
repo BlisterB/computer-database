@@ -15,7 +15,5 @@ RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true 
 RUN apt-get -y update \
 	&& apt-get install -y maven
 
-COPY hikari.properties /hikari.properties
-
 RUN mkdir -p ServerComputerDatabase/ServerComputerDatabase
 WORKDIR ServerComputerDatabase/ServerComputerDatabase
