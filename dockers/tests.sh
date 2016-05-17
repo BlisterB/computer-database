@@ -23,7 +23,7 @@ docker network create --subnet 172.18.0.0/16 --gateway=172.18.1.1 $NETWORK
 
 # Jenkins : occupy the ip:port  172.18.0.1:8080, accessible from localhost:8080
 docker pull $JENKINS_REPO
-docker run -d --name $JENKINS --net $NETWORK -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/jenkins/computer-db/jenkins_home:/var/jenkins_home $JENKINS_REPO
+docker run -d --name $JENKINS --net $NETWORK -p 1234:8080 -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/jenkins/computer-db/jenkins_home:/var/jenkins_home $JENKINS_REPO
 
 # Mysql test : 172.18.0.2:8080
 docker pull $MYSQL_TEST
@@ -34,9 +34,9 @@ docker pull $JAVA_MAVEN
 docker run -dit --name $JAVA_MAVEN --net $NETWORK $JAVA_MAVEN_REPO
 
 # Mysql production : 172.18.0.4:8080
-#docker pull $MYSQL_PROD
-#docker run -d --name $MYSQL_PROD --net $NETWORK $MYSQL_PROD_REPO
+docker pull $MYSQL_PROD
+docker run -d --name $MYSQL_PROD --net $NETWORK $MYSQL_PROD_REPO
 
 # Tomcat : 172.18.0.5:8080
 docker pull $TOMCAT
-docker run --rm --name $TOMCAT -p 8888:8080 $TOMCAT_REPO
+docker run --rm --name $TOMCAT --net $NETWORK -p 8888:8080 $TOMCAT_REPO

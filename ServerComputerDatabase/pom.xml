@@ -40,13 +40,15 @@
           <include>*.properties</include>
         </includes>
       </resource>
-      <resource>
+    </resources>
+    <testResources>
+      <testResource>
         <directory>src/test/ressources</directory>
         <includes>
           <include>*.properties</include>
         </includes>
-      </resource>
-    </resources>
+      </testResource>
+    </testResources>
   </build>
 
   <!-- Librairies -->
