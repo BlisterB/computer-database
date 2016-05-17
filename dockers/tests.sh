@@ -5,6 +5,10 @@ MYSQL_TEST="computer-db-mysql-test"
 MYSQL_TEST_REPO="mkhelifi/computer-db-mysql-test:latest"
 JAVA_MAVEN="computer-db-java-maven"
 JAVA_MAVEN_REPO="mkhelifi/computer-db-java-maven:latest"
+MYSQL_PROD="computer-db-mysql-prod"
+MYSQL_PROD_REPO="mkhelifi/computer-db-mysql-prod:latest"
+TOMCAT="computer-db-tomcat"
+TOMCAT_REPO="mkhelifi/computer-db-tomcat:latest"
 
 # Network creation
 docker network rm $NETWORK
@@ -15,7 +19,7 @@ docker stop $JENKINS ; docker rm $JENKINS
 docker pull $JENKINS_REPO
 docker run -d --name $JENKINS --net $NETWORK -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/jenkins/computer-db/jenkins_home:/var/jenkins_home $JENKINS_REPO
 
-# Mysql : 172.18.0.2:8080
+# Mysql test : 172.18.0.2:8080
 docker stop $MYSQL_TEST ; docker rm $MYSQL_TEST
 docker run -d --name $MYSQL_TEST --net $NETWORK $MYSQL_TEST_REPO
 
@@ -23,6 +27,10 @@ docker run -d --name $MYSQL_TEST --net $NETWORK $MYSQL_TEST_REPO
 docker stop $JAVA_MAVEN ; docker rm $JAVA_MAVEN
 docker run -dit --name $JAVA_MAVEN --net $NETWORK $JAVA_MAVEN_REPO
 
-# Mysql : 172.18.0.4:8080
+# Mysql production : 172.18.0.4:8080
+docker stop $MYSQL_PROD ; docker rm $MYSQL_PROD
+docker run -d --name $MYSQL_PROD --net $NETWORK $MYSQL_PROD_REPO
 
-# Mysql : 172.18.0.5:8080
+# Tomcat : 172.18.0.5:8080
+docker stop $TOMCAT ; docker rm $TOMCAT
+docker run -it --rm --name $TOMCAT -p 8888:8080 $TOMCAT_REPO
