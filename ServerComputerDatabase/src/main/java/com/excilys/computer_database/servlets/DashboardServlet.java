@@ -65,42 +65,39 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        try {
-            // Fetch the page's size
-            Integer pageSize = PAGE_SIZE_AUTHORIZED.get(request.getParameter(PAGE_SIZE));
-            if (pageSize == null) {
-                pageSize = 10;
-            }
-            request.setAttribute(PAGE_SIZE, pageSize);
-
-            // Fetch the page number
-            int currentPage = getCurrentPage(request);
-            request.setAttribute(CURRENT_PAGE, currentPage);
-
-            // Fetch the orderby column : can be null
-            String columnParam = request.getParameter(ORDER_BY);
-            COLUMN column = COLUMN_AUTHORISED.get(columnParam);
-
-            // Fetch the order : can be null
-            ORDER order = ORDER_AUTHORIZED.get(request.getParameter(ORDER_TAG));
-            request.setAttribute(ORDER_TAG, order);
-
-            // Search : can be null
-            String search = request.getParameter(SEARCH);
-            request.setAttribute(SEARCH, search);
-
-            // Ask the DB
-            ComputerService computerServ = new ComputerService();
-            Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage * pageSize, pageSize);
-            int nbResult = computerServ.countListResult(search);
-
-            request.setAttribute(COMPUTER_LIST, computerList.getList());
-            request.setAttribute(NB_RESULTS, nbResult);
-
-            this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Fetch the page's size
+        Integer pageSize = PAGE_SIZE_AUTHORIZED.get(request.getParameter(PAGE_SIZE));
+        if (pageSize == null) {
+            pageSize = 10;
         }
+        request.setAttribute(PAGE_SIZE, pageSize);
+
+        // Fetch the page number
+        int currentPage = getCurrentPage(request);
+        request.setAttribute(CURRENT_PAGE, currentPage);
+
+        // Fetch the orderby column : can be null
+        String columnParam = request.getParameter(ORDER_BY);
+        COLUMN column = COLUMN_AUTHORISED.get(columnParam);
+
+        // Fetch the order : can be null
+        ORDER order = ORDER_AUTHORIZED.get(request.getParameter(ORDER_TAG));
+        request.setAttribute(ORDER_TAG, order);
+
+        // Search : can be null
+        String search = request.getParameter(SEARCH);
+        request.setAttribute(SEARCH, search);
+
+        // Ask the DB
+        ComputerService computerServ = new ComputerService();
+        Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage * pageSize,
+                pageSize);
+        int nbResult = computerServ.countListResult(search);
+
+        request.setAttribute(COMPUTER_LIST, computerList.getList());
+        request.setAttribute(NB_RESULTS, nbResult);
+
+        this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
 
     /**
