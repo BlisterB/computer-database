@@ -296,9 +296,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                 stmt.setString(2, search);
             }
 
-            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
-            System.out.println("fin");
             if (rs.first()) {
                 return rs.getInt(1);
             }
