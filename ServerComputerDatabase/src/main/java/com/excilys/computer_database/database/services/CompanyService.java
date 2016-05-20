@@ -3,6 +3,8 @@ package com.excilys.computer_database.database.services;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.ComputerDAO;
@@ -27,10 +29,10 @@ public class CompanyService {
      * @param nbPerPage Number of Companies to fetch
      * @throws DAOException
      */
+    @Transactional(readOnly=true)
     public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage + 1;
         List<Company> list = companyDAO.findSome(begining, nbPerPage, CompanyDAO.NAME);
-        DBManager.closeConnection();
 
         return new Page<Company>(list, pageNumber, nbPerPage);
     }
@@ -40,9 +42,9 @@ public class CompanyService {
      * @return The list of all listed companies
      * @throws DAOException
      */
+    @Transactional(readOnly=true)
     public List<Company> listAllCompanies() throws DAOException {
         List<Company> list = companyDAO.findAll();
-        DBManager.closeConnection();
         return list;
     }
 
@@ -52,6 +54,7 @@ public class CompanyService {
      * @param id The computer's id to delete
      * @throws DAOException
      */
+    @Transactional(readOnly=false)
     public void delete(Long id) throws DAOException {
         // Use here a transaction, to delete related computers
         DBManager.initTransaction();
@@ -70,12 +73,11 @@ public class CompanyService {
             DBManager.rollback();
         }
 
-        DBManager.closeConnection();
     }
 
+    @Transactional(readOnly=true)
     public Company find(Long id) throws DAOException {
         Company company = companyDAO.find(id);
-        DBManager.closeConnection();
         return company;
     }
 
@@ -84,6 +86,7 @@ public class CompanyService {
      * @return Return the list of all companies (DTO form)
      * @throws DAOException If an error occurs in the DAO
      */
+    @Transactional(readOnly=true)
     public List<CompanyDTO> getDTOList() throws DAOException {
         // TODO : Améliorer la complexité de l'obtention des DTO (complexité 2*n
         // pour le moment)
@@ -93,7 +96,6 @@ public class CompanyService {
             dtoList.add(new CompanyDTO(company));
         }
 
-        DBManager.closeConnection();
 
         return dtoList;
     }

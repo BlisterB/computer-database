@@ -127,8 +127,7 @@ public class DashboardServlet extends HttpServlet {
                 idTab[i] = Long.parseLong(tab[i]);
             }
 
-            ComputerService computerServ = new ComputerService();
-            computerServ.deleteComputerList(idTab);
+            computerService.deleteComputerList(idTab);
         }
 
         // Redirection to the GET Page

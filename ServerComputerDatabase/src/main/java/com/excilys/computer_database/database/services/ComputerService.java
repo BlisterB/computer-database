@@ -2,7 +2,8 @@ package com.excilys.computer_database.database.services;
 
 import java.util.List;
 
-import com.excilys.computer_database.database.DBManager;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
@@ -26,9 +27,9 @@ public class ComputerService {
      * @return The computer with the id field to "id"
      * @throws DAOException In case of DAO problem
      */
+    @Transactional(readOnly=true)
     public Computer getComputerById(Long id) throws DAOException {
         Computer computer = computerDAO.find(id);
-        DBManager.closeConnection();
         return computer;
     }
 
@@ -39,16 +40,16 @@ public class ComputerService {
      * @return
      * @throws DAOException
      */
+    @Transactional(readOnly=true)
     public Page<ComputerDTO> listComputersDTO(COLUMN column, ORDER order, String search, int begining, int pageSize)
             throws DAOException {
         Page<ComputerDTO> page = computerDAO.listComputersDTO(column, order, search, begining, pageSize);
-        DBManager.closeConnection();
         return page;
     }
 
+    @Transactional(readOnly=true)
     public int countListResult(String search) {
         int c = computerDAO.countSearchResult(search);
-        DBManager.closeConnection();
         return c;
     }
 
@@ -57,9 +58,9 @@ public class ComputerService {
      * @return The list of all computers
      * @throws DAOException In case of DAO problem
      */
+    @Transactional(readOnly=true)
     public List<Computer> listAllComputers() throws DAOException {
         List<Computer> list = computerDAO.findAll();
-        DBManager.closeConnection();
         return list;
     }
 
@@ -69,9 +70,9 @@ public class ComputerService {
      * @return The computer
      * @throws DAOException In case of DAO problem
      */
+    @Transactional(readOnly=false)
     public Computer update(Computer comp) throws DAOException {
         Computer computer = computerDAO.update(comp);
-        DBManager.closeConnection();
         return computer;
     }
 
@@ -81,9 +82,9 @@ public class ComputerService {
      * @return The computer
      * @throws DAOException In case of DAO problem
      */
+    @Transactional(readOnly=false)
     public Computer createComputer(Computer computer) throws DAOException {
         Computer c = computerDAO.create(computer);
-        DBManager.closeConnection();
         return c;
     }
 
@@ -92,9 +93,9 @@ public class ComputerService {
      * @param comp The computer to delete from the DB
      * @throws DAOException In case of DAO problem
      */
+    @Transactional(readOnly=false)
     public void delete(Computer comp) throws DAOException {
         computerDAO.delete(comp.getId());
-        DBManager.closeConnection();
     }
 
     /**
@@ -102,14 +103,14 @@ public class ComputerService {
      * @param id The id of the computer to delete from the DB
      * @throws DAOException In case of DAO problem
      */
+    @Transactional(readOnly=false)
     public void delete(Long id) throws DAOException {
         computerDAO.delete(id);
-        DBManager.closeConnection();
     }
 
+    @Transactional(readOnly=false)
     public void deleteComputerList(Long[] idList) {
         computerDAO.deleteComputerList(idList);
-        DBManager.closeConnection();
     }
 
     /**

@@ -5,10 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.entity.Company;
 
 public class CompanyDAO extends DAO<Company> {
@@ -22,6 +23,7 @@ public class CompanyDAO extends DAO<Company> {
             DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private DataSource datasource;
 
     @Override
     public String getFindRequest() {
@@ -46,7 +48,7 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Company create(Company obj) throws DAOException {
         // Exécution de la requête
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(INSERT_REQUEST,
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(INSERT_REQUEST,
                 Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, obj.getName());
 
@@ -69,7 +71,7 @@ public class CompanyDAO extends DAO<Company> {
 
     @Override
     public Company update(Company obj) throws DAOException {
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(UPDATE_REQUEST)) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(UPDATE_REQUEST)) {
             stmt.setString(1, obj.getName());
             stmt.setLong(2, obj.getId());
 
@@ -86,11 +88,25 @@ public class CompanyDAO extends DAO<Company> {
      */
     @Override
     public void delete(Long id) throws DAOException {
-        try (PreparedStatement deleteCompanyStmt = DBManager.getConnection().prepareStatement(DELETE_REQUEST)) {
+        try (PreparedStatement deleteCompanyStmt = datasource.getConnection().prepareStatement(DELETE_REQUEST)) {
             deleteCompanyStmt.setLong(1, id);
             deleteCompanyStmt.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    /**
+     * @return the datasource
+     */
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    /**
+     * @param datasource the datasource to set
+     */
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }

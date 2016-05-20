@@ -7,10 +7,11 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.mappers.ComputerDTOMapper;
 import com.excilys.computer_database.database.mappers.ComputerMapper;
@@ -39,6 +40,7 @@ public class ComputerDAO extends DAO<Computer> {
                     DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private DataSource datasource;
 
     @Override
     public String getFindRequest() {
@@ -58,7 +60,7 @@ public class ComputerDAO extends DAO<Computer> {
         }
 
         // Exécution de la requête
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(INSERT_FULL_REQUEST,
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(INSERT_FULL_REQUEST,
                 Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, comp.getName());
             if (comp.getIntroduced() != null) {
@@ -99,7 +101,7 @@ public class ComputerDAO extends DAO<Computer> {
 
     @Override
     public Computer update(Computer comp) throws DAOException {
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(UPDATE_REQUEST)) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(UPDATE_REQUEST)) {
             stmt.setString(1, comp.getName());
             stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
             stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
@@ -118,7 +120,7 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public void delete(Long id) throws DAOException {
         // TODO : Vérifier que l'id existe
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_REQUEST)) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(DELETE_REQUEST)) {
             stmt.setLong(1, id);
 
             stmt.executeUpdate();
@@ -141,7 +143,7 @@ public class ComputerDAO extends DAO<Computer> {
         }
         sb.append(")");
 
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_LIST + sb.toString())) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(DELETE_LIST + sb.toString())) {
             // System.out.println(stmt.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -151,7 +153,7 @@ public class ComputerDAO extends DAO<Computer> {
     }
 
     public void deleteByCompanyID(Long companyId) throws DAOException {
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
             stmt.setLong(1, companyId);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -207,7 +209,7 @@ public class ComputerDAO extends DAO<Computer> {
         sb.append("LIMIT ? OFFSET ? ");
 
         // PreparedStatement
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(sb.toString())) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(sb.toString())) {
             int nextParam = 1;
 
             // Search
@@ -245,7 +247,7 @@ public class ComputerDAO extends DAO<Computer> {
             request = "SELECT COUNT(*) FROM " + TABLE_NAME;
         }
 
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(request)) {
+        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(request)) {
             if (search != null) {
                 stmt.setString(1, search);
                 stmt.setString(2, search);
@@ -268,5 +270,19 @@ public class ComputerDAO extends DAO<Computer> {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    /**
+     * @return the datasource
+     */
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    /**
+     * @param datasource the datasource to set
+     */
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }
