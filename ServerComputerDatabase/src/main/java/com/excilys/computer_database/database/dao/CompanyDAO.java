@@ -12,8 +12,6 @@ import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.entity.Company;
 
 public class CompanyDAO extends DAO<Company> {
-    private static volatile CompanyDAO instance = null;
-
     public static final String TABLE_NAME = "company";
     public static final String ID = "company.id", NAME = "company.name";
 
@@ -23,13 +21,7 @@ public class CompanyDAO extends DAO<Company> {
             UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?",
             DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
-    private Logger logger;
-
-    /** Constructor. */
-    private CompanyDAO() {
-        super();
-        logger = LoggerFactory.getLogger(this.getClass());
-    }
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String getFindRequest() {
@@ -49,22 +41,6 @@ public class CompanyDAO extends DAO<Company> {
             logger.error(e.getMessage());
             throw new DAOException(e);
         }
-    }
-
-    /**
-     * Return the unique instance of CompanyDAO (singleton pattern).
-     * @return The unique instance of CompanyDAO
-     */
-    public static final CompanyDAO getInstance() {
-        // TODO : implements a Backoff-lock ? (for the moment : Test&Test&Set)
-        if (CompanyDAO.instance == null) {
-            synchronized (CompanyDAO.class) {
-                if (CompanyDAO.instance == null) {
-                    CompanyDAO.instance = new CompanyDAO();
-                }
-            }
-        }
-        return CompanyDAO.instance;
     }
 
     @Override

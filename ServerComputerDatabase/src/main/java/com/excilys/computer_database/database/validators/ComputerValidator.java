@@ -3,7 +3,7 @@ package com.excilys.computer_database.database.validators;
 import org.joda.time.LocalDate;
 
 import com.excilys.computer_database.database.dao.DAOException;
-import com.excilys.computer_database.database.services.CompaniesService;
+import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.entity.Computer.ComputerBuilder;
@@ -35,7 +35,7 @@ public class ComputerValidator {
         // Construct the Computer
         ComputerBuilder builder = new ComputerBuilder(name).introduced(introduced).discontinued(discontinued);
 
-        Company company = (new CompaniesService()).find(companyId);
+        Company company = (new CompanyService()).find(companyId);
         builder.company(company);
 
         return builder.build();

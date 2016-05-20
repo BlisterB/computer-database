@@ -7,11 +7,10 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dao.NotFoundException;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.services.CompaniesService;
+import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
@@ -24,7 +23,7 @@ public class CommandLineInterfaceController {
     private CommandLineInterfaceView view;
     private Scanner sc = new Scanner(System.in);
     private ComputerService computerServ = new ComputerService();
-    private CompaniesService companiesService = new CompaniesService();
+    private CompanyService companiesService = new CompanyService();
 
     /** The constructor. */
     public CommandLineInterfaceController() {
@@ -235,7 +234,7 @@ public class CommandLineInterfaceController {
         Long companyId = askLong();
 
         // Création de l'objet correspondant
-        Company company = CompanyDAO.getInstance().find(companyId);
+        Company company = companiesService.find(companyId);
         return new Computer.ComputerBuilder(name).introduced(introduced).discontinued(discontinued).company(company)
                 .build();
     }

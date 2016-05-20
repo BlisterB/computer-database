@@ -8,16 +8,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.excilys.computer_database.database.dtos.CompanyDTO;
-import com.excilys.computer_database.database.services.CompaniesService;
+import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.database.validators.ComputerValidator;
 import com.excilys.computer_database.entity.Computer;
 
 public class AddComputerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private CompaniesService companyService = new CompaniesService();
-    private ComputerService computerService = new ComputerService();
+    private static ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+    private static ComputerService computerService = (ComputerService) context.getBean("computerService");
+    private static CompanyService companyService = (CompanyService) context.getBean("companyService");
 
     public AddComputerServlet() {
         super();

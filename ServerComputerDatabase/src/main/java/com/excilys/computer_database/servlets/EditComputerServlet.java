@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
-import com.excilys.computer_database.database.services.CompaniesService;
+import com.excilys.computer_database.database.mappers.ComputerDTOMapper;
+import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.database.validators.ComputerValidator;
 import com.excilys.computer_database.entity.Computer;
@@ -23,8 +26,9 @@ import com.excilys.computer_database.entity.Computer;
 @WebServlet("/EditComputerServlet")
 public class EditComputerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private CompaniesService companyService = new CompaniesService();
-    private ComputerService computerService = new ComputerService();
+    private static ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+    private static ComputerService computerService = (ComputerService) context.getBean("computerService");
+    private static CompanyService companyService = (CompanyService) context.getBean("companyService");
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -42,17 +46,15 @@ public class EditComputerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Verify the request contains the computer's id to edit
-        Long idComputer = Long.parseLong(request.getParameter("name"));
+        Long idComputer = Long.parseLong(request.getParameter("idComputer"));
 
         // Fetch the computer to edit
-        ComputerService serv = new ComputerService();
         ComputerDTOMapper mapper = new ComputerDTOMapper();
-        ComputerDTO computer = mapper.unmap(serv.getComputerById(idComputer));
+        ComputerDTO computer = mapper.unmap(computerService.getComputerById(idComputer));
         request.setAttribute("computer", computer);
 
         // Fetch the company list
-        CompaniesService service = new CompaniesService();
-        List<CompanyDTO> companyList = service.getDTOList();
+        List<CompanyDTO> companyList = companyService.getDTOList();
         request.setAttribute("companyList", companyList);
 
         this.getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);

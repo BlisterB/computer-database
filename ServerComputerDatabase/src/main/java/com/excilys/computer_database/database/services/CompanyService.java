@@ -11,12 +11,13 @@ import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.ui.Page;
 
-public class CompaniesService {
-    private CompanyDAO dao;
+public class CompanyService {
+    private CompanyDAO companyDAO;
+    private ComputerDAO computerDAO;
 
     /** Constructor by default. */
-    public CompaniesService() {
-        dao = CompanyDAO.getInstance();
+    public CompanyService() {
+
     }
 
     /**
@@ -28,7 +29,7 @@ public class CompaniesService {
      */
     public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage + 1;
-        List<Company> list = dao.findSome(begining, nbPerPage, CompanyDAO.NAME);
+        List<Company> list = companyDAO.findSome(begining, nbPerPage, CompanyDAO.NAME);
         DBManager.closeConnection();
 
         return new Page<Company>(list, pageNumber, nbPerPage);
@@ -40,7 +41,7 @@ public class CompaniesService {
      * @throws DAOException
      */
     public List<Company> listAllCompanies() throws DAOException {
-        List<Company> list = dao.findAll();
+        List<Company> list = companyDAO.findAll();
         DBManager.closeConnection();
         return list;
     }
@@ -57,10 +58,10 @@ public class CompaniesService {
 
         try {
             // Delete related computers
-            (ComputerDAO.getInstance()).deleteByCompanyID(id);
+            computerDAO.deleteByCompanyID(id);
 
             // Delete the company
-            dao.delete(id);
+            companyDAO.delete(id);
 
             // Terminate the transaction
             DBManager.commit();
@@ -73,7 +74,7 @@ public class CompaniesService {
     }
 
     public Company find(Long id) throws DAOException {
-        Company company = dao.find(id);
+        Company company = companyDAO.find(id);
         DBManager.closeConnection();
         return company;
     }
@@ -95,5 +96,33 @@ public class CompaniesService {
         DBManager.closeConnection();
 
         return dtoList;
+    }
+
+    /**
+     * @return the companyDAO
+     */
+    public CompanyDAO getCompanyDAO() {
+        return companyDAO;
+    }
+
+    /**
+     * @param companyDAO the companyDAO to set
+     */
+    public void setCompanyDAO(CompanyDAO companyDAO) {
+        this.companyDAO = companyDAO;
+    }
+
+    /**
+     * @return the computerDAO
+     */
+    public ComputerDAO getComputerDAO() {
+        return computerDAO;
+    }
+
+    /**
+     * @param computerDAO the computerDAO to set
+     */
+    public void setComputerDAO(ComputerDAO computerDAO) {
+        this.computerDAO = computerDAO;
     }
 }

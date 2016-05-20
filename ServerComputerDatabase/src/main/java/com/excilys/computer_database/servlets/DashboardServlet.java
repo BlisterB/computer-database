@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.database.services.ComputerService.COLUMN;
@@ -19,6 +22,9 @@ import com.excilys.computer_database.ui.Page;
  * Servlet implementation class DashboardServlet
  */
 public class DashboardServlet extends HttpServlet {
+    private static ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+    private static ComputerService computerService = (ComputerService) context.getBean("computerService");
+
     private static final long serialVersionUID = 1L;
     // Request's parameters
     private static final String PAGE_SIZE = "pageSize", CURRENT_PAGE = "page", ORDER_BY = "column", SEARCH = "search",
@@ -89,10 +95,9 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute(SEARCH, search);
 
         // Ask the DB
-        ComputerService computerServ = new ComputerService();
-        Page<ComputerDTO> computerList = computerServ.listComputersDTO(column, order, search, currentPage * pageSize,
+        Page<ComputerDTO> computerList = computerService.listComputersDTO(column, order, search, currentPage * pageSize,
                 pageSize);
-        int nbResult = computerServ.countListResult(search);
+        int nbResult = computerService.countListResult(search);
 
         request.setAttribute(COMPUTER_LIST, computerList.getList());
         request.setAttribute(NB_RESULTS, nbResult);

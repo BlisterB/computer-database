@@ -7,16 +7,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.excilys.computer_database.database.dao.DAOException;
-import com.excilys.computer_database.database.services.CompaniesService;
+import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.ui.Page;
 
 public class TestCompanyService{
-    CompaniesService service;
+    CompanyService service;
 
     @Before
     public void beforeTest(){
-        service = new CompaniesService();
+        service = new CompanyService();
     }
 
     @After

@@ -33,7 +33,7 @@ public class Company extends Entity {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

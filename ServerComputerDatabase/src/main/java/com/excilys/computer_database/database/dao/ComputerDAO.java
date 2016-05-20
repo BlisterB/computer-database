@@ -12,19 +12,15 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.dtos.ComputerDTOMapper;
-import com.excilys.computer_database.database.mappers.Mapper;
+import com.excilys.computer_database.database.mappers.ComputerDTOMapper;
+import com.excilys.computer_database.database.mappers.ComputerMapper;
 import com.excilys.computer_database.database.services.ComputerService.COLUMN;
 import com.excilys.computer_database.database.services.ComputerService.ORDER;
-import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.helpers.DateHelper;
 import com.excilys.computer_database.ui.Page;
 
-public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, ResultSet> {
-    // TODO : study the utility of the "volatile"
-    private static volatile ComputerDAO instance = null;
-
+public class ComputerDAO extends DAO<Computer> {
     public static final String TABLE_NAME = "computer";
     public static final String ID = TABLE_NAME + ".id", NAME = TABLE_NAME + ".name",
             COMPANY_ID = TABLE_NAME + ".company_id", INTRODUCED = TABLE_NAME + ".introduced",
@@ -42,13 +38,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                     DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ",
                     DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
-    private Logger logger;
-
-    /** Constructor. */
-    private ComputerDAO() {
-        super();
-        logger = LoggerFactory.getLogger(this.getClass());
-    }
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String getFindRequest() {
@@ -58,39 +48,6 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     @Override
     public String getFindAllRequest() {
         return FIND_ALL_REQUEST;
-    }
-
-    @Override
-    public Computer unmap(ResultSet rs) throws DAOException {
-        // Extract the company
-        Company company = (CompanyDAO.getInstance()).unmap(rs);
-
-        // Build the Computer
-        try {
-            return new Computer.ComputerBuilder(rs.getString(NAME)).id(rs.getLong(ID))
-                    .introduced(rs.getTimestamp(INTRODUCED)).discontinued(rs.getTimestamp(DISCONTINUED))
-                    .company(company).build();
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            throw new DAOException(e);
-        }
-    }
-
-    /**
-     * Factory pattern.
-     *
-     * @return The unique instance of ComputerDAO
-     */
-    public static final ComputerDAO getInstance() {
-        if (ComputerDAO.instance == null) {
-            synchronized (ComputerDAO.class) {
-                if (ComputerDAO.instance == null) {
-                    ComputerDAO.instance = new ComputerDAO();
-                }
-            }
-        }
-
-        return ComputerDAO.instance;
     }
 
     @Override
@@ -185,7 +142,7 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
         sb.append(")");
 
         try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(DELETE_LIST + sb.toString())) {
-            //System.out.println(stmt.toString());
+            // System.out.println(stmt.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -206,7 +163,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             throws DAOException {
         // Request construction
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name ");
+        sb.append(
+                "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name ");
         sb.append("FROM computer LEFT JOIN company ON company.id = computer.id ");
 
         // Search
@@ -263,14 +221,12 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
             stmt.setInt(nextParam++, begining);
 
             // Execute request
-            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
-            System.out.println("fin");
 
             // Unmap
             List<ComputerDTO> list = new LinkedList<>();
             while (rs.next()) {
-                //System.out.println(unmap(rs));
+                // System.out.println(unmap(rs));
                 list.add(ComputerDTOMapper.unmap(rs));
             }
 
@@ -283,9 +239,8 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
     public int countSearchResult(String search) {
         String request;
         if (search != null) {
-            request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON "
-                    + COMPANY_ID + " = " + CompanyDAO.ID + " WHERE " + NAME + " = ?  OR " + CompanyDAO.NAME
-                    + " = ?";
+            request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID
+                    + " = " + CompanyDAO.ID + " WHERE " + NAME + " = ?  OR " + CompanyDAO.NAME + " = ?";
         } else {
             request = "SELECT COUNT(*) FROM " + TABLE_NAME;
         }
@@ -301,6 +256,15 @@ public class ComputerDAO extends DAO<Computer> implements Mapper<Computer, Resul
                 return rs.getInt(1);
             }
             throw new DAOException("Imposible to calculate the DB size");
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public Computer unmap(ResultSet rs) throws DAOException {
+        try {
+            return (new ComputerMapper()).mapRow(rs, -1);
         } catch (SQLException e) {
             throw new DAOException(e);
         }

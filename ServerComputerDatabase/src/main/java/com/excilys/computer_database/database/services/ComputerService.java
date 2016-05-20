@@ -10,15 +10,15 @@ import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
 public class ComputerService {
-    public static enum COLUMN   { COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME };
-    public static enum ORDER    { ASC, DESC }
+    public static enum COLUMN {
+        COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME
+    };
 
-    private ComputerDAO dao;
-
-    /** Constructor. */
-    public ComputerService() {
-        dao = ComputerDAO.getInstance();
+    public static enum ORDER {
+        ASC, DESC
     }
+
+    private ComputerDAO computerDAO;
 
     /**
      * Return the computer of id id.
@@ -27,7 +27,7 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public Computer getComputerById(Long id) throws DAOException {
-        Computer computer = dao.find(id);
+        Computer computer = computerDAO.find(id);
         DBManager.closeConnection();
         return computer;
     }
@@ -39,14 +39,15 @@ public class ComputerService {
      * @return
      * @throws DAOException
      */
-    public Page<ComputerDTO> listComputersDTO(COLUMN column, ORDER order, String search, int begining, int pageSize) throws DAOException {
-        Page<ComputerDTO> page = dao.listComputersDTO(column, order, search, begining, pageSize);
+    public Page<ComputerDTO> listComputersDTO(COLUMN column, ORDER order, String search, int begining, int pageSize)
+            throws DAOException {
+        Page<ComputerDTO> page = computerDAO.listComputersDTO(column, order, search, begining, pageSize);
         DBManager.closeConnection();
         return page;
     }
 
-    public int countListResult(String search){
-        int c = dao.countSearchResult(search);
+    public int countListResult(String search) {
+        int c = computerDAO.countSearchResult(search);
         DBManager.closeConnection();
         return c;
     }
@@ -57,7 +58,7 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public List<Computer> listAllComputers() throws DAOException {
-        List<Computer> list = dao.findAll();
+        List<Computer> list = computerDAO.findAll();
         DBManager.closeConnection();
         return list;
     }
@@ -69,7 +70,7 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public Computer update(Computer comp) throws DAOException {
-        Computer computer = dao.update(comp);
+        Computer computer = computerDAO.update(comp);
         DBManager.closeConnection();
         return computer;
     }
@@ -81,7 +82,7 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public Computer createComputer(Computer computer) throws DAOException {
-        Computer c= dao.create(computer);
+        Computer c = computerDAO.create(computer);
         DBManager.closeConnection();
         return c;
     }
@@ -92,7 +93,7 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public void delete(Computer comp) throws DAOException {
-        dao.delete(comp.getId());
+        computerDAO.delete(comp.getId());
         DBManager.closeConnection();
     }
 
@@ -102,12 +103,26 @@ public class ComputerService {
      * @throws DAOException In case of DAO problem
      */
     public void delete(Long id) throws DAOException {
-        dao.delete(id);
+        computerDAO.delete(id);
         DBManager.closeConnection();
     }
 
-    public void deleteComputerList(Long[] idList){
-        dao.deleteComputerList(idList);
+    public void deleteComputerList(Long[] idList) {
+        computerDAO.deleteComputerList(idList);
         DBManager.closeConnection();
+    }
+
+    /**
+     * @return the computerDAO
+     */
+    public ComputerDAO getComputerDAO() {
+        return computerDAO;
+    }
+
+    /**
+     * @param computerDAO the computerDAO to set
+     */
+    public void setComputerDAO(ComputerDAO computerDAO) {
+        this.computerDAO = computerDAO;
     }
 }
