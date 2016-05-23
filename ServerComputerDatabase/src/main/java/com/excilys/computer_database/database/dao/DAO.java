@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.mappers.Mapper;
 
 public abstract class DAO<T> implements Mapper<T, ResultSet> {
@@ -79,7 +78,9 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
      * @throws DAOException If an SQLException is thrown
      */
     public T find(long id) throws DAOException {
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(this.getFindRequest())) {
+        try {
+            PreparedStatement stmt = datasource.getConnection().prepareStatement(this.getFindRequest());
+
             // Fill the id field
             stmt.setLong(1, id);
 
@@ -103,7 +104,8 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
     public List<T> findAll() throws DAOException {
         List<T> list = new ArrayList<>();
 
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(this.getFindAllRequest())) {
+        try {
+            PreparedStatement stmt = datasource.getConnection().prepareStatement(this.getFindAllRequest());
             ResultSet rs = stmt.executeQuery();
 
             // Création de la liste
@@ -128,7 +130,8 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
         String request = getFindAllRequest() + " ORDER BY case when " + orderBy + " is null then 1 else 0 end ,"
                 + orderBy + " LIMIT " + nbPerPage + " OFFSET " + begining;
 
-        try (PreparedStatement stmt = DBManager.getConnection().prepareStatement(request)) {
+        try {
+            PreparedStatement stmt = datasource.getConnection().prepareStatement(request);
             ResultSet rs = stmt.executeQuery();
 
             // Create, fill, and return a list

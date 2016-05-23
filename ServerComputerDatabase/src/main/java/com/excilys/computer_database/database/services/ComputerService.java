@@ -10,6 +10,7 @@ import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
+@Transactional
 public class ComputerService {
     public static enum COLUMN {
         COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME
@@ -27,7 +28,6 @@ public class ComputerService {
      * @return The computer with the id field to "id"
      * @throws DAOException In case of DAO problem
      */
-    @Transactional(readOnly=true)
     public Computer getComputerById(Long id) throws DAOException {
         Computer computer = computerDAO.find(id);
         return computer;
@@ -40,17 +40,13 @@ public class ComputerService {
      * @return
      * @throws DAOException
      */
-    @Transactional(readOnly=true)
     public Page<ComputerDTO> listComputersDTO(COLUMN column, ORDER order, String search, int begining, int pageSize)
             throws DAOException {
-        Page<ComputerDTO> page = computerDAO.listComputersDTO(column, order, search, begining, pageSize);
-        return page;
+        return computerDAO.listComputersDTO(column, order, search, begining, pageSize);
     }
 
-    @Transactional(readOnly=true)
     public int countListResult(String search) {
-        int c = computerDAO.countSearchResult(search);
-        return c;
+        return computerDAO.countSearchResult(search);
     }
 
     /**
@@ -58,10 +54,8 @@ public class ComputerService {
      * @return The list of all computers
      * @throws DAOException In case of DAO problem
      */
-    @Transactional(readOnly=true)
     public List<Computer> listAllComputers() throws DAOException {
-        List<Computer> list = computerDAO.findAll();
-        return list;
+        return computerDAO.findAll();
     }
 
     /**
@@ -70,10 +64,8 @@ public class ComputerService {
      * @return The computer
      * @throws DAOException In case of DAO problem
      */
-    @Transactional(readOnly=false)
     public Computer update(Computer comp) throws DAOException {
-        Computer computer = computerDAO.update(comp);
-        return computer;
+        return computerDAO.update(comp);
     }
 
     /**
@@ -82,10 +74,8 @@ public class ComputerService {
      * @return The computer
      * @throws DAOException In case of DAO problem
      */
-    @Transactional(readOnly=false)
     public Computer createComputer(Computer computer) throws DAOException {
-        Computer c = computerDAO.create(computer);
-        return c;
+        return computerDAO.create(computer);
     }
 
     /**
@@ -93,7 +83,6 @@ public class ComputerService {
      * @param comp The computer to delete from the DB
      * @throws DAOException In case of DAO problem
      */
-    @Transactional(readOnly=false)
     public void delete(Computer comp) throws DAOException {
         computerDAO.delete(comp.getId());
     }
@@ -103,12 +92,10 @@ public class ComputerService {
      * @param id The id of the computer to delete from the DB
      * @throws DAOException In case of DAO problem
      */
-    @Transactional(readOnly=false)
     public void delete(Long id) throws DAOException {
         computerDAO.delete(id);
     }
 
-    @Transactional(readOnly=false)
     public void deleteComputerList(Long[] idList) {
         computerDAO.deleteComputerList(idList);
     }

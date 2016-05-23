@@ -1,14 +1,12 @@
 package com.excilys.computer_database.database.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.mappers.ComputerDTOMapper;
@@ -37,8 +35,6 @@ public class ComputerDAO extends DAO<Computer> {
                     DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ",
                     DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Override
     public String getFindRequest() {
         return FIND_REQUEST;
@@ -57,8 +53,8 @@ public class ComputerDAO extends DAO<Computer> {
         }
 
         // Exécution de la requête
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(INSERT_FULL_REQUEST,
-                Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(INSERT_FULL_REQUEST, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, comp.getName());
             if (comp.getIntroduced() != null) {
                 stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
@@ -79,26 +75,26 @@ public class ComputerDAO extends DAO<Computer> {
 
             stmt.executeUpdate();
 
-            // Mise à jour de l'id de l'objet inséré
+            // Update the id with the inserted one
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.first()) {
                 comp.setId(rs.getLong(1));
             } else {
                 String errorMessage = "L'insertion n'a pas aboutie";
-                logger.error(errorMessage);
                 throw new SQLException(errorMessage);
             }
 
             return comp;
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
 
     @Override
     public Computer update(Computer comp) throws DAOException {
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(UPDATE_REQUEST)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST);
+
             stmt.setString(1, comp.getName());
             stmt.setTimestamp(2, DateHelper.localDateToTimestamp(comp.getIntroduced()));
             stmt.setTimestamp(3, DateHelper.localDateToTimestamp(comp.getDiscontinued()));
@@ -109,7 +105,6 @@ public class ComputerDAO extends DAO<Computer> {
 
             return comp;
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
@@ -117,12 +112,12 @@ public class ComputerDAO extends DAO<Computer> {
     @Override
     public void delete(Long id) throws DAOException {
         // TODO : Vérifier que l'id existe
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(DELETE_REQUEST)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(DELETE_REQUEST);
             stmt.setLong(1, id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
@@ -140,7 +135,8 @@ public class ComputerDAO extends DAO<Computer> {
         }
         sb.append(")");
 
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(DELETE_LIST + sb.toString())) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(DELETE_LIST + sb.toString());
             // System.out.println(stmt.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -150,7 +146,8 @@ public class ComputerDAO extends DAO<Computer> {
     }
 
     public void deleteByCompanyID(Long companyId) throws DAOException {
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(DELETE_BY_COMPANY_ID_REQUEST)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(DELETE_BY_COMPANY_ID_REQUEST);
             stmt.setLong(1, companyId);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -206,7 +203,8 @@ public class ComputerDAO extends DAO<Computer> {
         sb.append("LIMIT ? OFFSET ? ");
 
         // PreparedStatement
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(sb.toString())) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(sb.toString());
             int nextParam = 1;
 
             // Search
@@ -236,6 +234,7 @@ public class ComputerDAO extends DAO<Computer> {
     }
 
     public int countSearchResult(String search) {
+        // Request construction
         String request;
         if (search != null) {
             request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAO.TABLE_NAME + " ON " + COMPANY_ID
@@ -244,7 +243,9 @@ public class ComputerDAO extends DAO<Computer> {
             request = "SELECT COUNT(*) FROM " + TABLE_NAME;
         }
 
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(request)) {
+        try (Connection con = datasource.getConnection()) {
+
+            PreparedStatement stmt = con.prepareStatement(request);
             if (search != null) {
                 stmt.setString(1, search);
                 stmt.setString(2, search);

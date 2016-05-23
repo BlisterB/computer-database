@@ -1,12 +1,10 @@
 package com.excilys.computer_database.database.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.excilys.computer_database.entity.Company;
 
@@ -20,7 +18,6 @@ public class CompanyDAO extends DAO<Company> {
             UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?",
             DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public String getFindRequest() {
@@ -37,7 +34,6 @@ public class CompanyDAO extends DAO<Company> {
         try {
             return new Company(rs.getLong(ID), rs.getString(NAME));
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
@@ -45,8 +41,9 @@ public class CompanyDAO extends DAO<Company> {
     @Override
     public Company create(Company obj) throws DAOException {
         // Exécution de la requête
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(INSERT_REQUEST,
-                Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(INSERT_REQUEST,
+                    Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, obj.getName());
 
             stmt.executeUpdate();
@@ -61,28 +58,28 @@ public class CompanyDAO extends DAO<Company> {
 
             return obj;
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
 
     @Override
     public Company update(Company obj) throws DAOException {
-        try (PreparedStatement stmt = datasource.getConnection().prepareStatement(UPDATE_REQUEST)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement(UPDATE_REQUEST);
             stmt.setString(1, obj.getName());
             stmt.setLong(2, obj.getId());
 
             stmt.executeUpdate();
             return obj;
         } catch (SQLException e) {
-            logger.error(e.getMessage());
             throw new DAOException(e);
         }
     }
 
     @Override
     public void delete(Long id) throws DAOException {
-        try (PreparedStatement deleteCompanyStmt = datasource.getConnection().prepareStatement(DELETE_REQUEST)) {
+        try (Connection con = datasource.getConnection()) {
+            PreparedStatement deleteCompanyStmt = con.prepareStatement(DELETE_REQUEST);
             deleteCompanyStmt.setLong(1, id);
             deleteCompanyStmt.executeUpdate();
         } catch (SQLException e) {

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.dao.CompanyDAO;
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
@@ -13,11 +12,12 @@ import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.ui.Page;
 
+@Transactional
 public class CompanyService {
     private CompanyDAO companyDAO;
     private ComputerDAO computerDAO;
 
-    /** Constructor by default. */
+    /** Default constructor. */
     public CompanyService() {
 
     }
@@ -29,7 +29,6 @@ public class CompanyService {
      * @param nbPerPage Number of Companies to fetch
      * @throws DAOException
      */
-    @Transactional(readOnly=true)
     public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage + 1;
         List<Company> list = companyDAO.findSome(begining, nbPerPage, CompanyDAO.NAME);
@@ -42,7 +41,6 @@ public class CompanyService {
      * @return The list of all listed companies
      * @throws DAOException
      */
-    @Transactional(readOnly=true)
     public List<Company> listAllCompanies() throws DAOException {
         List<Company> list = companyDAO.findAll();
         return list;
@@ -54,28 +52,14 @@ public class CompanyService {
      * @param id The computer's id to delete
      * @throws DAOException
      */
-    @Transactional(readOnly=false)
     public void delete(Long id) throws DAOException {
-        // Use here a transaction, to delete related computers
-        DBManager.initTransaction();
+        // Delete related computers
+        computerDAO.deleteByCompanyID(id);
 
-        try {
-            // Delete related computers
-            computerDAO.deleteByCompanyID(id);
-
-            // Delete the company
-            companyDAO.delete(id);
-
-            // Terminate the transaction
-            DBManager.commit();
-        } catch (DAOException e) {
-            // Rollback if a problem is detected
-            DBManager.rollback();
-        }
-
+        // Delete the company
+        companyDAO.delete(id);
     }
 
-    @Transactional(readOnly=true)
     public Company find(Long id) throws DAOException {
         Company company = companyDAO.find(id);
         return company;
@@ -86,7 +70,6 @@ public class CompanyService {
      * @return Return the list of all companies (DTO form)
      * @throws DAOException If an error occurs in the DAO
      */
-    @Transactional(readOnly=true)
     public List<CompanyDTO> getDTOList() throws DAOException {
         // TODO : Améliorer la complexité de l'obtention des DTO (complexité 2*n
         // pour le moment)
@@ -95,7 +78,6 @@ public class CompanyService {
         for (Company company : list) {
             dtoList.add(new CompanyDTO(company));
         }
-
 
         return dtoList;
     }

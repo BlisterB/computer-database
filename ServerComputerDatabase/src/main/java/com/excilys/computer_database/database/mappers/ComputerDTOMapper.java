@@ -8,11 +8,10 @@ import org.joda.time.LocalDate;
 
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.dtos.DTO;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.helpers.DateHelper;
 
-public class ComputerDTOMapper extends DTO implements Mapper<ComputerDTO, Computer> {
+public class ComputerDTOMapper implements Mapper<ComputerDTO, Computer> {
     @Override
     public ComputerDTO unmap(Computer c) {
         return new ComputerDTO(c);
