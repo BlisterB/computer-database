@@ -7,8 +7,6 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +38,6 @@ public class ComputerDAO extends DAO<Computer> {
                     DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private DataSource datasource;
 
     @Override
     public String getFindRequest() {
@@ -270,19 +267,5 @@ public class ComputerDAO extends DAO<Computer> {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-    }
-
-    /**
-     * @return the datasource
-     */
-    public DataSource getDatasource() {
-        return datasource;
-    }
-
-    /**
-     * @param datasource the datasource to set
-     */
-    public void setDatasource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

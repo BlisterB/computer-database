@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +21,6 @@ public class CompanyDAO extends DAO<Company> {
             DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private DataSource datasource;
 
     @Override
     public String getFindRequest() {
@@ -83,9 +80,6 @@ public class CompanyDAO extends DAO<Company> {
         }
     }
 
-    /**
-     * Delete the company identified by "id".
-     */
     @Override
     public void delete(Long id) throws DAOException {
         try (PreparedStatement deleteCompanyStmt = datasource.getConnection().prepareStatement(DELETE_REQUEST)) {
@@ -94,19 +88,5 @@ public class CompanyDAO extends DAO<Company> {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-    }
-
-    /**
-     * @return the datasource
-     */
-    public DataSource getDatasource() {
-        return datasource;
-    }
-
-    /**
-     * @param datasource the datasource to set
-     */
-    public void setDatasource(DataSource datasource) {
-        this.datasource = datasource;
     }
 }

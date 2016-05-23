@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import com.excilys.computer_database.database.DBManager;
 import com.excilys.computer_database.database.mappers.Mapper;
 
 public abstract class DAO<T> implements Mapper<T, ResultSet> {
+    protected DataSource datasource;
+
     /**
      * Return the string of the request used to find an object in the DB.
      * @return Return the string used to find an object in the DB
@@ -132,5 +136,19 @@ public abstract class DAO<T> implements Mapper<T, ResultSet> {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    /** Return the datasource
+     * @return the datasource
+     */
+    public DataSource getDatasource() {
+        return datasource;
+    }
+
+    /**
+     * @param datasource the datasource to set
+     */
+    public void setDatasource(DataSource datasource) {
+        this.datasource = datasource;
     }
 }
