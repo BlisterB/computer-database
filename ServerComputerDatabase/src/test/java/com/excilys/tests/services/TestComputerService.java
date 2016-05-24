@@ -71,7 +71,7 @@ public class TestComputerService {
             }
             // Verify that the deletion is effective
             try {
-                Computer computer = service.getComputerById(createdId);
+                service.getComputerById(createdId);
             } catch (DAOException e) {
                 // Ok !
             }

@@ -48,7 +48,7 @@ public class AddComputerServlet extends HttpServlet {
         Long companyId = Long.parseLong(request.getParameter("companyId"));
 
         // Validate the computer informations
-        Computer computer = ComputerValidator.validate(name, introducedString, discontinuedString, companyId);
+        Computer computer = ComputerValidator.validate(companyService, name, introducedString, discontinuedString, companyId);
 
         // Create the computer in the DB
         computerService.createComputer(computer);

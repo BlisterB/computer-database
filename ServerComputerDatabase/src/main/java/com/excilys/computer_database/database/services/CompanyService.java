@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
+import com.excilys.computer_database.database.dao.CompanyDAOImplem;
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dtos.CompanyDTO;
@@ -31,7 +32,7 @@ public class CompanyService {
      */
     public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
         int pageNumber = begining / nbPerPage + 1;
-        List<Company> list = companyDAO.findSome(begining, nbPerPage, CompanyDAO.NAME);
+        List<Company> list = companyDAO.findSome(begining, nbPerPage, CompanyDAOImplem.NAME);
 
         return new Page<Company>(list, pageNumber, nbPerPage);
     }
@@ -92,21 +93,7 @@ public class CompanyService {
     /**
      * @param companyDAO the companyDAO to set
      */
-    public void setCompanyDAO(CompanyDAO companyDAO) {
+    public void setCompanyDAO(CompanyDAOImplem companyDAO) {
         this.companyDAO = companyDAO;
-    }
-
-    /**
-     * @return the computerDAO
-     */
-    public ComputerDAO getComputerDAO() {
-        return computerDAO;
-    }
-
-    /**
-     * @param computerDAO the computerDAO to set
-     */
-    public void setComputerDAO(ComputerDAO computerDAO) {
-        this.computerDAO = computerDAO;
     }
 }

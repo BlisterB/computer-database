@@ -10,7 +10,9 @@ import com.excilys.computer_database.entity.Computer.ComputerBuilder;
 import com.excilys.computer_database.helpers.DateHelper;
 
 public class ComputerValidator {
-    public static Computer validate(String name, String introducedString, String discontinuedString, Long companyId)
+    CompanyService companyService;
+
+    public static Computer validate(CompanyService companyService, String name, String introducedString, String discontinuedString, Long companyId)
             throws ValidationException, DAOException {
         // Name
         if (name == null || name.length() < 3) {
@@ -19,11 +21,11 @@ public class ComputerValidator {
 
         // Date
         LocalDate introduced = null;
-        if (introducedString != null) {
+        if (introducedString != null && !introducedString.isEmpty()) {
             introduced = DateHelper.isoStringToLocalDate(introducedString);
         }
         LocalDate discontinued = null;
-        if (discontinuedString != null) {
+        if (discontinuedString != null && !discontinuedString.isEmpty()) {
             discontinued = DateHelper.isoStringToLocalDate(discontinuedString);
         }
         if (introduced != null && discontinued != null) {
@@ -35,7 +37,7 @@ public class ComputerValidator {
         // Construct the Computer
         ComputerBuilder builder = new ComputerBuilder(name).introduced(introduced).discontinued(discontinued);
 
-        Company company = (new CompanyService()).find(companyId);
+        Company company = companyService.find(companyId);
         builder.company(company);
 
         return builder.build();

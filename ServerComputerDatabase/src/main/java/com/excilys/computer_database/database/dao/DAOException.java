@@ -1,7 +1,5 @@
 package com.excilys.computer_database.database.dao;
 
-import java.sql.SQLException;
-
 /**
  * Exception thrown by the DAO, it could be linked to a SQLException.
  */
@@ -20,7 +18,7 @@ public class DAOException extends RuntimeException {
      * Wrapper for SQLException.
      * @param e The SQLException to wrap
      */
-    public DAOException(SQLException e) {
+    public DAOException(Exception e) {
         super(e.getMessage(), e.getCause());
     }
 }

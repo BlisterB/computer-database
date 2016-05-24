@@ -28,7 +28,7 @@
 									name="introduced" placeholder="Introduced date">
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date (YYYY-MM-dd) :</label> <input type="date" class="form-control" id="discontinued"
+								<label for="discontinued">Discontinued date (YYYY-MM-dd) :</label> <input type="text" class="form-control" id="discontinued"
 									name="discontinued" placeholder="Discontinued date">
 							</div>
 							<div class="form-group">
