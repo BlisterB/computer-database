@@ -2,6 +2,8 @@ package com.excilys.computer_database.database.services;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computer_database.database.dao.ComputerDAO;
@@ -10,8 +12,12 @@ import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
+@Service
 @Transactional
 public class ComputerService {
+    @Autowired
+    private ComputerDAO computerDAO;
+
     public static enum COLUMN {
         COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME
     };
@@ -19,8 +25,6 @@ public class ComputerService {
     public static enum ORDER {
         ASC, DESC
     }
-
-    private ComputerDAO computerDAO;
 
     /**
      * Return the computer of id id.

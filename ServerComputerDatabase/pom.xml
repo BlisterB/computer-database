@@ -132,6 +132,8 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
+
+			<!-- Exclusion on common logging to use Logback for logging -->
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
@@ -139,6 +141,12 @@
 				</exclusion>
 			</exclusions>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 
 		<dependency>
@@ -152,6 +160,12 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 
 		<dependency>

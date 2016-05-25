@@ -3,6 +3,8 @@ package com.excilys.computer_database.database.services;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computer_database.database.dao.CompanyDAO;
@@ -13,9 +15,12 @@ import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.ui.Page;
 
+@Service
 @Transactional
 public class CompanyService {
+    @Autowired
     private CompanyDAO companyDAO;
+    @Autowired
     private ComputerDAO computerDAO;
 
     /** Default constructor. */

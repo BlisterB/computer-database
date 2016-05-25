@@ -5,9 +5,9 @@
 
 <!DOCTYPE html>
 <html>
-<%@include file='static/head.html'%>
+<%@include file='../static/head.html'%>
 <body>
-	<%@include file='static/header.html'%>
+	<%@include file='../static/header.html'%>
 
 	<section id="main">
 		<div class="container">

@@ -1,16 +1,14 @@
-package com.excilys.computer_database.servlets;
+package com.excilys.computer_database.controller;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.services.ComputerService;
@@ -18,19 +16,17 @@ import com.excilys.computer_database.database.services.ComputerService.COLUMN;
 import com.excilys.computer_database.database.services.ComputerService.ORDER;
 import com.excilys.computer_database.ui.Page;
 
-/**
- * Servlet implementation class DashboardServlet
- */
-public class DashboardServlet extends HttpServlet {
-    private static ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
-    private static ComputerService computerService = (ComputerService) context.getBean("computerService");
+@Controller
+@RequestMapping("/dashboard")
+public class Dashboard {
+    @Autowired
+    ComputerService computerService ;
 
-    private static final long serialVersionUID = 1L;
     // Request's parameters
     private static final String PAGE_SIZE = "pageSize", CURRENT_PAGE = "page", ORDER_BY = "column", SEARCH = "search",
             COMPUTER_LIST = "computerList", NB_RESULTS = "nbResults", LIST_TO_DELETE = "selection", ORDER_TAG = "order";
-
-    // Legal values
+    private static final String VIEW_NAME = "dashboard";
+    // Legal param values
     private static final Map<String, COLUMN> COLUMN_AUTHORISED;
     static {
         COLUMN_AUTHORISED = new HashMap<>();
@@ -53,23 +49,8 @@ public class DashboardServlet extends HttpServlet {
         ORDER_AUTHORIZED.put("DESC", ORDER.DESC);
     }
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DashboardServlet() {
-        super();
-    }
-
-    /**
-     * The GET method is called to display computer list with simple parameters
-     * : limit (nb of element per page), current (page)
-     *
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    @RequestMapping(method = RequestMethod.GET)
+    public String dashboardGet(HttpServletRequest request) {
         // Fetch the page's size
         Integer pageSize = PAGE_SIZE_AUTHORIZED.get(request.getParameter(PAGE_SIZE));
         if (pageSize == null) {
@@ -101,19 +82,11 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute(COMPUTER_LIST, computerList.getList());
         request.setAttribute(NB_RESULTS, nbResult);
 
-        this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
+        return VIEW_NAME;
     }
 
-    /**
-     * The POST method is called to display result based on a name filter.
-     *
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    @RequestMapping(method = RequestMethod.POST)
+    public String dashboardPost(HttpServletRequest request) {
         // The parameters "selection" indicate a list of computer to delete
         String selection = request.getParameter(LIST_TO_DELETE);
         if (selection != null) {
@@ -130,7 +103,7 @@ public class DashboardServlet extends HttpServlet {
         }
 
         // Redirection to the GET Page
-        doGet(request, response);
+        return dashboardGet(request);
     }
 
     private int getCurrentPage(HttpServletRequest request) {

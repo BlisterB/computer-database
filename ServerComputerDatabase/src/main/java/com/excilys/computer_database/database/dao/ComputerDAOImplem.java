@@ -7,9 +7,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.mappers.ComputerDTOMapper;
@@ -20,6 +22,7 @@ import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.helpers.DateHelper;
 import com.excilys.computer_database.ui.Page;
 
+@Repository
 public class ComputerDAOImplem implements ComputerDAO {
     public static final String TABLE_NAME = "computer";
     public static final String ID = TABLE_NAME + ".id", NAME = TABLE_NAME + ".name",
@@ -38,6 +41,7 @@ public class ComputerDAOImplem implements ComputerDAO {
                     DELETE_LIST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " IN ",
                     DELETE_BY_COMPANY_ID_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + COMPANY_ID + " = ?";
 
+    @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Override
@@ -48,21 +52,21 @@ public class ComputerDAOImplem implements ComputerDAO {
         }
 
         // Exécution de la requête
-        SimpleJdbcInsert jdbc = new SimpleJdbcInsert(jdbcTemplate).withTableName("company").usingGeneratedKeyColumns(ID);
+        SimpleJdbcInsert jdbc = new SimpleJdbcInsert(jdbcTemplate).withTableName("computer")
+                .usingGeneratedKeyColumns(ID);
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("name", comp.getName());
         parameters.put("introduced",
                 (comp.getIntroduced() == null) ? null : DateHelper.localDateToTimestamp(comp.getIntroduced()));
         parameters.put("discontinued",
                 (comp.getDiscontinued() == null) ? null : DateHelper.localDateToTimestamp(comp.getDiscontinued()));
-        parameters.put("company_id", (comp.getCompany() == null) ? null : comp.getCompany());
+        parameters.put("company_id", (comp.getCompany() == null) ? null : comp.getCompany().getId());
 
         Long id = jdbc.executeAndReturnKey(parameters).longValue();
         if (id == 0) {
             throw new DAOException("L'insertion n'a pas aboutie");
         }
-        comp.setId(id);
-
+        System.out.println(id);
         return comp;
     }
 
@@ -151,7 +155,7 @@ public class ComputerDAOImplem implements ComputerDAO {
 
         // Search
         if (search != null) {
-            sb.append(" WHERE computer.name = '" + search + "'  + OR company.name = '" + search + " ");
+            sb.append(" WHERE computer.name = '" + search + "' OR company.name = '" + search + "' ");
         }
 
         // Column
@@ -201,17 +205,17 @@ public class ComputerDAOImplem implements ComputerDAO {
     @Override
     public int countSearchResult(String search) {
         // Request construction
-        String request;
-        if (search != null) {
-            request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAOImplem.TABLE_NAME + " ON "
-                    + COMPANY_ID + " = " + CompanyDAOImplem.ID + " WHERE " + NAME + " = ?  OR " + CompanyDAOImplem.NAME
-                    + " = ?";
-        } else {
-            request = "SELECT COUNT(*) FROM " + TABLE_NAME;
-        }
-
         try {
-            return jdbcTemplate.queryForObject(request, Integer.class);
+            String request;
+            if (search != null) {
+                request = "SELECT COUNT(*) FROM " + TABLE_NAME + " LEFT JOIN " + CompanyDAOImplem.TABLE_NAME + " ON "
+                        + COMPANY_ID + " = " + CompanyDAOImplem.ID + " WHERE " + NAME + " = ?  OR "
+                        + CompanyDAOImplem.NAME + " = ?";
+                return jdbcTemplate.queryForObject(request, Integer.class, search, search);
+            } else {
+                request = "SELECT COUNT(*) FROM " + TABLE_NAME;
+                return jdbcTemplate.queryForObject(request, Integer.class);
+            }
         } catch (DataAccessException e) {
             throw new DAOException(e);
         }

@@ -6,13 +6,16 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.computer_database.database.mappers.CompanyMapper;
 import com.excilys.computer_database.entity.Company;
 
+@Repository
 public class CompanyDAOImplem implements CompanyDAO {
     public static final String TABLE_NAME = "company";
     public static final String ID = "company.id", NAME = "company.name";
@@ -22,6 +25,7 @@ public class CompanyDAOImplem implements CompanyDAO {
             UPDATE_REQUEST = "UPDATE " + TABLE_NAME + " SET " + NAME + " = ? WHERE " + ID + " = ?",
             DELETE_REQUEST = "DELETE FROM " + TABLE_NAME + " WHERE " + ID + " = ? ";
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
