@@ -1,10 +1,10 @@
 package com.excilys.computer_database.entity;
 
 import java.sql.Timestamp;
-
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 
 import com.excilys.computer_database.database.dao.DAOException;
+import com.excilys.computer_database.helpers.DateHelper;
 
 public class Computer extends Entity {
     // TODO : implémenter serializable
@@ -77,7 +77,7 @@ public class Computer extends Entity {
          */
         public ComputerBuilder introduced(Timestamp introduced) {
             if (introduced != null) {
-                this.introduced = new LocalDate(introduced);
+                this.introduced = DateHelper.timestampToLocalDate(introduced);
             }
             return this;
         }
@@ -97,7 +97,7 @@ public class Computer extends Entity {
          */
         public ComputerBuilder discontinued(Timestamp discontinued) {
             if (discontinued != null) {
-                this.discontinued = new LocalDate(discontinued);
+                this.discontinued = DateHelper.timestampToLocalDate(discontinued);
             }
             return this;
         }

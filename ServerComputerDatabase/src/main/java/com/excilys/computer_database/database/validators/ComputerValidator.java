@@ -1,6 +1,7 @@
 package com.excilys.computer_database.database.validators;
 
-import org.joda.time.LocalDate;
+
+import java.time.LocalDate;
 
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.services.CompanyService;

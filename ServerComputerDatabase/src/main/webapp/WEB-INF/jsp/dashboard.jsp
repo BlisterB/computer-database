@@ -5,9 +5,9 @@
 
 <!DOCTYPE html>
 <html>
-<%@include file='../static/head.html'%>
+<%@include file='../template/head.jsp'%>
 <body>
-	<%@include file='../static/header.html'%>
+	<%@include file='../template/header.jsp'%>
 
 	<section id="main">
 		<div class="container">
@@ -97,8 +97,8 @@
 		</div>
 	</footer>
 
-	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/dashboard.js"></script>
+	<script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
+	<script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+	<script src="<c:url value="/resources/js/dashboard.js"/>"></script>
 </body>
 </html>

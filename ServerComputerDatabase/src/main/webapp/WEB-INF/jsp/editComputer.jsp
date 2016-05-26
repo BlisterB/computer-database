@@ -4,9 +4,9 @@
 
 <!DOCTYPE html>
 <html>
-<%@include file='../static/head.html'%>
+<%@include file='../template/head.jsp'%>
 <body>
-	<%@include file='../static/header.html'%>
+	<%@include file='../template/header.jsp'%>
 
 	<section id="main">
 		<div class="container">
@@ -51,9 +51,9 @@
 					
 					<!-- Form validation -->
 					<!-- JQuery -->
-					<script src="js/jquery.min.js"></script>
+					<script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
 					<!-- JQuery form validator -->
-					<script src="js/jquery.validate.js"></script>
+					<script src="<c:url value="/resources/js/jquery.validate.js"/>"></script>
 
 					<!-- Form validator -->
 					<script>

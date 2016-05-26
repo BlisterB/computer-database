@@ -1,11 +1,8 @@
 package com.excilys.computer_database.ui;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
-
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dao.NotFoundException;
@@ -14,6 +11,7 @@ import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
+import com.excilys.computer_database.helpers.DateHelper;
 
 /**
  * The Command Line Interface's controller, initialize an instance et use
@@ -201,29 +199,27 @@ public class CommandLineInterfaceController {
         String name = askString();
 
         // Dates
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy MM dd");
-
         // Introduced
-        System.out.println("Date introduced (yyyy MM dd) :");
+        System.out.println("Date introduced (yyyy-MM-dd) :");
         String stringIntroduced = askString();
 
         LocalDate introduced = null;
         if (!stringIntroduced.isEmpty()) {
             try {
-                introduced = LocalDate.parse(stringIntroduced, formatter);
+                introduced = DateHelper.isoStringToLocalDate(stringIntroduced);
             } catch (Exception e) {
                 System.out.println("Bad entry, introduced date set to null");
             }
         }
 
         // Discontinued
-        System.out.println("Date discontinued (yyyy MM dd) :");
+        System.out.println("Date discontinued (yyyy-MM-dd) :");
         String stringDiscontinued = askString();
 
         LocalDate discontinued = null;
         if (!stringDiscontinued.isEmpty()) {
             try {
-                discontinued = LocalDate.parse(stringDiscontinued, formatter);
+                discontinued = DateHelper.isoStringToLocalDate(stringDiscontinued);
             } catch (Exception e) {
                 System.out.println("Bad entry, discontinued date set to null");
             }

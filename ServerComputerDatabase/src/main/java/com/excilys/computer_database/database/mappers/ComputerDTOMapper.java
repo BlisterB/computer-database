@@ -3,8 +3,8 @@ package com.excilys.computer_database.database.mappers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
-import org.joda.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.excilys.computer_database.database.dao.DAOException;

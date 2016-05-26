@@ -3,17 +3,19 @@ package com.excilys.computer_database.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.computer_database.database.dtos.CompanyDTO;
+import com.excilys.computer_database.database.dtos.ComputerDTO;
 import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.database.services.ComputerService;
-import com.excilys.computer_database.database.validators.ComputerValidator;
-import com.excilys.computer_database.entity.Computer;
 
 @Controller
 @RequestMapping("addComputer")
@@ -36,7 +38,20 @@ public class AddComputer {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String postRequest(HttpServletRequest request) {
+    public String postRequest(HttpServletRequest request, @Valid ComputerDTO computerDTO, BindingResult result ) {
+        // TODO : Afficher en front les erreurs rencontrées en cas de validation échouant
+        // Annotation validation
+        if (result.hasErrors()) {
+            System.out.println("Erreur lors de la création d'un bean :");
+            for(ObjectError e : result.getAllErrors()){
+                System.out.println(e);
+            }
+            return "addComputer";
+        }
+        // Validation by constraint (date coherences)
+
+        return "addComputer";
+        /*
         // Fetch request's parameters
         String name = request.getParameter("name");
         String introducedString = request.getParameter("introduced");
@@ -51,5 +66,6 @@ public class AddComputer {
 
         // On redirige vers le dashboard
         return dashboard.dashboardGet(request);
+         */
     }
 }

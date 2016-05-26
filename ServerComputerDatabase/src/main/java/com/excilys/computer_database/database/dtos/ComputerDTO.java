@@ -1,15 +1,24 @@
 package com.excilys.computer_database.database.dtos;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
+
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.excilys.computer_database.entity.Computer;
 
 public class ComputerDTO {
     private Long id, companyId;
-    private String name, companyName;
+    @NotEmpty @Size(min = 2, max = 40)
+    private String name;
+    private String companyName;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate introduced, discontinued;
 
-
+    public ComputerDTO(){
+    }
 
     public ComputerDTO(Long id, String name, LocalDate introduced,
             LocalDate discontinued, Long companyId, String companyName) {
