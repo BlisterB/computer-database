@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.excilys.computer_database.database.dao.ComputerDAO;
 import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.ui.Page;
 
@@ -71,6 +72,15 @@ public class ComputerService {
     public Computer update(Computer comp) throws DAOException {
         return computerDAO.update(comp);
     }
+    public Computer update(ComputerDTO comp) throws DAOException {
+        Computer c = new Computer.ComputerBuilder(comp.getName())
+                .id(comp.getId())
+                .introduced(comp.getIntroduced())
+                .discontinued(comp.getDiscontinued())
+                .company(new Company(comp.getCompanyId(), comp.getCompanyName()))
+                .build();
+        return computerDAO.update(c);
+    }
 
     /**
      * Create the computer in the DB.
@@ -80,6 +90,15 @@ public class ComputerService {
      */
     public Computer createComputer(Computer computer) throws DAOException {
         return computerDAO.create(computer);
+    }
+
+    public Computer createComputer(ComputerDTO comp) throws DAOException {
+        Computer c = new Computer.ComputerBuilder(comp.getName())
+                .introduced(comp.getIntroduced())
+                .discontinued(comp.getDiscontinued())
+                .company(new Company(comp.getCompanyId(), comp.getCompanyName()))
+                .build();
+        return computerDAO.create(c);
     }
 
     /**

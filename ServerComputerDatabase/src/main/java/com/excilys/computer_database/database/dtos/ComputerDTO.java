@@ -11,7 +11,7 @@ import com.excilys.computer_database.entity.Computer;
 
 public class ComputerDTO {
     private Long id, companyId;
-    @NotEmpty @Size(min = 2, max = 40)
+    @NotEmpty @Size(min = 3, max = 40)
     private String name;
     private String companyName;
     @DateTimeFormat(pattern="yyyy-MM-dd")

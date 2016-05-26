@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -26,6 +29,14 @@ public class AddComputer {
     ComputerService computerService;
     @Autowired
     Dashboard dashboard;
+    @Autowired
+    Validator computerDTOValidator;
+
+    // NB : Permet d'assocer le validator à la validation du bean ComputerDTO, en plus des annotations
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.setValidator(computerDTOValidator);
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String getRequest(HttpServletRequest request) {
@@ -46,26 +57,12 @@ public class AddComputer {
             for(ObjectError e : result.getAllErrors()){
                 System.out.println(e);
             }
-            return "addComputer";
+            this.getRequest(request);
         }
+
         // Validation by constraint (date coherences)
+        computerService.createComputer(computerDTO);
 
-        return "addComputer";
-        /*
-        // Fetch request's parameters
-        String name = request.getParameter("name");
-        String introducedString = request.getParameter("introduced");
-        String discontinuedString = request.getParameter("discontinued");
-        Long companyId = Long.parseLong(request.getParameter("companyId"));
-
-        // Validate the informations
-        Computer computer = ComputerValidator.validate(companyService, name, introducedString, discontinuedString, companyId);
-
-        // Create the computer in the DB
-        computerService.createComputer(computer);
-
-        // On redirige vers le dashboard
         return dashboard.dashboardGet(request);
-         */
     }
 }

@@ -42,16 +42,8 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<!-- Transactions <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
-		<property name="dataSource" ref="datasource" /> </bean> <tx:annotation-driven 
-		transaction-manager="txManager" /> <bean id="computerDAO" class="com.excilys.computer_database.database.dao.ComputerDAOImplem" 
-		scope="singleton" autowire="byName" /> <bean id="companyDAO" class="com.excilys.computer_database.database.dao.CompanyDAOImplem" 
-		scope="singleton" autowire="byName" /> <bean id="computerService" class="com.excilys.computer_database.database.services.ComputerService" 
-		scope="singleton" autowire="byName" /> <bean id="companyService" class="com.excilys.computer_database.database.services.CompanyService" 
-		scope="singleton" autowire="byName" /> <bean id="company" class="com.excilys.computer_database.entity.Company" 
-		scope="prototype" /> <bean id="computer" class="com.excilys.computer_database.entity.Computer" 
-		scope="prototype"> <property name="company" ref="company" /> </bean> <bean 
-		id="dashboard" class="com.excilys.computer_database.controller.Dashboard" 
-		scope="singleton" /> -->
-
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
 </beans>
