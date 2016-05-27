@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="tag"	tagdir="/WEB-INF/tags/" %>
+<%@ taglib prefix="tag" tagdir="/WEB-INF/tags/"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <!DOCTYPE html>
 <html>
@@ -11,21 +12,24 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nbResults} computers found</h1>
+			<h1 id="homeTitle">${nbResults}
+				<spring:message code="computerFound" />
+			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control" placeholder="<spring:message code="SearchName" />" /> <input
+							type="submit" id="searchsubmit" value="<spring:message code="FilterByName" />"
 							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><spring:message
+							code="AddComputer" /></a> <a class="btn btn-default"
+						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message
+							code="Edit" /></a>
 				</div>
 			</div>
 		</div>
@@ -46,18 +50,22 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>
-							<tag:link pageUrl="dashboard" page="0" column="computerName" order="ASC" >Computer Name</tag:link>
-						</th>
-						<th>
-							<tag:link pageUrl="dashboard" page="0" column="introduced" order="DESC" >Introduced Date</tag:link>
-						</th>
-						<th>
-							<tag:link pageUrl="dashboard" page="0" column="discontinued" order="DESC" >Discontinued Date</tag:link>
-						</th>
-						<th>
-							<tag:link pageUrl="dashboard" page="0" column="companyName" order="ASC" >Company name</tag:link>
-						</th>
+						<th><tag:link pageUrl="dashboard" page="0"
+								column="computerName" order="ASC">
+								<spring:message code="ComputerName" />
+							</tag:link></th>
+						<th><tag:link pageUrl="dashboard" page="0"
+								column="introduced" order="DESC">
+								<spring:message code="IntroducedDate" />
+							</tag:link></th>
+						<th><tag:link pageUrl="dashboard" page="0"
+								column="discontinued" order="DESC">
+								<spring:message code="DiscontinuedDate" />
+							</tag:link></th>
+						<th><tag:link pageUrl="dashboard" page="0"
+								column="companyName" order="ASC">
+								<spring:message code="CompanyName" />
+							</tag:link></th>
 
 					</tr>
 				</thead>
@@ -71,7 +79,8 @@
 								class="cb" value="${computer.id}" id="${computer.name}_id"></td>
 
 							<!--  Cellules d'affichage des informations du computer -->
-							<td><a href="editComputer?idComputer=${computer.id}" id="${computer.name}_name">${computer.name}</a></td>
+							<td><a href="editComputer?idComputer=${computer.id}"
+								id="${computer.name}_name">${computer.name}</a></td>
 							<td>${computer.introduced}</td>
 							<td>${computer.discontinued}</td>
 							<td>${computer.companyName}</td>
@@ -80,19 +89,23 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 	</section>
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<!-- Pagination buttons -->
-			<tag:pagination pageUrl="dashboard" page="${page}" nbResults="${nbResults}" pageSize="${pageSize}"></tag:pagination>
+			<tag:pagination pageUrl="dashboard" page="${page}"
+				nbResults="${nbResults}" pageSize="${pageSize}"></tag:pagination>
 
 			<!-- NumberPerPage buttons -->
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<tag:link pageUrl="dashboard" page="0" pageSize="10"	type="button" cssClass="btn btn-default">10</tag:link>
-				<tag:link pageUrl="dashboard" page="0" pageSize="50"	type="button" cssClass="btn btn-default">50</tag:link>
-				<tag:link pageUrl="dashboard" page="0" pageSize="100"	type="button" cssClass="btn btn-default">100</tag:link>
+				<tag:link pageUrl="dashboard" page="0" pageSize="10" type="button"
+					cssClass="btn btn-default">10</tag:link>
+				<tag:link pageUrl="dashboard" page="0" pageSize="50" type="button"
+					cssClass="btn btn-default">50</tag:link>
+				<tag:link pageUrl="dashboard" page="0" pageSize="100" type="button"
+					cssClass="btn btn-default">100</tag:link>
 			</div>
 		</div>
 	</footer>

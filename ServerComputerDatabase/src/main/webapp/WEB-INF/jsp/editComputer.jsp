@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <!DOCTYPE html>
 <html>
@@ -14,28 +15,28 @@
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<div class="label label-default pull-right">id:
 						${computer.id}</div>
-					<h1>Edit Computer</h1>
+					<h1><spring:message code="form.EditComputer" /></h1>
 
 					<form id="editComputer" action="editComputer" method="POST">
 						<input type="hidden" id="id" name="id" value="${computer.id}" />
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
+								<label for="computerName"><spring:message code="form.ComputerName" /></label> <input
 									type="text" class="form-control" id="name" name="name" required="required" minlength="3"
 									value="${computer.name}">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date (YYYY-MM-dd) :</label> <input
+								<label for="introduced"><spring:message code="form.IntroducedDate" /></label> <input
 									type="text" class="form-control" id="introduced" name="introduced"
 									value="${computer.introduced}">
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date (YYYY-MM-dd) :</label> <input
+								<label for="discontinued"><spring:message code="form.DiscontinuedDate" /></label> <input
 									type="text" class="form-control" id="discontinued" name="discontinued"
 									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
+								<label for="companyId"><spring:message code="form.Company" /></label> <select
 									class="form-control" id="companyId" name="companyId">
 									<c:forEach var="company" items="${companyList}">
 										<option value="${company.id}" <c:if test="${company.id == computer.companyId}">selected</c:if> >${company.name}</option>
@@ -44,8 +45,8 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Edit" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+							<input type="submit" value="<spring:message code="form.Edit" />" class="btn btn-primary">
+							or <a href="dashboard" class="btn btn-default"><spring:message code="form.Cancel" /></a>
 						</div>
 					</form>
 					

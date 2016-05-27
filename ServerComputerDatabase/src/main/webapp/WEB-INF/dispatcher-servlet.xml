@@ -25,4 +25,15 @@
 	</bean>
 	<mvc:annotation-driven />
 
+	<!-- Internationalization -->
+	<bean id="messageSource"
+        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="/resources/localization" />
+        <property name="defaultEncoding" value="UTF-8" />
+    </bean>
+    <bean id="localeResolver"
+    class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+    <property name="defaultLocale" value="fr" />
+</bean>
+    
 </beans>
