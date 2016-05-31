@@ -4,10 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.dto.ComputerDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
-import com.excilys.computer_database.helpers.DateHelper;
+import com.excilys.computer_database.helper.DateHelper;
 import com.excilys.computer_database.repository.DAOException;
 import com.excilys.computer_database.repository.NotFoundException;
 import com.excilys.computer_database.service.CompanyService;

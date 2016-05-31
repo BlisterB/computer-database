@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.excilys.computer_database.helpers.DateHelper;
+import com.excilys.computer_database.helper.DateHelper;
 import com.excilys.computer_database.repository.DAOException;
 
 @Entity

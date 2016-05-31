@@ -1,4 +1,4 @@
-package com.excilys.computer_database.database.dtos;
+package com.excilys.computer_database.dto;
 
 import java.time.LocalDate;
 
@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.excilys.computer_database.entity.Computer;
-import com.excilys.computer_database.helpers.DateHelper;
+import com.excilys.computer_database.helper.DateHelper;
 
 public class ComputerDTO {
     private Long id, companyId;

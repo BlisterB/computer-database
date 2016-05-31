@@ -1,4 +1,4 @@
-package com.excilys.computer_database.database.dtos;
+package com.excilys.computer_database.dto;
 
 import com.excilys.computer_database.entity.Company;
 

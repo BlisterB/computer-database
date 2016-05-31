@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.excilys.computer_database.database.dtos.CompanyDTO;
-import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.dto.CompanyDTO;
+import com.excilys.computer_database.dto.ComputerDTO;
 import com.excilys.computer_database.mapper.ComputerDTOMapper;
 import com.excilys.computer_database.service.CompanyService;
 import com.excilys.computer_database.service.ComputerService;
@@ -27,6 +30,15 @@ public class EditComputer {
     private CompanyService companyService;
     @Autowired
     private Dashboard dashboard;
+
+    @Autowired
+    Validator computerDTOValidator;
+
+    // NB : Permet d'assocer le validator à la validation du bean ComputerDTO, en plus des annotations
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.setValidator(computerDTOValidator);
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String getRequest(HttpServletRequest request) {
@@ -54,7 +66,7 @@ public class EditComputer {
             for(ObjectError e : result.getAllErrors()){
                 System.out.println(e);
             }
-            this.getRequest(request);
+            return this.getRequest(request);
         }
 
         // Validation by constraint (date coherences)

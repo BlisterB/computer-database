@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.excilys.computer_database.database.dtos.CompanyDTO;
-import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.dto.CompanyDTO;
+import com.excilys.computer_database.dto.ComputerDTO;
 import com.excilys.computer_database.service.CompanyService;
 import com.excilys.computer_database.service.ComputerService;
 
@@ -57,7 +57,7 @@ public class AddComputer {
             for(ObjectError e : result.getAllErrors()){
                 System.out.println(e);
             }
-            this.getRequest(request);
+            return dashboard.dashboardGet(request);
         }
 
         // Validation by constraint (date coherences)

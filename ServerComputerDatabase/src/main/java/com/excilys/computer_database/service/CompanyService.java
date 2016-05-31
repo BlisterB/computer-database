@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computer_database.database.dtos.CompanyDTO;
+import com.excilys.computer_database.dto.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.repository.CompanyDAO;
 import com.excilys.computer_database.repository.ComputerDAO;

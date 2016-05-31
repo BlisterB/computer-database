@@ -1,18 +1,18 @@
 package com.excilys.computer_database.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.dto.ComputerDTO;
 import com.excilys.computer_database.service.ComputerService;
 import com.excilys.computer_database.service.ComputerService.COLUMN;
 
@@ -75,11 +75,14 @@ public class Dashboard {
         request.setAttribute(SEARCH, search);
 
         // Ask the DB
-        Page<ComputerDTO> computerPage = computerService.listComputersDTO(column, order, search, currentPage,
+        Object[] searchResult = computerService.listComputersDTO(column, order, search, currentPage,
                 pageSize);
-        int nbResult = computerService.countListResult(search);
 
-        request.setAttribute(COMPUTER_LIST, computerPage.getContent());
+        @SuppressWarnings("unchecked")
+        List<ComputerDTO> computers = (List<ComputerDTO>) searchResult[0];
+        Long nbResult = (Long) searchResult[1];
+
+        request.setAttribute(COMPUTER_LIST, computers);
         request.setAttribute(NB_RESULTS, nbResult);
 
         return VIEW_NAME;

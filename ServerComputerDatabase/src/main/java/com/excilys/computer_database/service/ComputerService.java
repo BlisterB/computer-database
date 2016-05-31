@@ -5,19 +5,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computer_database.database.dtos.ComputerDTO;
+import com.excilys.computer_database.dto.ComputerDTO;
 import com.excilys.computer_database.entity.Company;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.mapper.ComputerDTOMapper;
 import com.excilys.computer_database.repository.ComputerDAO;
 import com.excilys.computer_database.repository.DAOException;
-
 
 @Service
 @Transactional
@@ -45,55 +43,50 @@ public class ComputerService {
      * @param begining
      * @param nbPerPage
      * @param orderBy "id", "name", "introduced", "discontinued" or "company"
-     * @return
+     * @return An array, the first case is the List containing the result, the
+     *         second is the Integer representing the total number of result
      * @throws DAOException
      */
-    public Page<ComputerDTO> listComputersDTO(COLUMN column, Direction direction, String search, int page, int size)
-            throws DAOException {
+    public Object[] listComputersDTO(COLUMN column, Direction direction, String search, int page, int size) {
         // TODO : adapter la recherche
         Page<Computer> computers;
         PageRequest r;
-        if(column == null) {
+        if (column == null) {
             r = new PageRequest(page, size);
         } else {
             r = new PageRequest(page, size, direction, getColumn(column));
         }
-        computers = computerDAO.findAll(r);
-
+        if (search == null) {
+            computers = computerDAO.findAll(r);
+        } else {
+            computers = computerDAO.findByNameOrCompany_Name(search, search, r);
+        }
 
         List<ComputerDTO> list = new LinkedList<ComputerDTO>();
 
-        for(Computer c : computers.getContent()) {
+        for (Computer c : computers.getContent()) {
             list.add(computerDTOMapper.unmap(c));
         }
-        return new PageImpl<>(list);
+
+        Object[] o = new Object[2];
+        o[0] = list;
+        o[1] = new Long(computers.getTotalElements());
+        return o;
     }
 
-    public String getColumn(COLUMN col){
+    public String getColumn(COLUMN col) {
         switch (col) {
-        case COMPUTER_NAME :
+        case COMPUTER_NAME:
             return "name";
-        case INTRODUCED :
+        case INTRODUCED:
             return "introduced";
-        case DISCONTINUED :
+        case DISCONTINUED:
             return "discontinued";
-        case COMPANY_NAME :
+        case COMPANY_NAME:
             return "company.name";
         default:
             return "name";
         }
-    }
-
-    public int countListResult(){
-        return (int) computerDAO.count();
-    }
-
-    public int countListResult(String search) {
-        // TODO : adapter la recherche
-        if(search == null) {
-            return countListResult();
-        }
-        return -1;
     }
 
     /**
@@ -123,18 +116,12 @@ public class ComputerService {
         c.setName(comp.getName());
         c.setIntroduced(comp.getIntroduced());
         c.setDiscontinued(comp.getDiscontinued());
-        if(c.getCompany() == null) {
-            c.setCompany(new Company());
-        }
-        c.getCompany().setId(comp.getCompany().getId());
-        c.getCompany().setName(comp.getCompany().getName());
+        c.setCompany(comp.getCompany());
 
-        // Save the changes
-        computerDAO.save(c);
-        return c;
+        return comp;
     }
 
-    @Transactional(rollbackFor=DAOException.class)
+    @Transactional(rollbackFor = DAOException.class)
     public Computer update(ComputerDTO comp) throws DAOException {
         return update(computerDTOMapper.map(comp));
     }
@@ -150,10 +137,8 @@ public class ComputerService {
     }
 
     public Computer createComputer(ComputerDTO comp) throws DAOException {
-        Computer c = new Computer.ComputerBuilder(comp.getName())
-                .introduced(comp.getIntroduced())
-                .discontinued(comp.getDiscontinued())
-                .company(new Company(comp.getCompanyId(), comp.getCompanyName()))
+        Computer c = new Computer.ComputerBuilder(comp.getName()).introduced(comp.getIntroduced())
+                .discontinued(comp.getDiscontinued()).company(new Company(comp.getCompanyId(), comp.getCompanyName()))
                 .build();
         return createComputer(c);
     }
@@ -178,7 +163,7 @@ public class ComputerService {
 
     public void deleteComputerList(Long[] idList) {
         // TODO : Improve the complexity (too many separated request)
-        for(Long l : idList) {
+        for (Long l : idList) {
             computerDAO.delete(l);
         }
     }
