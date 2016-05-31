@@ -1,4 +1,4 @@
-package com.excilys.computer_database.database.dao;
+package com.excilys.computer_database.repository;
 
 public class NotFoundException extends Exception {
     public NotFoundException(Long id){

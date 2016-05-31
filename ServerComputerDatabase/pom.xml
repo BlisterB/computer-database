@@ -31,6 +31,7 @@
 		<joda-time.version>2.9</joda-time.version>
 		<hikariCP.version>2.4.5</hikariCP.version>
 		<spring.version>4.2.6.RELEASE</spring.version>
+		<hibernate.version>5.1.0.Final</hibernate.version>
 	</properties>
 
 	<build>
@@ -169,15 +170,33 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>1.10.1.RELEASE</version>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>4.1.0.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 	</dependencies>
 

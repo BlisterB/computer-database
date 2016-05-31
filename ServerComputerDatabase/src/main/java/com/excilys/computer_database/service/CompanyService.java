@@ -1,19 +1,19 @@
-package com.excilys.computer_database.database.services;
+package com.excilys.computer_database.service;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computer_database.database.dao.CompanyDAO;
-import com.excilys.computer_database.database.dao.CompanyDAOImplem;
-import com.excilys.computer_database.database.dao.ComputerDAO;
-import com.excilys.computer_database.database.dao.DAOException;
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.ui.Page;
+import com.excilys.computer_database.repository.CompanyDAO;
+import com.excilys.computer_database.repository.ComputerDAO;
+import com.excilys.computer_database.repository.DAOException;
 
 @Service
 @Transactional
@@ -35,11 +35,8 @@ public class CompanyService {
      * @param nbPerPage Number of Companies to fetch
      * @throws DAOException
      */
-    public Page<Company> listSomeCompanies(int begining, int nbPerPage) throws DAOException {
-        int pageNumber = begining / nbPerPage + 1;
-        List<Company> list = companyDAO.findSome(begining, nbPerPage, CompanyDAOImplem.NAME);
-
-        return new Page<Company>(list, pageNumber, nbPerPage);
+    public Page<Company> listSomeCompanies(int page, int size) {
+        return companyDAO.findAll(new PageRequest(page, size));
     }
 
     /**
@@ -47,9 +44,8 @@ public class CompanyService {
      * @return The list of all listed companies
      * @throws DAOException
      */
-    public List<Company> listAllCompanies() throws DAOException {
-        List<Company> list = companyDAO.findAll();
-        return list;
+    public Iterable<Company> listAllCompanies() {
+        return companyDAO.findAll();
     }
 
     /**
@@ -58,17 +54,16 @@ public class CompanyService {
      * @param id The computer's id to delete
      * @throws DAOException
      */
-    public void delete(Long id) throws DAOException {
+    public void delete(Long id) {
         // Delete related computers
-        computerDAO.deleteByCompanyID(id);
+        computerDAO.removeByCompany_Id(id);
 
         // Delete the company
         companyDAO.delete(id);
     }
 
-    public Company find(Long id) throws DAOException {
-        Company company = companyDAO.find(id);
-        return company;
+    public Company find(Long id) {
+        return companyDAO.findOne(id);
     }
 
     /**
@@ -77,11 +72,9 @@ public class CompanyService {
      * @throws DAOException If an error occurs in the DAO
      */
     public List<CompanyDTO> getDTOList() throws DAOException {
-        // TODO : Améliorer la complexité de l'obtention des DTO (complexité 2*n
-        // pour le moment)
-        List<Company> list = listAllCompanies();
+        Iterable<Company> companies = listAllCompanies();
         List<CompanyDTO> dtoList = new LinkedList<CompanyDTO>();
-        for (Company company : list) {
+        for (Company company : companies) {
             dtoList.add(new CompanyDTO(company));
         }
 
@@ -98,7 +91,21 @@ public class CompanyService {
     /**
      * @param companyDAO the companyDAO to set
      */
-    public void setCompanyDAO(CompanyDAOImplem companyDAO) {
+    public void setCompanyDAO(CompanyDAO companyDAO) {
         this.companyDAO = companyDAO;
+    }
+
+    /**
+     * @return the computerDAO
+     */
+    public ComputerDAO getComputerDAO() {
+        return computerDAO;
+    }
+
+    /**
+     * @param computerDAO the computerDAO to set
+     */
+    public void setComputerDAO(ComputerDAO computerDAO) {
+        this.computerDAO = computerDAO;
     }
 }

@@ -8,20 +8,22 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.excilys.computer_database.entity.Computer;
+import com.excilys.computer_database.helpers.DateHelper;
 
 public class ComputerDTO {
     private Long id, companyId;
-    @NotEmpty @Size(min = 3, max = 40)
+    @NotEmpty
+    @Size(min = 3, max = 40)
     private String name;
     private String companyName;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate introduced, discontinued;
 
-    public ComputerDTO(){
+    public ComputerDTO() {
     }
 
-    public ComputerDTO(Long id, String name, LocalDate introduced,
-            LocalDate discontinued, Long companyId, String companyName) {
+    public ComputerDTO(Long id, String name, LocalDate introduced, LocalDate discontinued, Long companyId,
+            String companyName) {
         this.id = id;
         this.companyId = companyId;
         this.name = name;
@@ -33,8 +35,12 @@ public class ComputerDTO {
     public ComputerDTO(Computer c) {
         this.id = c.getId();
         this.name = c.getName();
-        this.introduced = c.getIntroduced();
-        this.discontinued = c.getDiscontinued();
+        if (c.getIntroduced() != null) {
+            this.introduced = DateHelper.timestampToLocalDate(c.getIntroduced());
+        }
+        if (c.getDiscontinued() != null) {
+            this.discontinued = DateHelper.timestampToLocalDate(c.getDiscontinued());
+        }
 
         if (c.getCompany() != null) {
             this.companyId = c.getCompany().getId();

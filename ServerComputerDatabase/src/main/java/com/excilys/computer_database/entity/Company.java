@@ -1,9 +1,22 @@
 package com.excilys.computer_database.entity;
 
-public class Company extends Entity {
-    // TODO : implémenter serializable
-    private String name;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+@Entity
+@Table(name="company", uniqueConstraints={@UniqueConstraint(columnNames="ID")})
+public class Company {
+    @Id
+    @Column(name="id", nullable=true, unique=true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name="name", length=20, nullable=true)
+    private String name;
 
     /** Constructor. */
     public Company() {

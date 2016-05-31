@@ -3,46 +3,57 @@ package com.excilys.computer_database.entity;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-import com.excilys.computer_database.database.dao.DAOException;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import com.excilys.computer_database.helpers.DateHelper;
+import com.excilys.computer_database.repository.DAOException;
 
-public class Computer extends Entity {
-    // TODO : implémenter serializable
-
+@Entity
+@Table(name = "computer", uniqueConstraints = { @UniqueConstraint(columnNames = "ID") })
+public class Computer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private LocalDate introduced, discontinued;
+    private Timestamp introduced, discontinued;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
     private Company company;
 
     /** Implementation of the Builder pattern. */
     public static class ComputerBuilder {
         private Long id;
         private String name;
-        private LocalDate introduced, discontinued;
+        private Timestamp introduced, discontinued;
         private Company company;
 
-        /** Initialise a ComputerBuild to customize and build.
-         *  @param name The computer name
+        /**
+         * Initialise a ComputerBuild to customize and build.
+         * @param name The computer name
          */
         public ComputerBuilder(String name) {
             this.name = name;
         }
 
-        /** Build a computer instance.
-         *  @return the built computer
-         *  @throws DAOException */
+        /**
+         * Build a computer instance.
+         * @return the built computer
+         * @throws DAOException
+         */
         public Computer build() throws DAOException {
-            // TODO : Put the verification in the service?
-            if (introduced != null && discontinued != null) {
-                if (introduced.isAfter(discontinued)) {
-                    throw new DAOException("Introduced date cannot be greater than Discontinued date");
-                }
-            }
-
             return new Computer(this);
         }
 
-        /** Customize the computer id.
+        /**
+         * Customize the computer id.
          * @param id The computer's id
          * @return The instance of ComputerBuilder
          */
@@ -51,7 +62,8 @@ public class Computer extends Entity {
             return this;
         }
 
-        /** Customize the computer's name.
+        /**
+         * Customize the computer's name.
          * @param name The computer's name
          * @return The instance of ComputerBuilder
          */
@@ -60,49 +72,54 @@ public class Computer extends Entity {
             return this;
         }
 
-        /** Customize the computer's introduced date field.
+        /**
+         * Customize the computer's introduced date field.
          * @param introduced The introduction date
          * @return The instance of ComputerBuilder
          */
-        public ComputerBuilder introduced(LocalDate introduced) {
+        public ComputerBuilder introduced(Timestamp introduced) {
             if (introduced != null) {
                 this.introduced = introduced;
             }
             return this;
         }
 
-        /** Customize the computer's introduced date field.
+        /**
+         * Customize the computer's introduced date field.
          * @param introduced The introduction date
          * @return The instance of ComputerBuilder
          */
-        public ComputerBuilder introduced(Timestamp introduced) {
+        public ComputerBuilder introduced(LocalDate introduced) {
             if (introduced != null) {
-                this.introduced = DateHelper.timestampToLocalDate(introduced);
+                this.introduced = DateHelper.localDateToTimestamp(introduced);
             }
             return this;
         }
 
-        /** Customize the computer's discontinued date field.
-         * @param discontinued The discontinued date
-         * @return The instance of ComputerBuilder
-         */
-        public ComputerBuilder discontinued(LocalDate discontinued) {
-            this.discontinued = discontinued;
-            return this;
-        }
-
-        /** Customize the computer's discontinued date field.
+        /**
+         * Customize the computer's discontinued date field.
          * @param discontinued The discontinued date
          * @return The instance of ComputerBuilder
          */
         public ComputerBuilder discontinued(Timestamp discontinued) {
+            this.discontinued = discontinued;
+            return this;
+        }
+
+        /**
+         * Customize the computer's discontinued date field.
+         * @param discontinued The discontinued date
+         * @return The instance of ComputerBuilder
+         */
+        public ComputerBuilder discontinued(LocalDate discontinued) {
             if (discontinued != null) {
-                this.discontinued = DateHelper.timestampToLocalDate(discontinued);
+                this.discontinued = DateHelper.localDateToTimestamp(discontinued);
             }
             return this;
         }
 
-        /** Customize the company field.
+        /**
+         * Customize the company field.
          * @param company The company
          * @return The instance of ComputerBuilder
          */
@@ -112,7 +129,8 @@ public class Computer extends Entity {
         }
     }
 
-    /** Constructor.
+    /**
+     * Constructor.
      * @param builder The builder
      */
     private Computer(ComputerBuilder builder) {
@@ -121,6 +139,10 @@ public class Computer extends Entity {
         this.introduced = builder.introduced;
         this.discontinued = builder.discontinued;
         this.company = builder.company;
+    }
+
+    public Computer() {
+
     }
 
     @Override
@@ -160,28 +182,28 @@ public class Computer extends Entity {
     /**
      * @return the introduced
      */
-    public LocalDate getIntroduced() {
+    public Timestamp getIntroduced() {
         return introduced;
     }
 
     /**
      * @param introduced the introduced to set
      */
-    public void setIntroduced(LocalDate introduced) {
+    public void setIntroduced(Timestamp introduced) {
         this.introduced = introduced;
     }
 
     /**
      * @return the discontinued
      */
-    public LocalDate getDiscontinued() {
+    public Timestamp getDiscontinued() {
         return discontinued;
     }
 
     /**
      * @param discontinued the discontinued to set
      */
-    public void setDiscontinued(LocalDate discontinued) {
+    public void setDiscontinued(Timestamp discontinued) {
         this.discontinued = discontinued;
     }
 

@@ -6,10 +6,10 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.computer_database.database.dao.DAOException;
-import com.excilys.computer_database.database.services.ComputerService;
 import com.excilys.computer_database.entity.Computer;
 import com.excilys.computer_database.entity.Computer.ComputerBuilder;
+import com.excilys.computer_database.repository.DAOException;
+import com.excilys.computer_database.service.ComputerService;
 
 public class TestComputerService {
     ComputerService service;

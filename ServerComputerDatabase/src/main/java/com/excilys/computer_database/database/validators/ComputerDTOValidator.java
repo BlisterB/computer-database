@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.services.CompanyService;
+import com.excilys.computer_database.service.CompanyService;
 
 @Component
 public class ComputerDTOValidator implements Validator {

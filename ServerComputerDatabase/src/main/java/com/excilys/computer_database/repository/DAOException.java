@@ -1,4 +1,4 @@
-package com.excilys.computer_database.database.dao;
+package com.excilys.computer_database.repository;
 
 /**
  * Exception thrown by the DAO, it could be linked to a SQLException.

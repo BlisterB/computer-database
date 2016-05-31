@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.computer_database.database.dtos.CompanyDTO;
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.services.CompanyService;
-import com.excilys.computer_database.database.services.ComputerService;
+import com.excilys.computer_database.service.CompanyService;
+import com.excilys.computer_database.service.ComputerService;
 
 @Controller
 @RequestMapping("addComputer")

@@ -6,9 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.computer_database.database.dao.DAOException;
-import com.excilys.computer_database.database.services.CompanyService;
 import com.excilys.computer_database.entity.Company;
+import com.excilys.computer_database.repository.DAOException;
+import com.excilys.computer_database.service.CompanyService;
 import com.excilys.computer_database.ui.Page;
 
 public class TestCompanyService{

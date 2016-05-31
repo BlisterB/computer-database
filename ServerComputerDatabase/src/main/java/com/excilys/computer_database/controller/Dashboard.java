@@ -6,15 +6,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.computer_database.database.dtos.ComputerDTO;
-import com.excilys.computer_database.database.services.ComputerService;
-import com.excilys.computer_database.database.services.ComputerService.COLUMN;
-import com.excilys.computer_database.database.services.ComputerService.ORDER;
-import com.excilys.computer_database.ui.Page;
+import com.excilys.computer_database.service.ComputerService;
+import com.excilys.computer_database.service.ComputerService.COLUMN;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -42,11 +42,11 @@ public class Dashboard {
         PAGE_SIZE_AUTHORIZED.put("50", 50);
         PAGE_SIZE_AUTHORIZED.put("100", 100);
     }
-    private static final Map<String, ORDER> ORDER_AUTHORIZED;
+    private static final Map<String, Direction> ORDER_AUTHORIZED;
     static {
         ORDER_AUTHORIZED = new HashMap<>();
-        ORDER_AUTHORIZED.put("ASC", ORDER.ASC);
-        ORDER_AUTHORIZED.put("DESC", ORDER.DESC);
+        ORDER_AUTHORIZED.put("ASC", Direction.ASC);
+        ORDER_AUTHORIZED.put("DESC", Direction.DESC);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -67,7 +67,7 @@ public class Dashboard {
         COLUMN column = COLUMN_AUTHORISED.get(columnParam);
 
         // Fetch the order : can be null
-        ORDER order = ORDER_AUTHORIZED.get(request.getParameter(ORDER_TAG));
+        Direction order = ORDER_AUTHORIZED.get(request.getParameter(ORDER_TAG));
         request.setAttribute(ORDER_TAG, order);
 
         // Search : can be null
@@ -75,11 +75,11 @@ public class Dashboard {
         request.setAttribute(SEARCH, search);
 
         // Ask the DB
-        Page<ComputerDTO> computerList = computerService.listComputersDTO(column, order, search, currentPage * pageSize,
+        Page<ComputerDTO> computerPage = computerService.listComputersDTO(column, order, search, currentPage,
                 pageSize);
         int nbResult = computerService.countListResult(search);
 
-        request.setAttribute(COMPUTER_LIST, computerList.getList());
+        request.setAttribute(COMPUTER_LIST, computerPage.getContent());
         request.setAttribute(NB_RESULTS, nbResult);
 
         return VIEW_NAME;
