@@ -17,6 +17,9 @@
 						<spring:message code="form.AddComputer" />
 					</h1>
 					<form id="addComputer" action="addComputer" method="POST">
+						<!-- We include the CSRF token in the request, because of Spring Security -->
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName"><spring:message

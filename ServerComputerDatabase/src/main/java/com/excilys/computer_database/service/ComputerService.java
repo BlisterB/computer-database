@@ -132,11 +132,11 @@ public class ComputerService {
      * @return The computer
      * @throws DAOException In case of DAO problem
      */
-    public Computer createComputer(Computer computer) throws DAOException {
+    public Computer createComputer(Computer computer) {
         return computerDAO.save(computer);
     }
 
-    public Computer createComputer(ComputerDTO comp) throws DAOException {
+    public Computer createComputer(ComputerDTO comp) {
         Computer c = new Computer.ComputerBuilder(comp.getName()).introduced(comp.getIntroduced())
                 .discontinued(comp.getDiscontinued()).company(new Company(comp.getCompanyId(), comp.getCompanyName()))
                 .build();

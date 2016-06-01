@@ -1,4 +1,4 @@
-package com.excilys.computer_database.database;
+package com.excilys.computer_database.config;
 
 import java.util.Properties;
 

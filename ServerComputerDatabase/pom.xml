@@ -28,10 +28,10 @@
 		<mysql.version>5.1.38</mysql.version>
 		<logback.version>1.1.7</logback.version>
 		<servlet.version>1.2</servlet.version>
-		<joda-time.version>2.9</joda-time.version>
 		<hikariCP.version>2.4.5</hikariCP.version>
 		<spring.version>4.2.6.RELEASE</spring.version>
 		<hibernate.version>5.1.0.Final</hibernate.version>
+		<spring.security.version>4.1.0.RELEASE</spring.security.version>
 	</properties>
 
 	<build>
@@ -106,13 +106,6 @@
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>${joda-time.version}</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -197,6 +190,19 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
+		</dependency>
+		
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
 		</dependency>
 	</dependencies>
 
