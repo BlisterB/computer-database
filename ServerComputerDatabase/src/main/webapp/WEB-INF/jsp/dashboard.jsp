@@ -35,6 +35,8 @@
 		</div>
 
 		<form id="deleteForm" action="#" method="POST">
+			<!-- We include the CSRF token in the request, because of Spring Security -->
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<input type="hidden" name="selection" value="">
 		</form>
 
