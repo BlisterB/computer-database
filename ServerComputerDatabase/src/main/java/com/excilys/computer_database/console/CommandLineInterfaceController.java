@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
+
 import com.excilys.computer_database.core.DateHelper;
 import com.excilys.computer_database.core.dto.ComputerDTO;
 import com.excilys.computer_database.core.entity.Company;
@@ -17,11 +21,13 @@ import com.excilys.computer_database.service.ComputerService;
  * The Command Line Interface's controller, initialize an instance et use
  * start() to launch the Command Line Interface.
  */
+@Component
 public class CommandLineInterfaceController {
     private CommandLineInterfaceView view;
     private Scanner sc = new Scanner(System.in);
-    private ComputerService computerServ = new ComputerService();
-    private CompanyService companiesService = new CompanyService();
+
+    private ComputerService computerServ;
+    private CompanyService companiesService;
 
     /** The constructor. */
     public CommandLineInterfaceController() {
@@ -78,7 +84,7 @@ public class CommandLineInterfaceController {
             while (continu) {
                 Page<Company> page = companiesService.listSomeCompanies(begining, nbPerPage);
 
-                view.showPage(page);
+                view.showPage(page.getContent());
 
                 String choice = askString().trim();
                 if (choice.equals("n")) {
@@ -101,7 +107,8 @@ public class CommandLineInterfaceController {
             boolean continu = true;
 
             while (continu) {
-                Page<ComputerDTO> page = computerServ.listComputersDTO(null, null, null, begining, pageSize);
+                @SuppressWarnings("unchecked")
+                List<ComputerDTO> page = (List<ComputerDTO>) computerServ.listComputersDTO(null, null, null, 0, 20)[0];
 
                 view.showPage(page);
 
@@ -122,8 +129,8 @@ public class CommandLineInterfaceController {
     /** Fetch the companies list and ask to the view to display them. */
     private void listAllCompanies() {
         try {
-            List<Company> l = companiesService.listAllCompanies();
-            view.displayCompanies(l);
+            Iterable<Company> i = companiesService.listAllCompanies();
+            view.displayCompanies(i);
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -132,7 +139,7 @@ public class CommandLineInterfaceController {
     /** Fetch the computers list and ask to the view to display them. */
     private void listAllComputers() {
         try {
-            List<Computer> l = computerServ.listAllComputers();
+            Iterable<Computer> l = computerServ.listAllComputers();
             view.displayComputers(l);
         } catch (DAOException e) {
             e.printStackTrace();
@@ -290,11 +297,47 @@ public class CommandLineInterfaceController {
     }
 
     /**
+     * @return the computerServ
+     */
+    public ComputerService getComputerServ() {
+        return computerServ;
+    }
+
+    /**
+     * @param computerServ the computerServ to set
+     */
+    public void setComputerServ(ComputerService computerServ) {
+        this.computerServ = computerServ;
+    }
+
+    /**
+     * @return the companiesService
+     */
+    public CompanyService getCompaniesService() {
+        return companiesService;
+    }
+
+    /**
+     * @param companiesService the companiesService to set
+     */
+    public void setCompaniesService(CompanyService companiesService) {
+        this.companiesService = companiesService;
+    }
+
+    /**
      * The main launching the CLI.
      * @param arg The arguments
      */
     public static void main(String[] arg) {
+        System.out.println("Working Directory = " +
+                System.getProperty("user.dir"));
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("file:src/main/webapp/WEB-INF/applicationContext.xml");
+        ctx.registerShutdownHook();
         CommandLineInterfaceController controller = new CommandLineInterfaceController();
+
+        controller.setCompaniesService((CompanyService)ctx.getBean("companyService"));
+        controller.setComputerServ((ComputerService)ctx.getBean("computerService"));
+
         controller.start();
     }
 }

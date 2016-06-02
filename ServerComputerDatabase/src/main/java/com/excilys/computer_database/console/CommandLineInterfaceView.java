@@ -6,13 +6,11 @@ import com.excilys.computer_database.core.entity.Company;
 import com.excilys.computer_database.core.entity.Computer;
 
 public class CommandLineInterfaceView {
-    private CommandLineInterfaceController controller;
 
     /** Constructor by default.
      *  @param c The CLI controller
      */
     public CommandLineInterfaceView(CommandLineInterfaceController c) {
-        this.controller = c;
     }
 
     /** Display the main prompt. */
@@ -29,7 +27,7 @@ public class CommandLineInterfaceView {
     /** Display a list of company.
      * @param l The list to display
      */
-    public void displayCompanies(List<Company> l) {
+    public void displayCompanies(Iterable<Company> l) {
         StringBuilder sb = new StringBuilder();
         for (Company company : l) {
             sb.append(company.toString()).append("\n");
@@ -40,7 +38,7 @@ public class CommandLineInterfaceView {
     /** Display a list of computers.
      * @param l The list to display
      */
-    public void displayComputers(List<Computer> l) {
+    public void displayComputers(Iterable<Computer> l) {
         StringBuilder sb = new StringBuilder();
         for (Computer computer : l) {
             sb.append(computer.toString()).append("\n");
@@ -58,7 +56,9 @@ public class CommandLineInterfaceView {
     /** Display a page.
      * @param page The computer to display
      */
-    public void showPage(Page<?> page) {
-        System.out.println(page);
+    public void showPage(List<?> page) {
+        for(Object o : page) {
+            System.out.println(o);
+        }
     }
 }

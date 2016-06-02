@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.excilys.computer_database.core.entity.Computer;
 import com.excilys.computer_database.core.entity.Computer.ComputerBuilder;
@@ -17,7 +18,8 @@ import com.excilys.computer_database.service.ComputerService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml" })
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml"})
+@WebAppConfiguration
 public class TestComputerService {
     @Autowired
     ComputerService computerService;
