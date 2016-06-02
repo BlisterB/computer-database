@@ -1,4 +1,4 @@
-package com.excilys.computer_database.entity;
+package com.excilys.computer_database.core.entity;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -12,8 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.excilys.computer_database.helper.DateHelper;
-import com.excilys.computer_database.repository.DAOException;
+import com.excilys.computer_database.core.DateHelper;
+import com.excilys.computer_database.persistence.DAOException;
 
 @Entity
 @Table(name = "computer", uniqueConstraints = { @UniqueConstraint(columnNames = "ID") })

@@ -1,4 +1,4 @@
-package com.excilys.computer_database.controller;
+package com.excilys.computer_database.webapp.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

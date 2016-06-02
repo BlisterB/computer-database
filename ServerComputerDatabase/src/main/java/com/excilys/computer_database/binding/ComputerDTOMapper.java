@@ -1,10 +1,10 @@
-package com.excilys.computer_database.mapper;
+package com.excilys.computer_database.binding;
 
 import org.springframework.stereotype.Component;
 
-import com.excilys.computer_database.dto.ComputerDTO;
-import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.entity.Computer;
+import com.excilys.computer_database.core.dto.ComputerDTO;
+import com.excilys.computer_database.core.entity.Company;
+import com.excilys.computer_database.core.entity.Computer;
 
 @Component
 public class ComputerDTOMapper{

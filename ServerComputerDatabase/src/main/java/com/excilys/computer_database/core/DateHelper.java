@@ -1,4 +1,4 @@
-package com.excilys.computer_database.helper;
+package com.excilys.computer_database.core;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;

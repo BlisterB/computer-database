@@ -1,6 +1,6 @@
-package com.excilys.computer_database.dto;
+package com.excilys.computer_database.core.dto;
 
-import com.excilys.computer_database.entity.Company;
+import com.excilys.computer_database.core.entity.Company;
 
 public class CompanyDTO {
     private long id;

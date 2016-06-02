@@ -5,25 +5,32 @@ import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.excilys.computer_database.entity.Computer;
-import com.excilys.computer_database.entity.Computer.ComputerBuilder;
-import com.excilys.computer_database.repository.DAOException;
+import com.excilys.computer_database.core.entity.Computer;
+import com.excilys.computer_database.core.entity.Computer.ComputerBuilder;
+import com.excilys.computer_database.persistence.DAOException;
 import com.excilys.computer_database.service.ComputerService;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml" })
 public class TestComputerService {
-    ComputerService service;
+    @Autowired
+    ComputerService computerService;
 
     @Before
     public void beforeTest() {
-        service = new ComputerService();
     }
 
     @Test
     public void testGetComputerById() {
         // Illegal call
         try {
-            service.getComputerById(-1L);
+            computerService.getComputerById(-1L);
             fail("Le service ne doit pas trouver un id négatif");
         } catch (DAOException e) {
             // Ok!
@@ -31,14 +38,14 @@ public class TestComputerService {
 
         // Legal call
         try {
-            assertEquals(new Long(1), service.getComputerById(1L).getId());
+            assertEquals(new Long(1), computerService.getComputerById(1L).getId());
         } catch (DAOException e) {
             e.printStackTrace();
         }
 
         // Legal call with no values
         try {
-            service.getComputerById(Long.MAX_VALUE);
+            computerService.getComputerById(Long.MAX_VALUE);
             fail("The computer of maximum id is not supposed to exist");
         } catch (DAOException e) {
             // Ok !
@@ -52,7 +59,7 @@ public class TestComputerService {
         // Legal insertion
         try {
             Computer computer = (new ComputerBuilder("ComputerTest")).build();
-            service.createComputer(computer);
+            computerService.createComputer(computer);
             createdId = computer.getId();
         } catch (DAOException e) {
             fail("The insert is a failure.");
@@ -63,7 +70,7 @@ public class TestComputerService {
         // Legal deletion
         if (createdId != null) {
             try {
-                service.delete(createdId);
+                computerService.delete(createdId);
             } catch (DAOException e) {
                 fail("The deletion is a failure");
                 e.printStackTrace();
@@ -71,7 +78,7 @@ public class TestComputerService {
             }
             // Verify that the deletion is effective
             try {
-                service.getComputerById(createdId);
+                computerService.getComputerById(createdId);
             } catch (DAOException e) {
                 // Ok !
             }
@@ -81,7 +88,7 @@ public class TestComputerService {
         // Create a computer with a negative id
         try {
             Computer computer = (new ComputerBuilder("test")).id(-1).build();
-            service.createComputer(computer);
+            computerService.createComputer(computer);
             fail("An id must be positive");
         } catch (DAOException e) {
             // ok !
@@ -90,7 +97,7 @@ public class TestComputerService {
         // Create a computer with an existing id
         try {
             Computer computer = (new ComputerBuilder("test")).id(1).build();
-            service.createComputer(computer);
+            computerService.createComputer(computer);
             fail("Not supposed to permit the creation with an already existing id.");
         } catch (DAOException e) {
             // ok !

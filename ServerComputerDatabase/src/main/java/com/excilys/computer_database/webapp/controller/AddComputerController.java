@@ -1,4 +1,4 @@
-package com.excilys.computer_database.controller;
+package com.excilys.computer_database.webapp.controller;
 
 import java.util.List;
 
@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.excilys.computer_database.dto.CompanyDTO;
-import com.excilys.computer_database.dto.ComputerDTO;
+import com.excilys.computer_database.core.dto.CompanyDTO;
+import com.excilys.computer_database.core.dto.ComputerDTO;
 import com.excilys.computer_database.service.CompanyService;
 import com.excilys.computer_database.service.ComputerService;
 
 @Controller
 @RequestMapping("addComputer")
-public class AddComputer {
+public class AddComputerController {
     @Autowired
     CompanyService companyService;
     @Autowired
     ComputerService computerService;
     @Autowired
-    Dashboard dashboard;
+    DashboardController dashboard;
     @Autowired
     Validator computerDTOValidator;
 

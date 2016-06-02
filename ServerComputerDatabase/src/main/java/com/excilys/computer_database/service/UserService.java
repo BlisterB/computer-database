@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.excilys.computer_database.entity.User;
-import com.excilys.computer_database.repository.UserDAO;
+import com.excilys.computer_database.core.entity.User;
+import com.excilys.computer_database.persistence.dao.UserDAO;
 
 public class UserService implements UserDetailsService {
 

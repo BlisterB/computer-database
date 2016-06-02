@@ -10,12 +10,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computer_database.dto.ComputerDTO;
-import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.entity.Computer;
-import com.excilys.computer_database.mapper.ComputerDTOMapper;
-import com.excilys.computer_database.repository.ComputerDAO;
-import com.excilys.computer_database.repository.DAOException;
+import com.excilys.computer_database.binding.ComputerDTOMapper;
+import com.excilys.computer_database.core.dto.ComputerDTO;
+import com.excilys.computer_database.core.entity.Company;
+import com.excilys.computer_database.core.entity.Computer;
+import com.excilys.computer_database.persistence.DAOException;
+import com.excilys.computer_database.persistence.dao.ComputerDAO;
 
 @Service
 @Transactional

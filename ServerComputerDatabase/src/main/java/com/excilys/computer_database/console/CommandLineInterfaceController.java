@@ -1,15 +1,15 @@
-package com.excilys.computer_database.ui;
+package com.excilys.computer_database.console;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-import com.excilys.computer_database.dto.ComputerDTO;
-import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.entity.Computer;
-import com.excilys.computer_database.helper.DateHelper;
-import com.excilys.computer_database.repository.DAOException;
-import com.excilys.computer_database.repository.NotFoundException;
+import com.excilys.computer_database.core.DateHelper;
+import com.excilys.computer_database.core.dto.ComputerDTO;
+import com.excilys.computer_database.core.entity.Company;
+import com.excilys.computer_database.core.entity.Computer;
+import com.excilys.computer_database.persistence.DAOException;
+import com.excilys.computer_database.persistence.NotFoundException;
 import com.excilys.computer_database.service.CompanyService;
 import com.excilys.computer_database.service.ComputerService;
 

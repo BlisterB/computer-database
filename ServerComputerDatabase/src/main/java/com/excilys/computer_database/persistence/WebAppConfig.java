@@ -1,4 +1,4 @@
-package com.excilys.computer_database.config;
+package com.excilys.computer_database.persistence;
 
 import java.util.Properties;
 
@@ -28,7 +28,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @EnableTransactionManagement
 @ComponentScan("com.excilys")
 @PropertySource("classpath:application.properties")
-@EnableJpaRepositories("com.excilys.computer_database.repository")
+@EnableJpaRepositories("com.excilys.computer_database.persistence.dao")
 //@Import({ SecurityConfig.class })
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 

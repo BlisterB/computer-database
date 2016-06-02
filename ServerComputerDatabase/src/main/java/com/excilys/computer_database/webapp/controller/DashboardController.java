@@ -1,4 +1,4 @@
-package com.excilys.computer_database.controller;
+package com.excilys.computer_database.webapp.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.excilys.computer_database.dto.ComputerDTO;
+import com.excilys.computer_database.core.dto.ComputerDTO;
 import com.excilys.computer_database.service.ComputerService;
 import com.excilys.computer_database.service.ComputerService.COLUMN;
 
 @Controller
 @RequestMapping("/dashboard")
-public class Dashboard {
+public class DashboardController {
     @Autowired
     ComputerService computerService ;
 

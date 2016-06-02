@@ -1,4 +1,4 @@
-package com.excilys.computer_database.entity;
+package com.excilys.computer_database.core.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,9 +1,9 @@
-package com.excilys.computer_database.ui;
+package com.excilys.computer_database.console;
 
 import java.util.List;
 
-import com.excilys.computer_database.entity.Company;
-import com.excilys.computer_database.entity.Computer;
+import com.excilys.computer_database.core.entity.Company;
+import com.excilys.computer_database.core.entity.Computer;
 
 public class CommandLineInterfaceView {
     private CommandLineInterfaceController controller;

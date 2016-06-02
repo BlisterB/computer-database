@@ -1,11 +1,11 @@
-package com.excilys.computer_database.validator;
+package com.excilys.computer_database.webapp.validator;
 
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.excilys.computer_database.dto.ComputerDTO;
+import com.excilys.computer_database.core.dto.ComputerDTO;
 import com.excilys.computer_database.service.CompanyService;
 
 @Component
