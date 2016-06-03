@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>com.excilys</groupId>
+		<artifactId>computer-database</artifactId>
+		<version>0.6.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>persistence</artifactId>
+
+	<!-- Librairies -->
+	<dependencies>
+
+			<dependency>
+				<groupId>${project.parent.groupId}</groupId>
+				<artifactId>core</artifactId>
+				<version>${project.parent.version}</version>
+			</dependency>
+
+			<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+					<version>${spring.version}</version>
+					<scope>compile</scope>
+				</dependency>
+
+				<dependency>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-tx</artifactId>
+							<version>${spring.version}</version>
+							<scope>compile</scope>
+						</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+
+			<!-- Exclusion on common logging to use Logback for logging -->
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>

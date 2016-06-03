@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.excilys.computer_database.core.DateHelper;
-import com.excilys.computer_database.persistence.DAOException;
 
 @Entity
 @Table(name = "computer", uniqueConstraints = { @UniqueConstraint(columnNames = "ID") })
@@ -46,9 +45,8 @@ public class Computer {
         /**
          * Build a computer instance.
          * @return the built computer
-         * @throws DAOException
          */
-        public Computer build() throws DAOException {
+        public Computer build() {
             return new Computer(this);
         }
 
