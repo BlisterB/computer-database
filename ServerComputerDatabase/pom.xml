@@ -30,22 +30,23 @@
 		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
 
 		<!-- Versions des plugins -->
-		<servlet.version>3.0.0</servlet.version>
+		<hikariCP.version>2.4.5</hikariCP.version>
+		<hibernate.version>5.1.0.Final</hibernate.version>
+		<hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
+		<jackson.databind.version>2.7.4</jackson.databind.version>
+		<javax.ws.rs-api.version>2.0</javax.ws.rs-api.version>
+		<javax.validation.version>1.1.0.Final</javax.validation.version>
+		<jersey.version>2.5.1</jersey.version>
 		<jsp.version>2.0</jsp.version>
 		<jstl.version>1.2</jstl.version>
 		<junit.version>4.12</junit.version>
-		<slf4j.version>1.7.21</slf4j.version>
-		<mysql.version>5.1.38</mysql.version>
 		<logback.version>1.1.7</logback.version>
-		<servlet.version>1.2</servlet.version>
-		<hikariCP.version>2.4.5</hikariCP.version>
-		<spring.version>4.2.6.RELEASE</spring.version>
-		<hibernate.version>5.1.0.Final</hibernate.version>
-		<spring.security.version>4.1.0.RELEASE</spring.security.version>
-		<javax.validation.version>1.1.0.Final</javax.validation.version>
+		<mysql.version>5.1.38</mysql.version>
+		<servlet.version>3.0.1</servlet.version>
+		<slf4j.version>1.7.21</slf4j.version>
 		<spring-data-jpa.version>1.10.1.RELEASE</spring-data-jpa.version>
-		<jackson.databind.version>2.7.4</jackson.databind.version>
-		<jersey.version>2.5.1</jersey.version>
+		<spring.version>4.2.6.RELEASE</spring.version>
+		<spring.security.version>4.1.0.RELEASE</spring.security.version>
 	</properties>
 
 	<reporting>
