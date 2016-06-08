@@ -1,21 +1,24 @@
 package com.excilys.computer_database.console;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.domain.Page;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computer_database.core.DateHelper;
 import com.excilys.computer_database.core.dto.ComputerDTO;
 import com.excilys.computer_database.core.entity.Company;
 import com.excilys.computer_database.core.entity.Computer;
+import com.excilys.computer_database.core.page.SimplePage;
 import com.excilys.computer_database.persistence.DAOException;
-import com.excilys.computer_database.persistence.NotFoundException;
-import com.excilys.computer_database.service.CompanyService;
-import com.excilys.computer_database.service.ComputerService;
 
 /**
  * The Command Line Interface's controller, initialize an instance et use
@@ -23,321 +26,292 @@ import com.excilys.computer_database.service.ComputerService;
  */
 @Component
 public class CommandLineInterfaceController {
-    private CommandLineInterfaceView view;
-    private Scanner sc = new Scanner(System.in);
+	private static enum ComputerOrCompany {
+		COMPUTER, COMPANY
+	};
 
-    private ComputerService computerServ;
-    private CompanyService companiesService;
+	private static final int DEFAULT_PAGE_NUMBER = 0, DEFAULT_PAGE_SIZE = 10;
+	private static final String BASE_URL = "http://localhost:8080/webapp/rest";
+	private static final String LIST_COMPANY_URL = BASE_URL + "/listcompany?pageNumber=%d&size=%d",
+			LIST_COMPUTER_URL = BASE_URL + "/listcomputer?pageNumber=%d&size=%d",
+			FIND_COMPUTER_URL = BASE_URL + "/findcomputer?id=%d",
+			CREATE_COMPUTER_URL = BASE_URL + "/createcomputer?name=%s",
+			UPDATE_COMPUTER_URL = BASE_URL + "/updatecomputer?id=%d&name=%s",
+			DELETE_COMPUTER_URL = BASE_URL + "/deletecomputer?id=%d";
 
-    /** The constructor. */
-    public CommandLineInterfaceController() {
-        this.view = new CommandLineInterfaceView(this);
-    }
+	private CommandLineInterfaceView view;
+	private Scanner sc = new Scanner(System.in);
+	Client client = ClientBuilder.newClient();
+	private ObjectMapper mapper = new ObjectMapper();
 
-    /** Start the Command Line Interface. */
-    public void start() {
-        while (true) {
-            // Display the prompt
-            view.displayPrompt();
+	/** The constructor. */
+	public CommandLineInterfaceController() {
+		this.view = new CommandLineInterfaceView();
+	}
 
-            // Ask the command to execute
-            switch (askInt()) {
-            case 1:
-                listAllCompanies();
-                break;
-            case 2:
-                listAllComputers();
-                break;
-            case 3:
-                showComputerDetail();
-                break;
-            case 4:
-                createAComputer();
-                break;
-            case 5:
-                updateComputer();
-                break;
-            case 6:
-                deleteComputer();
-                break;
-            case 7:
-                listCompaniesByPage();
-                break;
-            case 8:
-                listComputerByPage();
-                break;
-            case 9:
-                deleteCompany();
-                break;
-            default:
-                break;
-            }
-        }
-    }
+	/** Start the Command Line Interface. */
+	public void start() {
+		while (true) {
+			// Display the prompt
+			view.displayPrompt();
 
-    /** Launch the listing companies by page process. */
-    private void listCompaniesByPage() {
-        try {
-            int begining = 0, nbPerPage = 20;
-            boolean continu = true;
+			// Ask the command to execute
+			try {
+				switch (askInt()) {
+				case 1:
+					listCompanyOrComputer(ComputerOrCompany.COMPANY);
+					break;
+				case 2:
+					listCompanyOrComputer(ComputerOrCompany.COMPUTER);
+					break;
+				case 3:
+					findComputer();
+					break;
+				case 4:
+					createComputer();
+					break;
+				case 5:
+					updateComputer();
+					break;
+				case 6:
+					deleteComputer();
+					break;
+				default:
+					break;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-            while (continu) {
-                Page<Company> page = companiesService.listSomeCompanies(begining, nbPerPage);
+	/**
+	 * Launch the listing companies by page process.
+	 * 
+	 * @param entityToList
+	 *            The entity to list.
+	 * @throws IOException
+	 */
+	public void listCompanyOrComputer(ComputerOrCompany entityToList) throws IOException {
+		int pageNumber = DEFAULT_PAGE_NUMBER;
+		int size = DEFAULT_PAGE_SIZE;
 
-                view.showPage(page.getContent());
+		// Page exploring process
+		PAGE_EXPLORING: while (true) {
+			SimplePage<?> page = sendListRequest(entityToList, pageNumber, size);
+			view.displayPage(page);
 
-                String choice = askString().trim();
-                if (choice.equals("n")) {
-                    begining += nbPerPage;
-                } else if (choice.equals("p")) {
-                    begining -= nbPerPage;
-                } else {
-                    continu = false;
-                }
-            }
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+			String choice = askString().trim();
+			if (choice.equals("n")) {
+				if (pageNumber < page.getPageTotalCount() - 1) {
+					pageNumber++;
+				}
+			} else if (choice.equals("p")) {
+				if (pageNumber > 0) {
+					pageNumber--;
+				}
+			} else {
+				break PAGE_EXPLORING;
+			}
+		}
+	}
 
-    /** Launch the listing computers by page process. */
-    private void listComputerByPage() {
-        try {
-            int begining = 0, pageSize = 20;
-            boolean continu = true;
+	/** Fetch a computer's informations and display them. */
+	public void findComputer() throws IOException {
+		// Ask an id to the user
+		System.out.println("Entrez un id :");
+		long id = askLong();
 
-            while (continu) {
-                @SuppressWarnings("unchecked")
-                List<ComputerDTO> page = (List<ComputerDTO>) computerServ.listComputersDTO(null, null, null, 0, 20)[0];
+		// Fetch and display the user
+		Computer computer = sendFindComputerRequest(id);
+		view.showComputerDetail(computer);
+	}
 
-                view.showPage(page);
+	/**
+	 * Send the listing request to the server, and return the resulting page.
+	 * 
+	 * @param choice
+	 * @param pageNumber
+	 * @param size
+	 * @return
+	 * @throws IOException
+	 */
+	private SimplePage<Object> sendListRequest(ComputerOrCompany choice, int pageNumber, int size) throws IOException {
+		String requestUrl, serverResponse;
 
-                String choice = askString().trim();
-                if (choice.equals("n")) {
-                    begining += pageSize;
-                } else if (choice.equals("p")) {
-                    begining -= pageSize;
-                } else {
-                    continu = false;
-                }
-            }
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+		switch (choice) {
+		default:
+		case COMPANY:
+			requestUrl = String.format(LIST_COMPANY_URL, pageNumber, size);
+			serverResponse = client.target(requestUrl).request(MediaType.APPLICATION_JSON_VALUE).get(String.class);
+			return mapper.readValue(serverResponse, new TypeReference<SimplePage<Company>>() {
+			});
+		case COMPUTER:
+			requestUrl = String.format(LIST_COMPUTER_URL, pageNumber, size);
+			serverResponse = client.target(requestUrl).request(MediaType.APPLICATION_JSON_VALUE).get(String.class);
+			return mapper.readValue(serverResponse, new TypeReference<SimplePage<Computer>>() {
+			});
+		}
 
-    /** Fetch the companies list and ask to the view to display them. */
-    private void listAllCompanies() {
-        try {
-            Iterable<Company> i = companiesService.listAllCompanies();
-            view.displayCompanies(i);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+	}
 
-    /** Fetch the computers list and ask to the view to display them. */
-    private void listAllComputers() {
-        try {
-            Iterable<Computer> l = computerServ.listAllComputers();
-            view.displayComputers(l);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+	/** Send a find computer request. */
+	private Computer sendFindComputerRequest(Long id) throws IOException {
+		String requestUrl = String.format(FIND_COMPUTER_URL, id);
+		String serverResponse = client.target(requestUrl).request(MediaType.APPLICATION_JSON_VALUE).get(String.class);
+		return mapper.readValue(serverResponse, Computer.class);
+	}
 
-    /** Fetch a computer's information and display them. */
-    public void showComputerDetail() {
-        System.out.println("Entrez un id : ");
-        long id = askLong();
+	/** Launch the "create computer" process. */
+	private void createComputer() throws IOException {
+		ComputerDTO c = askComputerInformation();
 
-        try {
-            Computer computer = computerServ.getComputerById(id);
-            view.showComputerDetail(computer);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+		String requestUrl = String.format(CREATE_COMPUTER_URL, c.getName());
 
-    /** Launch the "create computer" process. */
-    private void createAComputer() {
-        try {
-            Computer computer = askComputerInformation();
+		if (c.getIntroduced() != null) {
+			requestUrl += "&introduced=" + c.getIntroduced();
+		}
+		if (c.getDiscontinued() != null) {
+			requestUrl += "&discontinued=" + c.getDiscontinued();
+		}
+		if (c.getCompanyId() != null && c.getCompanyId() > 0) {
+			requestUrl += "&companyId=" + c.getCompanyId();
+		}
+		String serverResponse = client.target(requestUrl).request(MediaType.APPLICATION_JSON_VALUE).get(String.class);
 
-            Computer comp = computerServ.createComputer(computer);
+		// Show the computer information (to show the new id)
+		System.out.println("Computer : ");
+		Computer computer = mapper.readValue(serverResponse, Computer.class);
+		view.showComputerDetail(computer);
+	}
 
-            // Show the computer information (to show the new id)
-            System.out.println("Computer : ");
-            view.showComputerDetail(comp);
-        } catch (DAOException | NotFoundException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
+	/** Launch the "update the computer" process. */
+	private void updateComputer() throws IOException {
+		// Fetch the computer to update
+		System.out.println("Quel computer updater ? Saisir l'id :");
+		Long id = askLong();
 
-    /** Launch the "update the computer" process. */
-    private void updateComputer() {
-        System.out.println("Quel computer updater ?");
-        Long id = askLong();
+		Computer c = sendFindComputerRequest(id);
+		if (c == null) {
+			System.out.println("Pas d'ordinateur pour cet id.");
+			return;
+		}
+		System.out.println("Computer à mettre à jour :\n" + c);
 
-        try {
-            Computer comp = computerServ.getComputerById(id);
-            System.out.println("Computer à mettre à jour :\n" + comp);
+		// Ask the new information to the user
+		ComputerDTO newComp = askComputerInformation();
+		newComp.setId(c.getId());
 
-            Computer newComp = askComputerInformation();
-            newComp.setId(comp.getId());
-            computerServ.update(newComp);
+		// Build the update request
+		String requestUrl = String.format(UPDATE_COMPUTER_URL, newComp.getId(), newComp.getName());
+		if (newComp.getIntroduced() != null) {
+			requestUrl += "&introduced=" + newComp.getIntroduced();
+		}
+		if (newComp.getDiscontinued() != null) {
+			requestUrl += "&discontinued=" + newComp.getDiscontinued();
+		}
+		if (newComp.getCompanyId() != null && newComp.getCompanyId() > 0) {
+			requestUrl += "&companyId=" + newComp.getCompanyId();
+		}
 
-            System.out.println("Computer mis à jour : ");
-            view.showComputerDetail(newComp);
-        } catch (DAOException | NotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+		// Send the request and display the responses
+		String serverResponse = client.target(requestUrl).request(MediaType.APPLICATION_JSON_VALUE).get(String.class);
+		System.out.println("Computer mis à jour : ");
+		Computer computer = mapper.readValue(serverResponse, Computer.class);
+		view.showComputerDetail(computer);
+	}
 
-    /**
-     * Launch the "display computer's informations" process.
-     * @return Return the computer
-     * @throws DAOException If an error occurs with the DAO
-     */
-    private Computer askComputerInformation() throws DAOException, NotFoundException {
-        // Name
-        System.out.println("Nom :");
-        String name = askString();
+	private ComputerDTO askComputerInformation() {
+		// Name
+		System.out.println("Nom :");
+		String name = askString();
 
-        // Dates
-        // Introduced
-        System.out.println("Date introduced (yyyy-MM-dd) :");
-        String stringIntroduced = askString();
+		// Dates
+		// Introduced
+		System.out.println("Date introduced (yyyy-MM-dd) :");
+		String stringIntroduced = askString();
 
-        LocalDate introduced = null;
-        if (!stringIntroduced.isEmpty()) {
-            try {
-                introduced = DateHelper.isoStringToLocalDate(stringIntroduced);
-            } catch (Exception e) {
-                System.out.println("Bad entry, introduced date set to null");
-            }
-        }
+		LocalDate introduced = null;
+		if (!stringIntroduced.isEmpty()) {
+			try {
+				introduced = DateHelper.isoStringToLocalDate(stringIntroduced);
+			} catch (DateTimeParseException e) {
+				System.out.println("Bad entry, introduced date set to null");
+			}
+		}
 
-        // Discontinued
-        System.out.println("Date discontinued (yyyy-MM-dd) :");
-        String stringDiscontinued = askString();
+		// Discontinued
+		System.out.println("Date discontinued (yyyy-MM-dd) :");
+		String stringDiscontinued = askString();
 
-        LocalDate discontinued = null;
-        if (!stringDiscontinued.isEmpty()) {
-            try {
-                discontinued = DateHelper.isoStringToLocalDate(stringDiscontinued);
-            } catch (Exception e) {
-                System.out.println("Bad entry, discontinued date set to null");
-            }
-        }
+		LocalDate discontinued = null;
+		if (!stringDiscontinued.isEmpty()) {
+			try {
+				discontinued = DateHelper.isoStringToLocalDate(stringDiscontinued);
+			} catch (DateTimeParseException e) {
+				System.out.println("Bad entry, discontinued date set to null");
+			}
+		}
 
-        // Company id
-        System.out.println("Company id : ");
-        Long companyId = askLong();
+		// Company id
+		System.out.println("Company id : ");
+		Long companyId = askLong();
 
-        // Création de l'objet correspondant
-        Company company = companiesService.find(companyId);
-        return new Computer.ComputerBuilder(name).introduced(introduced).discontinued(discontinued).company(company)
-                .build();
-    }
+		// Création de l'objet correspondant
+		return new ComputerDTO(-1L, name, introduced, discontinued, companyId, null);
+	}
 
-    /** Launch a "delete a computer" process. */
-    private void deleteComputer() {
-        System.out.println("Quel computer effacer ?");
-        Long id = askLong();
+	/** Launch a "delete a computer" process. */
+	private void deleteComputer() {
+		System.out.println("Quel computer effacer ?");
+		Long id = askLong();
 
-        try {
-            computerServ.delete(id);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+		String requestUrl = String.format(DELETE_COMPUTER_URL, id);
+		String s = client.target(requestUrl).request(MediaType.TEXT_PLAIN_VALUE).get(String.class);
+		System.out.println("Reponse serveur : " + s);
+	}
 
-    /** Launch the "delete a company" process. */
-    private void deleteCompany() {
-        System.out.println("Quelle company effacer ?");
-        Long id = askLong();
+	/**
+	 * Fetch an int in System.in and delete the rest of the line.
+	 * 
+	 * @return The entered Int
+	 */
+	private int askInt() {
+		int l = sc.nextInt();
+		sc.nextLine();
 
-        try {
-            companiesService.delete(id);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        }
-    }
+		return l;
+	}
 
-    /**
-     * Fetch an int in System.in and delete the rest of the line.
-     * @return The entered Int
-     */
-    private int askInt() {
-        int l = sc.nextInt();
-        sc.nextLine();
+	/**
+	 * Fetch a long in System.in and delete the rest of the line.
+	 * 
+	 * @return The entered Long
+	 */
+	private Long askLong() {
+		Long l = sc.nextLong();
+		sc.nextLine();
 
-        return l;
-    }
+		return l;
+	}
 
-    /**
-     * Fetch a long in System.in and delete the rest of the line.
-     * @return The entered Long
-     */
-    private Long askLong() {
-        Long l = sc.nextLong();
-        sc.nextLine();
+	/**
+	 * Fetch an int in System.in.
+	 * 
+	 * @return The entered String
+	 */
+	private String askString() {
+		return sc.nextLine();
+	}
 
-        return l;
-    }
-
-    /**
-     * Fetch an int in System.in.
-     * @return The entered String
-     */
-    private String askString() {
-        return sc.nextLine();
-    }
-
-    /**
-     * @return the computerServ
-     */
-    public ComputerService getComputerServ() {
-        return computerServ;
-    }
-
-    /**
-     * @param computerServ the computerServ to set
-     */
-    public void setComputerServ(ComputerService computerServ) {
-        this.computerServ = computerServ;
-    }
-
-    /**
-     * @return the companiesService
-     */
-    public CompanyService getCompaniesService() {
-        return companiesService;
-    }
-
-    /**
-     * @param companiesService the companiesService to set
-     */
-    public void setCompaniesService(CompanyService companiesService) {
-        this.companiesService = companiesService;
-    }
-
-    /**
-     * The main launching the CLI.
-     * @param arg The arguments
-     */
-    public static void main(String[] arg) {
-        System.out.println("Working Directory = " +
-                System.getProperty("user.dir"));
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("file:src/main/webapp/WEB-INF/applicationContext.xml");
-        ctx.registerShutdownHook();
-        CommandLineInterfaceController controller = new CommandLineInterfaceController();
-
-        controller.setCompaniesService((CompanyService)ctx.getBean("companyService"));
-        controller.setComputerServ((ComputerService)ctx.getBean("computerService"));
-
-        controller.start();
-    }
+	/**
+	 * The main launching the CLI.
+	 * 
+	 * @param arg
+	 *            The arguments
+	 */
+	public static void main(String[] arg) {
+		CommandLineInterfaceController controller = new CommandLineInterfaceController();
+		controller.start();
+	}
 }

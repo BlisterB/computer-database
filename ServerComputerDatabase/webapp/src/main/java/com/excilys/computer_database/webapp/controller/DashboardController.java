@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.computer_database.core.dto.ComputerDTO;
+import com.excilys.computer_database.core.page.SimplePage;
 import com.excilys.computer_database.service.ComputerService;
 import com.excilys.computer_database.service.ComputerService.COLUMN;
 
@@ -75,15 +76,11 @@ public class DashboardController {
         request.setAttribute(SEARCH, search);
 
         // Ask the DB
-        Object[] searchResult = computerService.listComputersDTO(column, order, search, currentPage,
+        SimplePage<ComputerDTO> searchResult = computerService.listComputersDTO(column, order, search, currentPage,
                 pageSize);
 
-        @SuppressWarnings("unchecked")
-        List<ComputerDTO> computers = (List<ComputerDTO>) searchResult[0];
-        Long nbResult = (Long) searchResult[1];
-
-        request.setAttribute(COMPUTER_LIST, computers);
-        request.setAttribute(NB_RESULTS, nbResult);
+        request.setAttribute(COMPUTER_LIST, searchResult.getList());
+        request.setAttribute(NB_RESULTS, searchResult.getElementTotalCount());
 
         return VIEW_NAME;
     }

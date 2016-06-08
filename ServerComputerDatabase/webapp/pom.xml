@@ -4,28 +4,12 @@
 	<parent>
 		<groupId>com.excilys</groupId>
 		<artifactId>computer-database</artifactId>
-		<version>0.6.0</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>webapp</artifactId>
 	<packaging>war</packaging>
-
-	<properties>
-		<!-- Versions des plugins -->
-		<servlet.version>3.0.0</servlet.version>
-		<jsp.version>2.0</jsp.version>
-		<jstl.version>1.2</jstl.version>
-		<junit.version>4.12</junit.version>
-		<slf4j.version>1.7.21</slf4j.version>
-		<mysql.version>5.1.38</mysql.version>
-		<logback.version>1.1.7</logback.version>
-		<servlet.version>1.2</servlet.version>
-		<hikariCP.version>2.4.5</hikariCP.version>
-		<spring.version>4.2.6.RELEASE</spring.version>
-		<hibernate.version>5.1.0.Final</hibernate.version>
-		<spring.security.version>4.1.0.RELEASE</spring.security.version>
-	</properties>
 
 	<build>
 		<resources>
@@ -48,15 +32,14 @@
 
 	<!-- Librairies -->
 	<dependencies>
+		<!-- Internal -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>service</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-			<dependency>
-				<groupId>com.excilys</groupId>
-				<artifactId>service</artifactId>
-				<version>0.6.0</version>
-			</dependency>
-
-
-
+		<!--  External -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -68,13 +51,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -108,13 +84,6 @@
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${hikariCP.version}</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -212,6 +181,12 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>${spring.security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.databind.version}</version>
 		</dependency>
 	</dependencies>
 

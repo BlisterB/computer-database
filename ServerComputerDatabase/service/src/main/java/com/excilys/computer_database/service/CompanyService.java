@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computer_database.core.dto.CompanyDTO;
 import com.excilys.computer_database.core.entity.Company;
+import com.excilys.computer_database.core.page.SimplePage;
 import com.excilys.computer_database.persistence.DAOException;
 import com.excilys.computer_database.persistence.dao.CompanyDAO;
 import com.excilys.computer_database.persistence.dao.ComputerDAO;
@@ -35,8 +36,9 @@ public class CompanyService {
      * @param nbPerPage Number of Companies to fetch
      * @throws DAOException
      */
-    public Page<Company> listSomeCompanies(int page, int size) {
-        return companyDAO.findAll(new PageRequest(page, size));
+    public SimplePage<Company> listSomeCompanies(int pageNumber, int size) {
+        Page<Company> page = companyDAO.findAll(new PageRequest(pageNumber, size));
+        return new SimplePage<Company>(page.getContent(), pageNumber, size, (int)page.getTotalElements(), page.getTotalPages());
     }
 
     /**

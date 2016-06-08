@@ -1,64 +1,46 @@
 package com.excilys.computer_database.console;
 
-import java.util.List;
-
-import com.excilys.computer_database.core.entity.Company;
-import com.excilys.computer_database.core.entity.Computer;
+import com.excilys.computer_database.core.page.SimplePage;
 
 public class CommandLineInterfaceView {
 
-    /** Constructor by default.
-     *  @param c The CLI controller
-     */
-    public CommandLineInterfaceView(CommandLineInterfaceController c) {
-    }
+	/** The default constructor. */
+	public CommandLineInterfaceView() {
+	}
 
-    /** Display the main prompt. */
-    public void displayPrompt() {
-        String prompt = "Please select a choice:\n" + "\t1) List all companies\n" + "\t2) List all computers\n"
-                + "\t3) Show computer details\n" + "\t4) Create a computer\n" + "\t5) Modify a computer\n"
-                + "\t6) Delete a computer\n"
-                + "\t7) List companies (page version)\n"
-                + "\t8) List computers (page version)\n"
-                + "\t9) Delete a company";
-        System.out.println(prompt);
-    }
+	/** Display the main prompt. */
+	public void displayPrompt() {
+		String prompt = "Please select a choice:\n" + "\t1) List companies\n" + "\t2) List computers\n"
+				+ "\t3) Find a computer\n" + "\t4) Create a computer\n" + "\t5) Modify a computer\n"
+				+ "\t6) Delete a computer\n";
+		System.out.println(prompt);
+	}
 
-    /** Display a list of company.
-     * @param l The list to display
-     */
-    public void displayCompanies(Iterable<Company> l) {
-        StringBuilder sb = new StringBuilder();
-        for (Company company : l) {
-            sb.append(company.toString()).append("\n");
-        }
-        System.out.println(sb);
-    }
+	/**
+	 * Display a SimplePage.
+	 * 
+	 * @param p
+	 *            The page to display.
+	 */
+	public void displayPage(SimplePage<?> p) {
+		// Construct the String to display
+		StringBuilder sb = new StringBuilder();
+		sb.append("(").append(p.getPageNumber()).append("/").append(p.getPageTotalCount() - 1).append(") :\n");
+		for (Object o : p.getList()) {
+			sb.append(o.toString()).append("\n");
+		}
 
-    /** Display a list of computers.
-     * @param l The list to display
-     */
-    public void displayComputers(Iterable<Computer> l) {
-        StringBuilder sb = new StringBuilder();
-        for (Computer computer : l) {
-            sb.append(computer.toString()).append("\n");
-        }
-        System.out.println(sb);
-    }
+		// Display
+		System.out.println(sb);
+	}
 
-    /** Display the computer details.
-     * @param comp The computer to display
-     */
-    public void showComputerDetail(Computer comp) {
-        System.out.println(comp);
-    }
-
-    /** Display a page.
-     * @param page The computer to display
-     */
-    public void showPage(List<?> page) {
-        for(Object o : page) {
-            System.out.println(o);
-        }
-    }
+	/**
+	 * Display the computer's details.
+	 * 
+	 * @param comp
+	 *            The computer to display
+	 */
+	public void showComputerDetail(Object comp) {
+		System.out.println(comp);
+	}
 }

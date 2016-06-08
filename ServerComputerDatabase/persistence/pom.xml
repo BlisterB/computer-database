@@ -4,31 +4,41 @@
 	<parent>
 		<groupId>com.excilys</groupId>
 		<artifactId>computer-database</artifactId>
-		<version>0.6.0</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>persistence</artifactId>
 
-	<!-- Librairies -->
 	<dependencies>
+		<!-- Internal -->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>core</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-			<dependency>
-				<groupId>${project.parent.groupId}</groupId>
-				<artifactId>core</artifactId>
-				<version>${project.parent.version}</version>
-			</dependency>
-
-			<dependency>
+		<!-- External -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>4.2.5.RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>${spring-data-jpa.version}</version>
+			<artifactId>spring-data-commons</artifactId>
+			<version>1.11.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>4.2.5.RELEASE</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa.version}</version>
 		</dependency>
 
 		<dependency>
@@ -38,35 +48,23 @@
 		</dependency>
 
 		<dependency>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-jdbc</artifactId>
-					<version>${spring.version}</version>
-					<scope>compile</scope>
-				</dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
-				<dependency>
-							<groupId>org.springframework</groupId>
-							<artifactId>spring-tx</artifactId>
-							<version>${spring.version}</version>
-							<scope>compile</scope>
-						</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring.security.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring.security.version}</version>
 		</dependency>
 
 		<dependency>
@@ -82,6 +80,18 @@
 				</exclusion>
 			</exclusions>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
 		</dependency>
 	</dependencies>
 </project>

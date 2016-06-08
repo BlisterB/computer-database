@@ -14,171 +14,195 @@ import com.excilys.computer_database.binding.ComputerDTOMapper;
 import com.excilys.computer_database.core.dto.ComputerDTO;
 import com.excilys.computer_database.core.entity.Company;
 import com.excilys.computer_database.core.entity.Computer;
+import com.excilys.computer_database.core.page.SimplePage;
 import com.excilys.computer_database.persistence.DAOException;
 import com.excilys.computer_database.persistence.dao.ComputerDAO;
 
 @Service
 @Transactional
 public class ComputerService {
-    @Autowired
-    private ComputerDAO computerDAO;
-    @Autowired
-    private ComputerDTOMapper computerDTOMapper;
+	@Autowired
+	private ComputerDAO computerDAO;
+	@Autowired
+	private ComputerDTOMapper computerDTOMapper;
 
-    public static enum COLUMN {
-        COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME
-    };
+	public static enum COLUMN {
+		COMPUTER_NAME, INTRODUCED, DISCONTINUED, COMPANY_NAME
+	};
 
-    /**
-     * Return the computer of id id.
-     * @param id The id
-     * @return The computer with the id field to "id"
-     * @throws DAOException In case of DAO problem
-     */
-    public Computer getComputerById(Long id) throws DAOException {
-        return computerDAO.findOne(id);
-    }
+	/**
+	 * Return the computer of id id.
+	 * 
+	 * @param id
+	 *            The id
+	 * @return The computer with the id field to "id"
+	 * @throws DAOException
+	 *             In case of DAO problem
+	 */
+	public Computer getComputerById(Long id) throws DAOException {
+		return computerDAO.findOne(id);
+	}
 
-    /**
-     * @param begining
-     * @param nbPerPage
-     * @param orderBy "id", "name", "introduced", "discontinued" or "company"
-     * @return An array, the first case is the List containing the result, the
-     *         second is the Integer representing the total number of result
-     * @throws DAOException
-     */
-    public Object[] listComputersDTO(COLUMN column, Direction direction, String search, int page, int size) {
-        // TODO : adapter la recherche
-        Page<Computer> computers;
-        PageRequest r;
-        if (column == null) {
-            r = new PageRequest(page, size);
-        } else {
-            r = new PageRequest(page, size, direction, getColumn(column));
-        }
-        if (search == null) {
-            computers = computerDAO.findAll(r);
-        } else {
-            computers = computerDAO.findByNameOrCompany_Name(search, search, r);
-        }
+	public SimplePage<Computer> listComputers(COLUMN column, Direction direction, String search, int page, int size) {
+		PageRequest r;
+		if (column == null) {
+			r = new PageRequest(page, size);
+		} else {
+			r = new PageRequest(page, size, direction, getColumn(column));
+		}
 
-        List<ComputerDTO> list = new LinkedList<ComputerDTO>();
+		Page<Computer> p;
+		if (search == null || search.isEmpty()) {
+			p = computerDAO.findAll(r);
+		} else {
+			p = computerDAO.findByNameOrCompany_Name(search, search, r);
+		}
+		return new SimplePage<>(p.getContent(), page, size, p.getNumberOfElements(), p.getTotalPages());
+	}
 
-        for (Computer c : computers.getContent()) {
-            list.add(computerDTOMapper.unmap(c));
-        }
+	/**
+	 * @param begining
+	 * @param nbPerPage
+	 * @param orderBy
+	 *            "id", "name", "introduced", "discontinued" or "company"
+	 * @return An array, the first case is the List containing the result, the
+	 *         second is the Integer representing the total number of result
+	 * @throws DAOException
+	 */
+	public SimplePage<ComputerDTO> listComputersDTO(COLUMN column, Direction direction, String search, int page, int size) {
+		SimplePage<Computer> computers = listComputers(column, direction, search, page, size);
+		List<ComputerDTO> list = new LinkedList<ComputerDTO>();
 
-        Object[] o = new Object[2];
-        o[0] = list;
-        o[1] = new Long(computers.getTotalElements());
-        return o;
-    }
+		for (Computer c : computers.getList()) {
+			list.add(computerDTOMapper.unmap(c));
+		}
 
-    public String getColumn(COLUMN col) {
-        switch (col) {
-        case COMPUTER_NAME:
-            return "name";
-        case INTRODUCED:
-            return "introduced";
-        case DISCONTINUED:
-            return "discontinued";
-        case COMPANY_NAME:
-            return "company.name";
-        default:
-            return "name";
-        }
-    }
+		return new SimplePage<>(list, computers.getPageNumber(), computers.getSize(),
+				computers.getElementTotalCount(), computers.getPageNumber());
+	}
 
-    /**
-     * Return the list of all computers.
-     * @return The list of all computers
-     * @throws DAOException In case of DAO problem
-     */
-    public Iterable<Computer> listAllComputers() throws DAOException {
-        return computerDAO.findAll();
-    }
+	public String getColumn(COLUMN col) {
+		switch (col) {
+		case COMPUTER_NAME:
+			return "name";
+		case INTRODUCED:
+			return "introduced";
+		case DISCONTINUED:
+			return "discontinued";
+		case COMPANY_NAME:
+			return "company.name";
+		default:
+			return "name";
+		}
+	}
 
-    /**
-     * Update the computer in the DB.
-     * @param comp The computer to update
-     * @return The computer
-     * @throws DAOException In case of DAO problem
-     */
-    public Computer update(Computer comp) throws DAOException {
-        // Find the computer
-        Computer c = this.getComputerById(comp.getId());
+	/**
+	 * Return the list of all computers.
+	 * 
+	 * @return The list of all computers
+	 * @throws DAOException
+	 *             In case of DAO problem
+	 */
+	public Iterable<Computer> listAllComputers() throws DAOException {
+		return computerDAO.findAll();
+	}
 
-        if (c == null) {
-            throw new DAOException("No computer for id " + comp.getId());
-        }
+	/**
+	 * Update the computer in the DB.
+	 * 
+	 * @param comp
+	 *            The computer to update
+	 * @return The computer
+	 * @throws DAOException
+	 *             In case of DAO problem
+	 */
+	public Computer update(Computer comp) throws DAOException {
+		// Find the computer
+		Computer c = this.getComputerById(comp.getId());
 
-        // Update its attributs
-        c.setName(comp.getName());
-        c.setIntroduced(comp.getIntroduced());
-        c.setDiscontinued(comp.getDiscontinued());
-        c.setCompany(comp.getCompany());
+		if (c == null) {
+			throw new DAOException("No computer for id " + comp.getId());
+		}
 
-        return comp;
-    }
+		// Update its attributs
+		c.setName(comp.getName());
+		c.setIntroduced(comp.getIntroduced());
+		c.setDiscontinued(comp.getDiscontinued());
+		c.setCompany(comp.getCompany());
 
-    @Transactional(rollbackFor = DAOException.class)
-    public Computer update(ComputerDTO comp) throws DAOException {
-        return update(computerDTOMapper.map(comp));
-    }
+		return comp;
+	}
 
-    /**
-     * Create the computer in the DB.
-     * @param computer The computer to put in the DB
-     * @return The computer
-     * @throws DAOException In case of DAO problem
-     */
-    public Computer createComputer(Computer computer) {
-        return computerDAO.save(computer);
-    }
+	@Transactional(rollbackFor = DAOException.class)
+	public Computer update(ComputerDTO comp) throws DAOException {
+		return update(computerDTOMapper.map(comp));
+	}
 
-    public Computer createComputer(ComputerDTO comp) {
-        Computer c = new Computer.ComputerBuilder(comp.getName()).introduced(comp.getIntroduced())
-                .discontinued(comp.getDiscontinued()).company(new Company(comp.getCompanyId(), comp.getCompanyName()))
-                .build();
-        return createComputer(c);
-    }
+	/**
+	 * Create the computer in the DB.
+	 * 
+	 * @param computer
+	 *            The computer to put in the DB
+	 * @return The computer
+	 * @throws DAOException
+	 *             In case of DAO problem
+	 */
+	public Computer createComputer(Computer computer) {
+		return computerDAO.save(computer);
+	}
 
-    /**
-     * Delete the computer from the DB.
-     * @param comp The computer to delete from the DB
-     * @throws DAOException In case of DAO problem
-     */
-    public void delete(Computer comp) throws DAOException {
-        computerDAO.delete(comp);
-    }
+	public Computer createComputer(ComputerDTO comp) {
+		Computer c = new Computer.ComputerBuilder(comp.getName())
+				.introduced(comp.getIntroduced())
+				.discontinued(comp.getDiscontinued())
+				.company((comp.getCompanyId() != null) ? new Company(comp.getCompanyId(), comp.getCompanyName()) : null)
+				.build();
+		return createComputer(c);
+	}
 
-    /**
-     * Delete the computer from the DB.
-     * @param id The id of the computer to delete from the DB
-     * @throws DAOException In case of DAO problem
-     */
-    public void delete(Long id) throws DAOException {
-        computerDAO.delete(id);
-    }
+	/**
+	 * Delete the computer from the DB.
+	 * 
+	 * @param comp
+	 *            The computer to delete from the DB
+	 * @throws DAOException
+	 *             In case of DAO problem
+	 */
+	public void delete(Computer comp) throws DAOException {
+		computerDAO.delete(comp);
+	}
 
-    public void deleteComputerList(Long[] idList) {
-        // TODO : Improve the complexity (too many separated request)
-        for (Long l : idList) {
-            computerDAO.delete(l);
-        }
-    }
+	/**
+	 * Delete the computer from the DB.
+	 * 
+	 * @param id
+	 *            The id of the computer to delete from the DB
+	 * @throws DAOException
+	 *             In case of DAO problem
+	 */
+	public void delete(Long id) throws DAOException {
+		computerDAO.delete(id);
+	}
 
-    /**
-     * @return the computerDAO
-     */
-    public ComputerDAO getComputerDAO() {
-        return computerDAO;
-    }
+	public void deleteComputerList(Long[] idList) {
+		// TODO : Improve the complexity (too many separated request)
+		for (Long l : idList) {
+			computerDAO.delete(l);
+		}
+	}
 
-    /**
-     * @param computerDAO the computerDAO to set
-     */
-    public void setComputerDAO(ComputerDAO computerDAO) {
-        this.computerDAO = computerDAO;
-    }
+	/**
+	 * @return the computerDAO
+	 */
+	public ComputerDAO getComputerDAO() {
+		return computerDAO;
+	}
+
+	/**
+	 * @param computerDAO
+	 *            the computerDAO to set
+	 */
+	public void setComputerDAO(ComputerDAO computerDAO) {
+		this.computerDAO = computerDAO;
+	}
 }
